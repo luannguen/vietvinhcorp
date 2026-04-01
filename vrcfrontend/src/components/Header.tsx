@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import Logo from './header/Logo';
 import MainNavigation from './header/MainNavigation';
@@ -8,20 +8,36 @@ import TopContact from './TopContact';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   return (
     <>
-      {/* TopContact integrated into Header */}
-      <TopContact />
+      {/* TopContact - hide when scrolled for more space */}
+      {!isScrolled && <TopContact />}
 
       {/* Main header */}
-      <header className="bg-primary/10 backdrop-blur-sm sticky top-0 z-50">
+      <header
+        className={`bg-primary/10 backdrop-blur-sm sticky top-0 z-50 transition-all duration-300 ${
+          isScrolled ? 'shadow-md bg-white/95' : ''
+        }`}
+      >
         <div className="container-custom">
-          <div className="flex justify-between items-center py-1.5">
-            {/* Logo */}
-            <Logo />
+          <div className={`flex justify-between items-center transition-all duration-300 ${
+            isScrolled ? 'py-1' : 'py-1.5'
+          }`}>
+            {/* Logo - shrinks on scroll */}
+            <Logo isScrolled={isScrolled} />
 
             {/* Desktop Navigation */}
             <MainNavigation />
