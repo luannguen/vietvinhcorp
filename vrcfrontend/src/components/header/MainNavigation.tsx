@@ -20,7 +20,9 @@ const MainNavigation = ({ isMobile = false }: MainNavigationProps) => {
       setIsLoading(true);
       const result = await navigationService.getNavigationItems();
       if (result.success && result.data.length > 0) {
-        const headerItems = result.data.filter(item => item.position === 'header' || !item.position);
+        const headerItems = result.data.filter(item => 
+          (item.position === 'header' || !item.position) && item.path !== '/'
+        );
         setNavItems(headerItems);
       }
       setIsLoading(false);
