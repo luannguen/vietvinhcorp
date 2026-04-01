@@ -15,15 +15,17 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- 2.1 Check Admin Helper
 CREATE OR REPLACE FUNCTION public.is_admin()
 RETURNS boolean
-LANGUAGE sql
+LANGUAGE plpgsql
 SECURITY DEFINER
 AS $$
-  SELECT EXISTS (
+BEGIN
+  RETURN EXISTS (
     SELECT 1
     FROM public.users
     WHERE id = auth.uid()
     AND role IN ('admin', 'super_admin') 
   );
+END;
 $$;
 
 -- 2.2 Sync Auth User to Public User
