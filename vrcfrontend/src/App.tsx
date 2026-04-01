@@ -85,7 +85,8 @@ const App = () => (
           {/* Public routes */}
           <Route path="/" element={<MainLayout />}>
             <Route index element={<Index />} />
-            <Route path="about" element={<StaticPage slug="about-us" />} />
+            <Route path="about" element={<Navigate to="/about-us" replace />} />
+            <Route path="about-us" element={<StaticPage slug="about-us" />} />
             <Route path="intro" element={<StaticPage slug="intro" />} />
             <Route path="page/:slug" element={<StaticPage />} />
             <Route path="products" element={<Products />} />
