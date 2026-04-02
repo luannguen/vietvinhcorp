@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { pageService, StaticPage, PageFormData } from "@/services/pageService";
 import { mediaService } from "@/services/mediaService";
 import { Button } from "@/components/ui/button";
@@ -26,7 +27,7 @@ import { Switch } from "@/components/ui/switch";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useToast } from "@/components/ui/use-toast";
-import { Loader2, Plus, Pencil, Trash2, FileText, Image as ImageIcon } from "lucide-react";
+import { Loader2, Plus, Pencil, Trash2, FileText, Image as ImageIcon, Eye } from "lucide-react";
 
 export default function PagesPage() {
     const [pages, setPages] = useState<StaticPage[]>([]);
@@ -228,6 +229,15 @@ export default function PagesPage() {
                                         />
                                     </TableCell>
                                     <TableCell className="text-right">
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            asChild
+                                        >
+                                            <Link to={`/pages/visual-edit/${page.slug}`}>
+                                                <Eye className="h-4 w-4 text-blue-500" />
+                                            </Link>
+                                        </Button>
                                         <Button
                                             variant="ghost"
                                             size="icon"

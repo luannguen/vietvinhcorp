@@ -22,6 +22,7 @@ import ResourcesPage from './pages/admin/ResourcesPage'; // Added
 import AchievementsPage from './pages/admin/AchievementsPage';
 import FAQsPage from './pages/admin/FAQsPage';
 import TeamPage from './pages/admin/TeamPage';
+import VisualEditorPage from './pages/admin/VisualEditorPage';
 import ForgotPasswordPage from './components/admin/pages/auth/ForgotPasswordPage';
 import ResetPasswordPage from './components/admin/pages/auth/ResetPasswordPage';
 
@@ -51,6 +52,7 @@ function App() {
               <Route path="media" element={<MediaLibrary />} />
               <Route path="banners" element={<BannersPage />} />
               <Route path="pages" element={<PagesPage />} />
+              <Route path="pages/visual-edit/:slug" element={<VisualEditorPage />} />
               <Route path="services" element={<ServicesPage />} />
               <Route path="resources" element={<ResourcesPage />} />
               <Route path="achievements" element={<AchievementsPage />} />
