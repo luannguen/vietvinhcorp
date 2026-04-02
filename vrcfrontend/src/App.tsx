@@ -136,6 +136,9 @@ const App = () => (
             <Route path="data/:slug" element={<ResourceCategory />} />
             <Route path="data/:category/:slug" element={<ResourceDetail />} />
 
+            {/* Catch-all dynamic slug for static pages at root level */}
+            <Route path=":slug" element={<StaticPage />} />
+
             {/* <Route path="login" element={<Login />} /> */}
             <Route path="*" element={<NotFound />} />
           </Route>

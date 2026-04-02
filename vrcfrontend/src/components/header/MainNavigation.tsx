@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { ChevronDown } from 'lucide-react';
 import { navigationService } from '@/services/navigationService';
 import { NavigationItem } from '@/components/data/types';
+import { normalizePath } from '@/utils/urlUtils';
 
 interface MainNavigationProps {
   isMobile?: boolean;
@@ -85,7 +86,7 @@ const MainNavigation = ({ isMobile = false }: MainNavigationProps) => {
         {navItems.map((item) => (
           <div key={item.id}>
             <Link
-              to={item.path}
+              to={normalizePath(item.path)}
               className={`navbar-link text-lg block py-1 ${
                 isActive(item) ? 'text-secondary font-bold border-b-2 border-secondary' : ''
               }`}
@@ -97,7 +98,7 @@ const MainNavigation = ({ isMobile = false }: MainNavigationProps) => {
                 {item.children.map(child => (
                   <Link
                     key={child.id}
-                    to={child.path}
+                    to={normalizePath(child.path)}
                     className={`hover:text-primary block text-base ${
                       isActive(child) ? 'text-primary font-semibold' : 'text-muted-foreground'
                     }`}
@@ -135,7 +136,7 @@ const MainNavigation = ({ isMobile = false }: MainNavigationProps) => {
                   {item.children.map((child) => (
                     <Link
                       key={child.id}
-                      to={child.path}
+                      to={normalizePath(child.path)}
                       className={`hover:text-primary transition-colors text-sm font-medium py-1 ${
                         isActive(child) ? 'text-primary font-bold' : 'text-gray-600'
                       }`}
@@ -148,7 +149,7 @@ const MainNavigation = ({ isMobile = false }: MainNavigationProps) => {
             </>
           ) : (
             <Link
-              to={item.path}
+              to={normalizePath(item.path)}
               className={`navbar-link text-base font-medium relative pb-1 ${
                 isActive(item) ? 'text-secondary' : ''
               }`}

@@ -5,6 +5,7 @@ import { useSettings } from '@/hooks/useSettings';
 import { NavigationItem } from '@/components/data/types';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { normalizePath, isExternalLink } from '@/utils/urlUtils';
 
 const Footer = () => {
   const { t } = useTranslation();
@@ -82,9 +83,8 @@ const Footer = () => {
                 <ul className="space-y-2">
                   {menu.children.map((child) => (
                     <li key={child.id}>
-                      {/* Handle both internal routeKeys (if AppLink uses them) or direct paths */}
-                      {child.path.startsWith('/') ? (
-                        <Link to={child.path} className="text-gray-300 hover:text-white transition-colors footer-link">
+                      {!isExternalLink(child.path) ? (
+                        <Link to={normalizePath(child.path)} className="text-gray-300 hover:text-white transition-colors footer-link">
                           {child.label}
                         </Link>
                       ) : (

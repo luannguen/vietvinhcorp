@@ -1,197 +1,175 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { ArrowLeft, Save, Laptop, Tablet, Smartphone, Loader2, ExternalLink } from 'lucide-react';
-import { toast } from 'sonner';
-import { pageService } from '@/services/pageService';
-import { supabase } from '@/lib/supabase';
-import { ImagePickerModal } from '@/components/admin/media/ImagePickerModal';
+import React, { useState, useRef } from 'react';
+import { DragDropContext } from '@hello-pangea/dnd';
+import { useVisualEditor } from '@/hooks/useVisualEditor';
+import { EditorToolbar } from '@/components/admin/visual-editor/EditorToolbar';
+import { BlockLibrary } from '@/components/admin/visual-editor/BlockLibrary';
+import { PageNavigator } from '@/components/admin/visual-editor/PageNavigator';
+import { PreviewArea } from '@/components/admin/visual-editor/PreviewArea';
+import { PropertyInspector } from '@/components/admin/visual-editor/PropertyInspector';
+import { PageSettingsModal } from '@/components/admin/visual-editor/PageSettingsModal';
+import { ImagePickerModal } from '@/components/admin/visual-editor/ImagePickerModal';
+import { Loader2, AlertCircle, Layout, List } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
 
-const VisualEditorPage = () => {
-    const { slug } = useParams<{ slug: string }>();
-    const navigate = useNavigate();
-    const [isLoading, setIsLoading] = useState(true);
-    const [isSaving, setIsSaving] = useState(false);
-    const [viewMode, setViewMode] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
-    const [pendingData, setPendingData] = useState<any>(null);
-    const [pageId, setPageId] = useState<string | null>(null);
-    
-    // Image Picker State
-    const [isImagePickerOpen, setIsImagePickerOpen] = useState(false);
-    const [pickingFieldKey, setPickingFieldKey] = useState<string | null>(null);
+const VisualEditorPage: React.FC = () => {
     const iframeRef = useRef<HTMLIFrameElement>(null);
+    const [viewMode, setViewMode] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
+    
+    const {
+        loading,
+        error,
+        slug,
+        isNewPage,
+        sections,
+        selectedSectionId,
+        isSaving,
+        hasPendingChanges,
+        setSelectedSectionId,
+        handleDragEnd,
+        handleSave,
+        updateSection,
+        removeSection,
+        iframeSrc,
+        isDragging,
+        setIsDragging,
+        imagePicker,
+        setImagePicker,
+        handleImageSelect,
+        pageMetadata,
+        setPageMetadata,
+        isSettingsOpen,
+        setIsSettingsOpen
+    } = useVisualEditor(iframeRef);
 
-    // Iframe URL - Points to Frontend
-    const frontendUrl = import.meta.env.VITE_FRONTEND_URL || 'http://localhost:8082';
-    const iframeSrc = `${frontendUrl}/${slug === 'about-us' ? 'about-us' : 'page/' + slug}?edit_mode=true`;
-
-    useEffect(() => {
-        const fetchPageInfo = async () => {
-            if (!slug) return;
-            try {
-                const { data, error } = await supabase
-                    .from('static_pages')
-                    .select('id')
-                    .eq('slug', slug)
-                    .single();
-                
-                if (error) throw error;
-                setPageId(data.id);
-            } catch (err) {
-                console.error('Error fetching page info:', err);
-                toast.error('Không tìm thấy thông tin trang');
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchPageInfo();
-    }, [slug]);
-
-    const handleMessage = useCallback((event: MessageEvent) => {
-        // Security: In production, verify event.origin matches frontendUrl
-        if (event.data?.type === 'VISUAL_EDIT_UPDATE') {
-            console.log('Received update from iframe:', event.data.data);
-            setPendingData(event.data.data);
-        } else if (event.data?.type === 'VISUAL_EDIT_PICK_IMAGE') {
-            setPickingFieldKey(event.data.fieldKey);
-            setIsImagePickerOpen(true);
-        }
-    }, []);
-
-    useEffect(() => {
-        window.addEventListener('message', handleMessage);
-        return () => window.removeEventListener('message', handleMessage);
-    }, [handleMessage]);
-
-    const handleSave = async () => {
-        if (!pageId || !pendingData) {
-            toast.info('Không có thay đổi nào để lưu');
-            return;
-        }
-
-        setIsSaving(true);
-        try {
-            await pageService.updatePage(pageId, {
-                content: JSON.stringify(pendingData)
-            });
-            toast.success('Đã lưu thay đổi thành công');
-            setPendingData(null);
-        } catch (err) {
-            console.error('Save error:', err);
-            toast.error('Lỗi khi lưu dữ liệu');
-        } finally {
-            setIsSaving(false);
-        }
-    };
-
-    const handleImageSelect = (url: string) => {
-        if (!pickingFieldKey) return;
-        
-        // Notify the iframe that an image was selected
-        if (iframeRef.current && iframeRef.current.contentWindow) {
-            iframeRef.current.contentWindow.postMessage({
-                type: 'VISUAL_EDIT_IMAGE_SELECTED',
-                fieldKey: pickingFieldKey,
-                imageUrl: url
-            }, '*');
-        }
-        
-        setIsImagePickerOpen(false);
-        setPickingFieldKey(null);
-    };
-
-    if (isLoading) {
+    if (loading) {
         return (
-            <div className="flex items-center justify-center h-[calc(100vh-200px)]">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <div className="flex items-center justify-center min-h-[400px]">
+                <Loader2 className="h-10 w-10 animate-spin text-primary" />
+                <span className="ml-3 font-bold text-slate-500">Đang tải trình chỉnh sửa...</span>
             </div>
         );
     }
 
-    return (
-        <div className="flex flex-col h-[calc(100vh-100px)] gap-4">
-            {/* Toolbar */}
-            <div className="flex items-center justify-between bg-white p-4 rounded-lg shadow-sm border">
-                <div className="flex items-center gap-4">
-                    <Button variant="ghost" size="sm" onClick={() => navigate('/pages')}>
-                        <ArrowLeft className="h-4 w-4 mr-2" />
-                        Quay lại
-                    </Button>
-                    <div className="h-6 w-px bg-gray-200 mx-2" />
-                    <h1 className="font-semibold text-lg capitalize">
-                        Chỉnh sửa trực quan: {slug?.replace(/-/g, ' ')}
-                    </h1>
-                </div>
-
-                <div className="flex items-center gap-2 bg-gray-100 p-1 rounded-md">
-                    <Button 
-                        variant={viewMode === 'desktop' ? 'secondary' : 'ghost'} 
-                        size="icon" 
-                        className="h-8 w-8"
-                        onClick={() => setViewMode('desktop')}
-                    >
-                        <Laptop className="h-4 w-4" />
-                    </Button>
-                    <Button 
-                        variant={viewMode === 'tablet' ? 'secondary' : 'ghost'} 
-                        size="icon" 
-                        className="h-8 w-8"
-                        onClick={() => setViewMode('tablet')}
-                    >
-                        <Tablet className="h-4 w-4" />
-                    </Button>
-                    <Button 
-                        variant={viewMode === 'mobile' ? 'secondary' : 'ghost'} 
-                        size="icon" 
-                        className="h-8 w-8"
-                        onClick={() => setViewMode('mobile')}
-                    >
-                        <Smartphone className="h-4 w-4" />
-                    </Button>
-                </div>
-
-                <div className="flex items-center gap-3">
-                    <Button variant="outline" size="sm" asChild>
-                        <a href={`${frontendUrl}/${slug === 'about-us' ? 'about-us' : 'page/' + slug}`} target="_blank" rel="noreferrer">
-                            <ExternalLink className="h-4 w-4 mr-2" />
-                            Xem thực tế
-                        </a>
-                    </Button>
-                    <Button 
-                        size="sm" 
-                        onClick={handleSave} 
-                        disabled={isSaving || !pendingData}
-                        className="bg-primary hover:bg-primary/90 text-white"
-                    >
-                        {isSaving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
-                        Lưu thay đổi
-                    </Button>
-                </div>
+    if (error) {
+        return (
+            <div className="p-6">
+                <Alert variant="destructive">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertTitle>Lỗi hệ thống</AlertTitle>
+                    <AlertDescription>{error}</AlertDescription>
+                </Alert>
             </div>
+        );
+    }
 
-            {/* Preview Container */}
-            <Card className="flex-grow overflow-hidden bg-gray-200 flex items-center justify-center p-4">
-                <div 
-                    className={`bg-white shadow-2xl transition-all duration-300 h-full ${
-                        viewMode === 'desktop' ? 'w-full' : 
-                        viewMode === 'tablet' ? 'w-[768px]' : 'w-[375px]'
-                    }`}
-                >
-                    <iframe 
-                        ref={iframeRef}
-                        src={iframeSrc} 
-                        className="w-full h-full border-none"
-                        title="Visual Editor Preview"
-                    />
+    const onDragStart = () => setIsDragging(true);
+    const onDragEnd = (result: any) => {
+        setIsDragging(false);
+        handleDragEnd(result);
+    };
+
+    return (
+        <div className="fixed inset-0 z-[100] flex flex-col bg-slate-50 overflow-hidden font-sans select-none">
+            <header className="p-4 bg-white/80 backdrop-blur-md border-b sticky top-0 z-30 shadow-sm">
+                <EditorToolbar 
+                    slug={slug} 
+                    isNewPage={isNewPage}
+                    viewMode={viewMode}
+                    setViewMode={setViewMode}
+                    handleSave={handleSave}
+                    setIsSettingsOpen={setIsSettingsOpen}
+                    isSaving={isSaving}
+                    hasPendingChanges={hasPendingChanges}
+                />
+            </header>
+
+            <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
+                <div className="flex-grow p-2 h-full overflow-hidden">
+                    <ResizablePanelGroup direction="horizontal" className="h-full rounded-xl border bg-slate-100/50 shadow-sm overflow-hidden">
+                        
+                        {/* Panel Left: Block Library & Navigator */}
+                        <ResizablePanel defaultSize={20} minSize={15} maxSize={35} className="bg-white flex flex-col overflow-hidden border-r">
+                            <Tabs defaultValue="blocks" className="flex flex-col h-full overflow-hidden">
+                                <div className="p-2 border-b bg-slate-50/50">
+                                    <TabsList className="grid w-full grid-cols-2 h-9 p-1">
+                                        <TabsTrigger value="blocks" className="flex items-center gap-2 text-xs py-1">
+                                            <Layout className="w-3.5 h-3.5" />
+                                            <span>Thư viện</span>
+                                        </TabsTrigger>
+                                        <TabsTrigger value="navigator" className="flex items-center gap-2 text-xs py-1">
+                                            <List className="w-3.5 h-3.5" />
+                                            <span>Cấu trúc</span>
+                                        </TabsTrigger>
+                                    </TabsList>
+                                </div>
+                                <div className="flex-grow overflow-hidden relative">
+                                    <TabsContent value="blocks" className="h-full m-0 p-0 overflow-y-auto">
+                                        <BlockLibrary />
+                                    </TabsContent>
+                                    <TabsContent value="navigator" className="h-full m-0 p-0 overflow-y-auto">
+                                        <PageNavigator 
+                                            sections={sections} 
+                                            selectedSectionId={selectedSectionId}
+                                            setSelectedSectionId={setSelectedSectionId}
+                                            removeSection={removeSection}
+                                        />
+                                    </TabsContent>
+                                </div>
+                            </Tabs>
+                        </ResizablePanel>
+
+                        <ResizableHandle withHandle />
+
+                        {/* Panel Center: Preview Area */}
+                        <ResizablePanel defaultSize={60} minSize={30} className="flex flex-col overflow-hidden bg-slate-100/30 relative">
+                            <PreviewArea 
+                                iframeRef={iframeRef}
+                                iframeSrc={iframeSrc}
+                                viewMode={viewMode}
+                                isDragging={isDragging}
+                                sections={sections}
+                            />
+                        </ResizablePanel>
+
+                        <ResizableHandle withHandle />
+
+                        {/* Panel Right: Property Inspector */}
+                        <ResizablePanel defaultSize={20} minSize={15} maxSize={40} className="bg-white flex flex-col overflow-hidden">
+                            <PropertyInspector 
+                                selectedSectionId={selectedSectionId}
+                                sections={sections}
+                                updateSection={updateSection}
+                                setSelectedSectionId={setSelectedSectionId}
+                                onPickImage={(fieldId) => setImagePicker({
+                                    isOpen: true,
+                                    fieldId,
+                                    sectionId: selectedSectionId
+                                })}
+                            />
+                        </ResizablePanel>
+
+                    </ResizablePanelGroup>
                 </div>
-            </Card>
+            </DragDropContext>
 
-            {/* Image Picker Modal */}
+            <PageSettingsModal 
+                isOpen={isSettingsOpen}
+                onOpenChange={setIsSettingsOpen}
+                config={pageMetadata}
+                onConfigChange={setPageMetadata}
+                isNewPage={isNewPage}
+                onPickImage={() => setImagePicker({ isOpen: true, fieldId: 'image_url', sectionId: null, isForMetadata: true })}
+            />
+
             <ImagePickerModal 
-                open={isImagePickerOpen}
-                onOpenChange={setIsImagePickerOpen}
+                isOpen={imagePicker.isOpen}
+                onClose={() => setImagePicker(prev => ({ ...prev, isOpen: false }))}
                 onSelect={handleImageSelect}
             />
         </div>

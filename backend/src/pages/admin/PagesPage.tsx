@@ -163,10 +163,22 @@ export default function PagesPage() {
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-bold tracking-tight">Static Pages</h1>
-                <Button onClick={() => handleOpenDialog()}>
-                    <Plus className="mr-2 h-4 w-4" /> Add Page
-                </Button>
+                <h1 className="text-3xl font-bold tracking-tight text-slate-900">Static Pages</h1>
+                <div className="flex gap-3">
+                    <Button 
+                        variant="outline"
+                        asChild
+                        className="rounded-full shadow-sm hover:bg-slate-50 border-slate-200"
+                    >
+                        <Link to="/pages/visual-edit/new-page">
+                            <Eye className="mr-2 h-4 w-4 text-blue-500" />
+                            Tạo bằng Visual Editor
+                        </Link>
+                    </Button>
+                    <Button onClick={() => handleOpenDialog()} className="rounded-full bg-slate-900 hover:bg-slate-800 shadow-lg shadow-slate-200">
+                        <Plus className="mr-2 h-4 w-4" /> Add Page
+                    </Button>
+                </div>
             </div>
 
             <div className="rounded-md border bg-card">

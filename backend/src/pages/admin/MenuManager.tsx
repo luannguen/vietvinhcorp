@@ -64,17 +64,46 @@ export default function MenuManager() {
             return;
         }
 
+        // Normalize path: ensure it starts with / if it's an internal link
+        let processedPath = editingItem.path.trim();
+        if (processedPath && 
+            !processedPath.startsWith('/') && 
+            !processedPath.startsWith('http') && 
+            !processedPath.startsWith('mailto:') && 
+            !processedPath.startsWith('tel:')) {
+            processedPath = '/' + processedPath;
+        }
+
+        // Also normalize children paths
+        const processedChildren = editingItem.children?.map(child => {
+            let childPath = child.path.trim();
+            if (childPath && 
+                !childPath.startsWith('/') && 
+                !childPath.startsWith('http') && 
+                !childPath.startsWith('mailto:') && 
+                !childPath.startsWith('tel:')) {
+                childPath = '/' + childPath;
+            }
+            return { ...child, path: childPath };
+        });
+
+        const itemToSave = { 
+            ...editingItem, 
+            path: processedPath,
+            children: processedChildren 
+        };
+
         setSaving(true);
         let result: Result<NavigationItem>;
 
-        if (editingItem.id) {
-            result = await navigationService.updateNavigationItem(editingItem.id, editingItem);
+        if (itemToSave.id) {
+            result = await navigationService.updateNavigationItem(itemToSave.id, itemToSave);
         } else {
-            result = await navigationService.createNavigationItem(editingItem);
+            result = await navigationService.createNavigationItem(itemToSave);
         }
 
         if (result.success) {
-            toast.success(editingItem.id ? t('item_updated') : t('item_created'));
+            toast.success(itemToSave.id ? t('item_updated') : t('item_created'));
             setIsEditing(false);
             fetchItems();
         } else {
