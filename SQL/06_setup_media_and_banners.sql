@@ -1,39 +1,36 @@
--- 04_banners.sql
--- Add missing banners table and seed data
--- Generated: 2025-12-13
+-- ==========================================
+-- 06_setup_media_and_banners.sql
+-- Chạy script này trong Supabase SQL Editor
+-- Script này sẽ khắc phục lỗi:
+-- 1. Lỗi không upload được Logo (Tạo bucket)
+-- 2. Lỗi trống Banners (Seed lại banners)
+-- ==========================================
 
--- ==========================================
--- 1. CREATE BANNERS TABLE
--- ==========================================
-CREATE TABLE IF NOT EXISTS public.banners (
-    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-    title TEXT,
-    description TEXT,
-    image_url TEXT NOT NULL,
-    link TEXT,
-    position TEXT DEFAULT 'home_main' CHECK (position IN ('home_main', 'popup', 'sidebar', 'page_top')),
-    order_index INTEGER DEFAULT 0,
-    is_active BOOLEAN DEFAULT true,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
-);
+-- 1. SETUP THƯ MỤC LƯU TRỮ (MEDIA BUCKET)
+-- Đảm bảo bucket 'media' tồn tại
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('media', 'media', true)
+ON CONFLICT (id) DO UPDATE SET public = true;
 
--- ==========================================
--- 2. RLS POLICIES FOR BANNERS
--- ==========================================
-ALTER TABLE public.banners ENABLE ROW LEVEL SECURITY;
+-- Xóa các policy cũ nếu có
+DROP POLICY IF EXISTS "Public có thể xem media" ON storage.objects;
+DROP POLICY IF EXISTS "Authenticated users có thể upload/edit media" ON storage.objects;
 
--- Public read access (anyone can view active banners)
-CREATE POLICY "Public can view active banners" ON public.banners
-    FOR SELECT USING (is_active = true);
+-- Cho phép TẤT CẢ mọi người có quyền Đọc (XEM ảnh)
+CREATE POLICY "Public có thể xem media"
+  ON storage.objects FOR SELECT
+  USING ( bucket_id = 'media' );
 
--- Admin full access
-CREATE POLICY "Admins can manage banners" ON public.banners
-    FOR ALL USING (public.is_admin());
+-- Cho phép NHỮNG NGƯỜI ĐÃ ĐĂNG NHẬP (VD: admin) có quyền quản lý thay đổi (INSERT/UPDATE/DELETE)
+CREATE POLICY "Authenticated users có thể quản lý media"
+  ON storage.objects FOR ALL
+  USING (
+    bucket_id = 'media' 
+    AND auth.role() = 'authenticated'
+  );
 
--- ==========================================
--- 3. SEED BANNER DATA
--- ==========================================
+
+-- 2. SEED LẠI DỮ LIỆU BANNERS CHO CLIENT & ADMIN (Thêm dữ liệu nếu bảng trống)
 INSERT INTO public.banners (title, description, image_url, link, position, order_index, is_active)
 SELECT title, description, image_url, link, position, order_index, is_active
 FROM (VALUES

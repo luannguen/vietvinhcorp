@@ -170,8 +170,9 @@ BEGIN
     ('Sản phẩm', '/products', 'internal', 'header', 2, true),
     ('Dịch vụ', '/services', 'internal', 'header', 3, true),
     ('Dự án', '/projects', 'internal', 'header', 4, true),
-    ('Tin tức', '/news', 'internal', 'header', 5, true),
-    ('Liên hệ', '/contact', 'internal', 'header', 6, true);
+    ('Đội ngũ', '/team', 'internal', 'header', 5, true),
+    ('Tin tức', '/news', 'internal', 'header', 6, true),
+    ('Liên hệ', '/contact', 'internal', 'header', 7, true);
 
     -- FOOTER NAVIGATION
     -- Column 1: Về VRC

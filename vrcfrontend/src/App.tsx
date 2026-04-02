@@ -9,7 +9,7 @@ import SEOHelmet from "@/components/common/SEOHelmet";
 import MainLayout from "./components/layouts/MainLayout";
 import Index from "./pages/Index";
 import StaticPage from "./pages/StaticPage";
-// import About from "./pages/About"; // Replaced by dynamic StaticPage
+import About from "./pages/About";
 import Products from "./pages/Products";
 import Projects from "./pages/Projects";
 import Services from "./pages/Services";
@@ -86,7 +86,7 @@ const App = () => (
           <Route path="/" element={<MainLayout />}>
             <Route index element={<Index />} />
             <Route path="about" element={<Navigate to="/about-us" replace />} />
-            <Route path="about-us" element={<StaticPage slug="about-us" />} />
+            <Route path="about-us" element={<About />} />
             <Route path="intro" element={<StaticPage slug="intro" />} />
             <Route path="page/:slug" element={<StaticPage />} />
             <Route path="products" element={<Products />} />
