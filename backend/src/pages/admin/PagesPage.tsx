@@ -23,6 +23,8 @@ import {
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2, Plus, Pencil, Trash2, FileText, Image as ImageIcon } from "lucide-react";
 
@@ -319,18 +321,18 @@ export default function PagesPage() {
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="content">Content (HTML)</Label>
-                            <Textarea
-                                id="content"
+                            <Label htmlFor="content">Content</Label>
+                            <ReactQuill
+                                theme="snow"
                                 value={formData.content || ""}
-                                onChange={(e) =>
-                                    setFormData({ ...formData, content: e.target.value })
+                                onChange={(value) =>
+                                    setFormData({ ...formData, content: value })
                                 }
-                                placeholder="<p>Enter your page content here...</p>"
-                                className="h-64 font-mono text-sm"
+                                placeholder="Enter your page content here..."
+                                className="h-[400px] mb-12"
                             />
                             <p className="text-xs text-muted-foreground">
-                                Currently accepts raw HTML.
+                                Nội dung được soạn thảo ở đây sẽ tự động hiển thị trực quan trên Client.
                             </p>
                         </div>
 
