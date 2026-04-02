@@ -24,6 +24,60 @@ const SEOHelmet: React.FC<SEOHelmetProps> = ({ title, description, keywords, ima
         fetchSettings();
     }, []);
 
+    useEffect(() => {
+        if (!mounted || Object.keys(settings).length === 0) return;
+
+        // Cập nhật favicon động từ Database
+        if (settings['favicon_url']) {
+            let link = document.getElementById('dynamic-favicon') as HTMLLinkElement;
+            if (!link) {
+                link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
+            }
+            if (link) {
+                link.href = settings['favicon_url'];
+            }
+        }
+
+        // Inject header and footer scripts safely (only runtime if not already injected)
+        if (settings['header_scripts'] && !document.getElementById('injected-header-scripts')) {
+            try {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = settings['header_scripts'];
+                const scripts = tempDiv.getElementsByTagName('script');
+                Array.from(scripts).forEach(s => {
+                    const scriptNode = document.createElement('script');
+                    scriptNode.id = 'injected-header-scripts';
+                    if (s.src) scriptNode.src = s.src;
+                    scriptNode.innerHTML = s.innerHTML;
+                    scriptNode.async = s.async;
+                    scriptNode.defer = s.defer;
+                    document.head.appendChild(scriptNode);
+                });
+            } catch (e) {
+                console.error('Error injecting header scripts:', e);
+            }
+        }
+
+        if (settings['footer_scripts'] && !document.getElementById('injected-footer-scripts')) {
+            try {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = settings['footer_scripts'];
+                const scripts = tempDiv.getElementsByTagName('script');
+                Array.from(scripts).forEach(s => {
+                    const scriptNode = document.createElement('script');
+                    scriptNode.id = 'injected-footer-scripts';
+                    if (s.src) scriptNode.src = s.src;
+                    scriptNode.innerHTML = s.innerHTML;
+                    scriptNode.async = s.async;
+                    scriptNode.defer = s.defer;
+                    document.body.appendChild(scriptNode);
+                });
+            } catch (e) {
+                console.error('Error injecting footer scripts:', e);
+            }
+        }
+    }, [settings, mounted]);
+
     if (!mounted) return null;
 
     const siteTitle = settings['site_title'] || 'VRC - Tổng công ty kỹ thuật điện lạnh Việt Nam';
@@ -32,29 +86,23 @@ const SEOHelmet: React.FC<SEOHelmetProps> = ({ title, description, keywords, ima
     const finalKeywords = keywords || settings['site_keywords'] || 'điện lạnh, vrc, hvac';
     const finalImage = image || settings['og_image_url'] || '/lovable-uploads/0bd3c048-8e37-4775-a6bc-0b54ec07edbe.png';
 
-    const headerScripts = settings['header_scripts'];
-
     return (
-        <>
-            <Helmet>
-                <title>{finalTitle}</title>
-                <meta name="description" content={finalDescription} />
-                <meta name="keywords" content={finalKeywords} />
+        <Helmet>
+            <title>{finalTitle}</title>
+            <meta name="description" content={finalDescription} />
+            <meta name="keywords" content={finalKeywords} />
 
-                <meta property="og:title" content={finalTitle} />
-                <meta property="og:description" content={finalDescription} />
-                <meta property="og:image" content={finalImage} />
+            <meta property="og:title" content={finalTitle} />
+            <meta property="og:description" content={finalDescription} />
+            <meta property="og:image" content={finalImage} />
+            <meta property="og:type" content={settings['og_type'] || 'website'} />
+            <meta property="og:site_name" content={settings['site_name'] || 'VRC'} />
 
-                <meta name="twitter:title" content={finalTitle} />
-                <meta name="twitter:description" content={finalDescription} />
-                <meta name="twitter:image" content={finalImage} />
-
-                {/* Safe script injection if needed, usually we avoid dangerouslySetInnerHTML in Helmet directly for scripts, 
-                    but if required we can use it. For now let's just do meta tags. 
-                */}
-            </Helmet>
-            {/* We might need a safer way to inject scripts if really needed, e.g. GTM */}
-        </>
+            <meta name="twitter:card" content={settings['twitter_card'] || 'summary_large_image'} />
+            <meta name="twitter:title" content={finalTitle} />
+            <meta name="twitter:description" content={finalDescription} />
+            <meta name="twitter:image" content={finalImage} />
+        </Helmet>
     );
 };
 

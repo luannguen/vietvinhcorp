@@ -11,6 +11,8 @@ const SettingsPage: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [uploadingLogo, setUploadingLogo] = useState(false);
+    const [uploadingFavicon, setUploadingFavicon] = useState(false);
+    const [uploadingOgImage, setUploadingOgImage] = useState(false);
 
     useEffect(() => {
         fetchSettings();
@@ -32,35 +34,35 @@ const SettingsPage: React.FC = () => {
         setSettings(prev => ({ ...prev, [key]: value }));
     };
 
-    const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, key: string, setUploading: (val: boolean) => void) => {
         if (!e.target.files || e.target.files.length === 0) return;
         const file = e.target.files[0];
 
         // Validations
-        if (file.size > 2 * 1024 * 1024) { // 2MB limit for logo
+        if (file.size > 2 * 1024 * 1024) { // 2MB limit
             toast.error(t('logo_too_large'));
             return;
         }
 
-        setUploadingLogo(true);
+        setUploading(true);
         try {
             const result = await mediaService.uploadImage(file, 'settings');
             if (result) {
-                handleChange('site_logo', result.url);
+                handleChange(key, result.url);
                 toast.success(t('logo_uploaded_temp'));
             }
         } catch (error) {
             console.error(error);
             toast.error(t('upload_logo_fail'));
         } finally {
-            setUploadingLogo(false);
+            setUploading(false);
             e.target.value = ''; // Reset input
         }
     };
 
-    const handleRemoveLogo = () => {
+    const handleRemoveImage = (key: string) => {
         if (confirm(t('confirm_remove_logo'))) {
-            handleChange('site_logo', '');
+            handleChange(key, '');
         }
     };
 
@@ -113,7 +115,7 @@ const SettingsPage: React.FC = () => {
                                             className="h-24 w-auto object-contain bg-gray-50 border rounded-md p-2"
                                         />
                                         <button
-                                            onClick={handleRemoveLogo}
+                                            onClick={() => handleRemoveImage('site_logo')}
                                             className="absolute -top-2 -right-2 bg-red-100 text-red-600 rounded-full p-1 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity"
                                             title="Remove Logo"
                                         >
@@ -147,8 +149,112 @@ const SettingsPage: React.FC = () => {
                                         type="file"
                                         className="hidden"
                                         accept="image/*"
-                                        onChange={handleLogoUpload}
+                                        onChange={(e) => handleImageUpload(e, 'site_logo', setUploadingLogo)}
                                         disabled={uploadingLogo}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Favicon */}
+                        <div className="flex flex-col sm:flex-row items-start space-y-4 sm:space-y-0 sm:space-x-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                            <div className="flex-shrink-0">
+                                {settings['favicon_url'] ? (
+                                    <div className="relative group">
+                                        <img
+                                            src={settings['favicon_url']}
+                                            alt="Favicon"
+                                            className="h-16 w-16 object-contain bg-gray-50 border rounded-md p-2"
+                                        />
+                                        <button
+                                            onClick={() => handleRemoveImage('favicon_url')}
+                                            className="absolute -top-2 -right-2 bg-red-100 text-red-600 rounded-full p-1 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity"
+                                            title="Xóa Favicon"
+                                        >
+                                            <X className="h-4 w-4" />
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="h-16 w-16 border-2 border-dashed border-gray-300 rounded-md flex items-center justify-center bg-gray-50/50">
+                                        <ImageIcon className="h-6 w-6 text-gray-400" />
+                                    </div>
+                                )}
+                            </div>
+                            <div className="flex-1 space-y-1">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Favicon (Biểu tượng thanh trình duyệt)
+                                </label>
+                                <p className="text-sm text-gray-500">
+                                    Khuyên dùng ảnh vuông, định dạng .ico, .png, hoặc .svg (ví dụ 32x32px).
+                                </p>
+                                <div className="mt-2">
+                                    <label htmlFor="favicon-upload" className="cursor-pointer inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                        {uploadingFavicon ? (
+                                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                        ) : (
+                                            <Upload className="h-4 w-4 mr-2" />
+                                        )}
+                                        {uploadingFavicon ? t('uploading') : 'Đổi Favicon'}
+                                    </label>
+                                    <input
+                                        id="favicon-upload"
+                                        type="file"
+                                        className="hidden"
+                                        accept="image/*,.ico"
+                                        onChange={(e) => handleImageUpload(e, 'favicon_url', setUploadingFavicon)}
+                                        disabled={uploadingFavicon}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* OG Image */}
+                        <div className="flex flex-col sm:flex-row items-start space-y-4 sm:space-y-0 sm:space-x-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                            <div className="flex-shrink-0">
+                                {settings['og_image_url'] ? (
+                                    <div className="relative group">
+                                        <img
+                                            src={settings['og_image_url']}
+                                            alt="OG Image"
+                                            className="h-24 w-auto max-w-[200px] object-cover bg-gray-50 border rounded-md p-1"
+                                        />
+                                        <button
+                                            onClick={() => handleRemoveImage('og_image_url')}
+                                            className="absolute -top-2 -right-2 bg-red-100 text-red-600 rounded-full p-1 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity"
+                                            title="Xóa Ảnh"
+                                        >
+                                            <X className="h-4 w-4" />
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="h-24 w-40 border-2 border-dashed border-gray-300 rounded-md flex items-center justify-center bg-gray-50/50">
+                                        <ImageIcon className="h-8 w-8 text-gray-400" />
+                                    </div>
+                                )}
+                            </div>
+                            <div className="flex-1 space-y-1">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Ảnh Mạng Xã Hội (OG Image)
+                                </label>
+                                <p className="text-sm text-gray-500">
+                                    Ảnh hiển thị khi chia sẻ link lên Facebook, Zalo, Twitter. Khuyên dùng tỉ lệ 1200x630px.
+                                </p>
+                                <div className="mt-2">
+                                    <label htmlFor="og-image-upload" className="cursor-pointer inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                        {uploadingOgImage ? (
+                                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                        ) : (
+                                            <Upload className="h-4 w-4 mr-2" />
+                                        )}
+                                        {uploadingOgImage ? t('uploading') : 'Đổi Ảnh'}
+                                    </label>
+                                    <input
+                                        id="og-image-upload"
+                                        type="file"
+                                        className="hidden"
+                                        accept="image/*"
+                                        onChange={(e) => handleImageUpload(e, 'og_image_url', setUploadingOgImage)}
+                                        disabled={uploadingOgImage}
                                     />
                                 </div>
                             </div>
@@ -197,6 +303,16 @@ const SettingsPage: React.FC = () => {
                                     value={settings['site_description'] || ''}
                                     onChange={(e) => handleChange('site_description', e.target.value)}
                                     className="mt-1 shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Từ Khóa SEO (Meta Keywords)</label>
+                                <input
+                                    type="text"
+                                    value={settings['site_keywords'] || ''}
+                                    onChange={(e) => handleChange('site_keywords', e.target.value)}
+                                    className="mt-1 shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                    placeholder="ví dụ: điện lạnh, máy lạnh, thi công..."
                                 />
                             </div>
                         </div>
@@ -319,6 +435,35 @@ const SettingsPage: React.FC = () => {
                                 placeholder="https://www.google.com/maps/embed?..."
                             />
                             <p className="mt-1 text-xs text-gray-500">Copy the 'src' URL from Google Maps Embed HTML.</p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Advanced Settings */}
+                <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg lg:col-span-2">
+                    <div className="px-4 py-5 sm:p-6 space-y-6">
+                        <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">Nâng cao (Advanced)</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Header Scripts (Thêm vào &lt;head&gt; - GTM, Fb Pixel...)</label>
+                                <textarea
+                                    rows={6}
+                                    value={settings['header_scripts'] || ''}
+                                    onChange={(e) => handleChange('header_scripts', e.target.value)}
+                                    className="mt-1 shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border dark:bg-gray-700 dark:border-gray-600 dark:text-white font-mono text-xs"
+                                    placeholder="<script>...</script>"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Footer Scripts (Thêm trước &lt;/body&gt; - Chat widget...)</label>
+                                <textarea
+                                    rows={6}
+                                    value={settings['footer_scripts'] || ''}
+                                    onChange={(e) => handleChange('footer_scripts', e.target.value)}
+                                    className="mt-1 shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border dark:bg-gray-700 dark:border-gray-600 dark:text-white font-mono text-xs"
+                                    placeholder="<script>...</script>"
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>

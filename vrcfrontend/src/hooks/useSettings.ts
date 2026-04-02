@@ -13,7 +13,7 @@ export const useSettings = () => {
             try {
                 const result = await settingsService.getSettings();
 
-                if (result.success) {
+                if (result.success && result.data) {
                     setSettings(result.data);
                 } else {
                     const failureResult = result as { success: false; error: { message: string } };
