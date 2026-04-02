@@ -5,6 +5,7 @@ interface VisualEditorContextType {
   editMode: boolean;
   contentData: Record<string, string>;
   updateField: (fieldKey: string, value: string) => void;
+  requestImageChange: (fieldKey: string) => void;
   isLoading: boolean;
 }
 
@@ -12,6 +13,7 @@ const VisualEditorContext = createContext<VisualEditorContextType>({
   editMode: false,
   contentData: {},
   updateField: () => {},
+  requestImageChange: () => {},
   isLoading: false,
 });
 
@@ -33,6 +35,19 @@ export const VisualEditorProvider = ({ children, slug }: VisualEditorProviderPro
     if (params.get('edit_mode') === 'true') {
       setEditMode(true);
     }
+  }, []);
+
+  // Listen for messages from Admin (Image Selected)
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      const { type, fieldKey, imageUrl } = event.data;
+      if (type === 'VISUAL_EDIT_IMAGE_SELECTED') {
+        updateField(fieldKey, imageUrl);
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
   }, []);
 
   // Fetch initial content
@@ -91,8 +106,19 @@ export const VisualEditorProvider = ({ children, slug }: VisualEditorProviderPro
     });
   };
 
+  // Handle image pick requests
+  const requestImageChange = (fieldKey: string) => {
+    if (!editMode) return;
+    
+    window.parent.postMessage({
+      type: 'VISUAL_EDIT_PICK_IMAGE',
+      fieldKey,
+      slug
+    }, '*');
+  };
+
   return (
-    <VisualEditorContext.Provider value={{ editMode, contentData, updateField, isLoading }}>
+    <VisualEditorContext.Provider value={{ editMode, contentData, updateField, requestImageChange, isLoading }}>
       {children}
     </VisualEditorContext.Provider>
   );

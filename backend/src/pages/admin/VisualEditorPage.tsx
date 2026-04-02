@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -6,6 +6,7 @@ import { ArrowLeft, Save, Laptop, Tablet, Smartphone, Loader2, ExternalLink } fr
 import { toast } from 'sonner';
 import { pageService } from '@/services/pageService';
 import { supabase } from '@/lib/supabase';
+import { ImagePickerModal } from '@/components/admin/media/ImagePickerModal';
 
 const VisualEditorPage = () => {
     const { slug } = useParams<{ slug: string }>();
@@ -15,6 +16,11 @@ const VisualEditorPage = () => {
     const [viewMode, setViewMode] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
     const [pendingData, setPendingData] = useState<any>(null);
     const [pageId, setPageId] = useState<string | null>(null);
+    
+    // Image Picker State
+    const [isImagePickerOpen, setIsImagePickerOpen] = useState(false);
+    const [pickingFieldKey, setPickingFieldKey] = useState<string | null>(null);
+    const iframeRef = useRef<HTMLIFrameElement>(null);
 
     // Iframe URL - Points to Frontend
     const frontendUrl = import.meta.env.VITE_FRONTEND_URL || 'http://localhost:8082';
@@ -44,10 +50,13 @@ const VisualEditorPage = () => {
     }, [slug]);
 
     const handleMessage = useCallback((event: MessageEvent) => {
-        // Security check for origin would go here
+        // Security: In production, verify event.origin matches frontendUrl
         if (event.data?.type === 'VISUAL_EDIT_UPDATE') {
             console.log('Received update from iframe:', event.data.data);
             setPendingData(event.data.data);
+        } else if (event.data?.type === 'VISUAL_EDIT_PICK_IMAGE') {
+            setPickingFieldKey(event.data.fieldKey);
+            setIsImagePickerOpen(true);
         }
     }, []);
 
@@ -75,6 +84,22 @@ const VisualEditorPage = () => {
         } finally {
             setIsSaving(false);
         }
+    };
+
+    const handleImageSelect = (url: string) => {
+        if (!pickingFieldKey) return;
+        
+        // Notify the iframe that an image was selected
+        if (iframeRef.current && iframeRef.current.contentWindow) {
+            iframeRef.current.contentWindow.postMessage({
+                type: 'VISUAL_EDIT_IMAGE_SELECTED',
+                fieldKey: pickingFieldKey,
+                imageUrl: url
+            }, '*');
+        }
+        
+        setIsImagePickerOpen(false);
+        setPickingFieldKey(null);
     };
 
     if (isLoading) {
@@ -155,12 +180,20 @@ const VisualEditorPage = () => {
                     }`}
                 >
                     <iframe 
+                        ref={iframeRef}
                         src={iframeSrc} 
                         className="w-full h-full border-none"
                         title="Visual Editor Preview"
                     />
                 </div>
             </Card>
+
+            {/* Image Picker Modal */}
+            <ImagePickerModal 
+                open={isImagePickerOpen}
+                onOpenChange={setIsImagePickerOpen}
+                onSelect={handleImageSelect}
+            />
         </div>
     );
 };
