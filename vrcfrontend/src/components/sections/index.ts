@@ -11,7 +11,9 @@ import {
   VisionMissionBlock, 
   CoreValuesBlock, 
   LeadershipBlock, 
-  AchievementsBlock 
+  AchievementsBlock,
+  ProductionFacilitiesBlock,
+  QualityPrinciplesBlock
 } from './AboutBlocks';
 
 // Function to register all blocks
@@ -195,6 +197,30 @@ export const registerAllBlocks = () => {
     defaultProps: { title: 'Thành tựu nổi bật' },
     fields: [{ id: 'title', label: 'Tiêu đề', type: 'text' }]
   });
+
+  registerBlock({
+    type: 'about_facilities',
+    name: 'About: Năng lực sản xuất',
+    component: ProductionFacilitiesBlock,
+    defaultProps: { 
+      title: 'Cơ sở hạ tầng & Trung tâm sản xuất',
+      description: 'VVC đầu tư mạnh mẽ vào hệ thống nhà xưởng hiện đại...' 
+    },
+    fields: [
+      { id: 'title', label: 'Tiêu đề', type: 'text' },
+      { id: 'description', label: 'Mô tả', type: 'textarea' },
+      { id: 'image1', label: 'Hình ảnh 1', type: 'image' },
+      { id: 'image2', label: 'Hình ảnh 2', type: 'image' }
+    ]
+  });
+
+  registerBlock({
+    type: 'about_quality',
+    name: 'About: Nguyên tắc chất lượng',
+    component: QualityPrinciplesBlock,
+    defaultProps: { title: 'Nguyên tắc chất lượng của VVC' },
+    fields: [{ id: 'title', label: 'Tiêu đề', type: 'text' }]
+  });
 };
 
 export { 
@@ -209,5 +235,7 @@ export {
   VisionMissionBlock,
   CoreValuesBlock,
   LeadershipBlock,
-  AchievementsBlock
+  AchievementsBlock,
+  ProductionFacilitiesBlock,
+  QualityPrinciplesBlock
 };

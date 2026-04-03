@@ -236,3 +236,103 @@ export const AchievementsBlock = ({ title = "Thành tựu nổi bật", sectionI
     </div>
   </section>
 );
+
+// --- Production Facilities Block ---
+export const ProductionFacilitiesBlock = ({ 
+  title = "Cơ sở hạ tầng & Trung tâm sản xuất",
+  description = "VVC đầu tư mạnh mẽ vào hệ thống nhà xưởng hiện đại, kho bãi quy mô lớn và trung tâm điều chuyển hàng hóa tại các địa bàn trọng điểm.",
+  image1 = "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80",
+  image2 = "https://images.unsplash.com/photo-1565610222536-ef125c59da2e?auto=format&fit=crop&q=80",
+  sectionId,
+  ...props
+}: any) => (
+  <section className="py-12 md:py-16 bg-white">
+    <div className="container-custom">
+      <div className="text-center max-w-3xl mx-auto mb-12">
+        <EditableElement 
+          tagName="h2" 
+          fieldKey="title" 
+          sectionId={sectionId}
+          defaultContent={title} 
+          className="text-2xl md:text-4xl font-bold text-primary mb-4" 
+        />
+        <EditableElement 
+          tagName="p" 
+          fieldKey="description" 
+          sectionId={sectionId}
+          defaultContent={description} 
+          className="text-lg text-muted-foreground" 
+        />
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="space-y-4">
+          <EditableElement
+            type="image"
+            fieldKey="image1"
+            sectionId={sectionId}
+            defaultContent={image1}
+            className="rounded-xl shadow-lg overflow-hidden h-[300px]"
+          >
+            <img alt="Facility 1" className="w-full h-full object-cover" />
+          </EditableElement>
+          <div className="bg-primary/5 p-6 rounded-xl border border-primary/10">
+            <h3 className="font-bold text-lg mb-2 text-primary">Năng lực lưu kho</h3>
+            <p className="text-sm">Hệ thống kho bảo quản gas lạnh và vật tư thiết bị đạt chuẩn quốc tế, đảm bảo nguồn cung liên tục cho các dự án lớn.</p>
+          </div>
+        </div>
+        <div className="flex flex-col">
+          <div className="bg-primary/5 p-6 rounded-xl border border-primary/10 mb-4 order-2 md:order-1">
+            <h3 className="font-bold text-lg mb-2 text-primary">Trung tâm kỹ thuật</h3>
+            <p className="text-sm">Sở hữu phòng LAB và xưởng lắp ráp với máy móc CNC hiện đại, cho phép sản xuất các cấu kiện cơ khí lạnh chính xác cao.</p>
+          </div>
+          <EditableElement
+            type="image"
+            fieldKey="image2"
+            sectionId={sectionId}
+            defaultContent={image2}
+            className="rounded-xl shadow-lg overflow-hidden h-[300px] order-1 md:order-2"
+          >
+            <img alt="Facility 2" className="w-full h-full object-cover" />
+          </EditableElement>
+        </div>
+      </div>
+    </div>
+  </section>
+);
+
+// --- Quality Principles Block ---
+export const QualityPrinciplesBlock = ({
+  title = "Nguyên tắc chất lượng của VVC",
+  sectionId,
+  ...props
+}: any) => {
+  const principles = [
+    { key: 'q1', title: props.q1_title || 'Chất lượng là sống còn', desc: props.q1_desc || 'Mọi sản phẩm và giải pháp đều phải trải qua quy trình kiểm soát 3 lớp nghiêm ngặt.' },
+    { key: 'q2', title: props.q2_title || 'Sáng tạo & Đổi mới', desc: props.q2_desc || 'Không ngừng cập nhật công nghệ làm mát tiên tiến nhất từ Nhật Bản và Châu Âu.' },
+    { key: 'q3', title: props.q3_title || 'Trách nhiệm cộng đồng', desc: props.q3_desc || 'Cam kết sử dụng môi chất lạnh thân thiện với môi trường, góp phần giảm hiệu ứng nhà kính.' },
+    { key: 'q4', title: props.q4_title || 'Đối tác tin cậy', desc: props.q4_desc || 'Xây dựng mối quan hệ dựa trên sự trung thực, minh bạch và hiệu quả kinh tế bền vững.' }
+  ];
+
+  return (
+    <section className="py-12 md:py-20 bg-slate-900 text-white overflow-hidden relative">
+      <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full -mr-32 -mt-32 blur-3xl"></div>
+      <div className="container-custom relative z-10">
+        <EditableElement 
+          tagName="h2" 
+          fieldKey="title" 
+          sectionId={sectionId}
+          defaultContent={title} 
+          className="text-3xl md:text-4xl font-bold mb-12 text-center" 
+        />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {principles.map(p => (
+            <div key={p.key} className="border-l-2 border-primary pl-6 py-2 hover:bg-white/5 transition-colors duration-300">
+              <EditableElement tagName="h3" fieldKey={`${p.key}_title`} sectionId={sectionId} defaultContent={p.title} className="text-xl font-bold mb-3 text-primary-light" />
+              <EditableElement tagName="p" fieldKey={`${p.key}_desc`} sectionId={sectionId} defaultContent={p.desc} className="text-slate-400 text-sm leading-relaxed" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};

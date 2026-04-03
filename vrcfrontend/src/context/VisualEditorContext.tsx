@@ -225,10 +225,6 @@ export const VisualEditorProvider = ({ children, slug }: VisualEditorProviderPro
           .eq('slug', slug)
           .single();
 
-        if (error && error.code !== 'PGRST116') {
-          console.error('Error fetching visual editor content:', error);
-        }
-
         if (data && data.content) {
           try {
              // We try to parse content as JSON. If it fails, maybe it was normal HTML.

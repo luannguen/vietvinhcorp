@@ -6,18 +6,18 @@ const DEFAULT_ABOUT_SECTIONS = [
     id: 'hero',
     type: 'about_hero',
     props: { 
-      title: 'Giới thiệu', 
-      description: 'Tổng công ty Kỹ thuật lạnh Việt Nam (VVC) - Đơn vị tiên phong trong lĩnh vực kỹ thuật lạnh với hơn 20 năm kinh nghiệm, cung cấp giải pháp toàn diện trong lĩnh vực điện lạnh cho các công trình dân dụng và công nghiệp.' 
+      title: 'TỔNG CÔNG TY KỸ THUẬT LẠNH VIỆT NAM - VIETVINH CORPORATION', 
+      description: 'VVC tự hào là đơn vị tiên phong trong lĩnh vực tư vấn, thiết kế và lắp đặt hệ thống cơ điện lạnh, mang đến giải pháp toàn diện cho hàng ngàn công trình lớn nhỏ trên khắp cả nước.' 
     }
   },
   {
     id: 'history',
     type: 'about_history',
     props: {
-      title: 'Lịch sử phát triển',
-      p1: 'Được thành lập vào năm 2003, VVC đã trải qua hành trình phát triển dài hơn 20 năm, không ngừng mở rộng quy mô và nâng cao chất lượng dịch vụ.',
-      p2: 'Từ một đơn vị chuyên về lắp đặt và bảo dưỡng hệ thống điều hòa không khí, VVC đã phát triển thành Tổng công ty hàng đầu trong lĩnh vực kỹ thuật lạnh tại Việt Nam với nhiều chi nhánh trên toàn quốc.',
-      image: '/lovable-uploads/0bd3c048-8e37-4775-a6bc-0b54ec07edbe.png',
+      title: 'Hành trình phát triển',
+      p1: 'Được thành lập vào năm 2003, VVC đã trải qua chặng đường hơn 20 năm phát triển bền vững, không ngừng đổi mới để trở thành Tổng công ty kỹ thuật lạnh hàng đầu Việt Nam.',
+      p2: 'Sự kết hợp giữa đội ngũ kỹ sư chuyên môn cao và quy trình quản trị hiện đại đã giúp VVC khẳng định vị thế trong các lĩnh vực: kho lạnh công nghiệp, hệ thống điều hòa không khí và vật tư kỹ thuật lạnh.',
+      image: '/vvc-hero.png',
       expYears: '20+',
       expText: 'Năm kinh nghiệm'
     }
@@ -27,8 +27,35 @@ const DEFAULT_ABOUT_SECTIONS = [
     type: 'about_vision',
     props: {
       visionTitle: 'Tầm nhìn',
-      missionTitle: 'Sứ mệnh'
+      visionDesc1: 'Trở thành biểu tượng uy tín hàng đầu trong ngành kỹ thuật lạnh tại Việt Nam và vươn tầm khu vực Đông Nam Á.',
+      missionTitle: 'Sứ mệnh',
+      missionDesc1: 'Cung cấp hệ sinh thái giải pháp kỹ thuật lạnh bền vững, tiết kiệm năng lượng, góp phần nâng cao chất lượng cuộc sống và bảo vệ môi trường.'
     }
+  },
+  {
+    id: 'facilities',
+    type: 'about_facilities',
+    props: {
+      title: 'NĂNG LỰC SẢN XUẤT & CƠ SỞ VẬT CHẤT',
+      description: 'VVC sở hữu hệ thống nhà máy sản xuất linh kiện cơ khí lạnh hiện đại, cùng mạng lưới kho bãi quy mô lớn tại các vùng kinh tế trọng điểm, đáp ứng mọi nhu cầu khắt khe của dự án.',
+      image1: '/vvc-factory.png',
+      image2: '/vvc-quality.png'
+    }
+  },
+  {
+      id: 'quality',
+      type: 'about_quality',
+      props: {
+          title: 'NGUYÊN TẮC CHẤT LƯỢNG CỦA CHÚNG TÔI',
+          q1_title: 'Chất lượng là sống còn',
+          q1_desc: 'Mọi sản phẩm và giải pháp đều phải trải qua quy trình kiểm soát 3 lớp nghiêm ngặt trước khi đến tay khách hàng.',
+          q2_title: 'Sáng tạo & Đổi mới',
+          q2_desc: 'Không ngừng cập nhật công nghệ làm mát tiên tiến nhất từ Nhật Bản và Châu Âu để tối ưu hiệu suất.',
+          q3_title: 'Trách nhiệm cộng đồng',
+          q3_desc: 'Cam kết sử dụng các môi chất lạnh thân thiện với môi trường, giảm thiểu tác động đến tầng Ozone.',
+          q4_title: 'Đối tác tin cậy',
+          q4_desc: 'Xây dựng mối quan hệ dựa trên sự trung thực, chuyên nghiệp và hiệu quả kinh tế bền vững cho mọi khách hàng.'
+      }
   },
   {
     id: 'core_values',
@@ -39,11 +66,6 @@ const DEFAULT_ABOUT_SECTIONS = [
     id: 'leadership',
     type: 'about_leadership',
     props: { title: 'Đội ngũ lãnh đạo' }
-  },
-  {
-    id: 'achievements',
-    type: 'about_achievements',
-    props: { title: 'Thành tựu nổi bật' }
   }
 ];
 
@@ -57,7 +79,7 @@ const AboutContent = () => {
 
 const About = () => {
   return (
-    <VisualEditorProvider slug="about-us">
+    <VisualEditorProvider slug="about-vvc">
       <AboutContent />
     </VisualEditorProvider>
   );
