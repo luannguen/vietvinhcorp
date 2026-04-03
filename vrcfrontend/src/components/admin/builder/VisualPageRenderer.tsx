@@ -14,6 +14,15 @@ export const VisualPageRenderer = ({ customSections }: { customSections?: any[] 
 
     // Listen for messages from Admin (e.g., Select Section)
     useEffect(() => {
+        // Signal to parent that we are ready and provide current sections (especially for hardcoded pages like About)
+        if (sections && sections.length > 0) {
+            window.parent.postMessage({ 
+                type: 'VISUAL_EDIT_SYNC_SECTIONS', 
+                sections,
+                slug
+            }, '*');
+        }
+
         const handleMessage = (event: MessageEvent) => {
             if (!event.data) return;
             const { type, sectionId } = event.data;
@@ -73,7 +82,7 @@ export const VisualPageRenderer = ({ customSections }: { customSections?: any[] 
                 // Wrap in a standard section container
                 const content = (
                     <section id={`section-${sectionId}`} className="visual-builder-section">
-                        <Component {...section.props} />
+                        <Component sectionId={sectionId} {...section.props} />
                     </section>
                 );
 

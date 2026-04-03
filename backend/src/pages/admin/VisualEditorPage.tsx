@@ -21,6 +21,17 @@ const VisualEditorPage: React.FC = () => {
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const [viewMode, setViewMode] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
     
+    // Global message debugger
+    React.useEffect(() => {
+        const globalHandler = (e: MessageEvent) => {
+            if (e.data?.type === 'VISUAL_EDIT_PICK_IMAGE') {
+                console.log('[VisualEditorPage] GLOBAL RECEIVE:', e.data);
+            }
+        };
+        window.addEventListener('message', globalHandler);
+        return () => window.removeEventListener('message', globalHandler);
+    }, []);
+    
     const {
         loading,
         error,
@@ -75,7 +86,7 @@ const VisualEditorPage: React.FC = () => {
     };
 
     return (
-        <div className="fixed inset-0 z-[100] flex flex-col bg-slate-50 overflow-hidden font-sans select-none">
+        <div className="fixed inset-0 z-10 flex flex-col bg-slate-50 overflow-hidden font-sans select-none">
             <header className="p-4 bg-white/80 backdrop-blur-md border-b sticky top-0 z-30 shadow-sm">
                 <EditorToolbar 
                     slug={slug} 

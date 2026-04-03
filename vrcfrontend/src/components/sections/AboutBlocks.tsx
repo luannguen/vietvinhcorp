@@ -5,23 +5,27 @@ import { EditableElement } from '../admin/EditableElement';
 interface AboutHeroBlockProps {
   title: string;
   description: string;
+  sectionId?: string;
 }
 
 export const AboutHeroBlock = ({ 
   title = "Giới thiệu", 
-  description = "Tổng công ty Kỹ thuật lạnh Việt Nam (VVC) - Đơn vị tiên phong..." 
+  description = "Tổng công ty Kỹ thuật lạnh Việt Nam (VVC) - Đơn vị tiên phong...",
+  sectionId
 }: AboutHeroBlockProps) => (
   <div className="bg-gradient-to-b from-primary/10 to-transparent py-12 md:py-20">
     <div className="container-custom">
       <EditableElement 
         tagName="h1" 
         fieldKey="title" 
+        sectionId={sectionId}
         defaultContent={title} 
         className="text-3xl md:text-5xl font-bold text-primary mb-6" 
       />
       <EditableElement 
         tagName="p" 
         fieldKey="description" 
+        sectionId={sectionId}
         defaultContent={description} 
         className="text-lg text-muted-foreground max-w-3xl" 
       />
@@ -38,6 +42,7 @@ interface HistoryBlockProps {
   image: string;
   expYears: string;
   expText: string;
+  sectionId?: string;
 }
 
 export const HistoryBlock = ({
@@ -47,7 +52,8 @@ export const HistoryBlock = ({
   p3 = "Ngày nay, VVC tự hào là đối tác...",
   image = "/lovable-uploads/0bd3c048-8e37-4775-a6bc-0b54ec07edbe.png",
   expYears = "20+",
-  expText = "Năm kinh nghiệm"
+  expText = "Năm kinh nghiệm",
+  sectionId
 }: HistoryBlockProps) => (
   <section className="py-12 md:py-16">
     <div className="container-custom">
@@ -56,25 +62,27 @@ export const HistoryBlock = ({
           <EditableElement 
             tagName="h2" 
             fieldKey="title" 
+            sectionId={sectionId}
             defaultContent={title} 
             className="text-2xl md:text-3xl font-bold text-primary mb-4" 
           />
-          <EditableElement tagName="p" fieldKey="p1" defaultContent={p1} className="mb-4" />
-          <EditableElement tagName="p" fieldKey="p2" defaultContent={p2} className="mb-4" />
-          <EditableElement tagName="p" fieldKey="p3" defaultContent={p3} />
+          <EditableElement tagName="p" fieldKey="p1" sectionId={sectionId} defaultContent={p1} className="mb-4" />
+          <EditableElement tagName="p" fieldKey="p2" sectionId={sectionId} defaultContent={p2} className="mb-4" />
+          <EditableElement tagName="p" fieldKey="p3" sectionId={sectionId} defaultContent={p3} />
         </div>
         <div className="relative">
           <EditableElement
             type="image"
             fieldKey="image"
+            sectionId={sectionId}
             defaultContent={image}
             className="rounded-lg shadow-lg"
           >
             <img alt={title} className="w-full h-auto" />
           </EditableElement>
           <div className="absolute -bottom-6 -left-6 bg-secondary p-4 rounded-lg shadow-lg">
-            <EditableElement tagName="p" fieldKey="expYears" defaultContent={expYears} className="text-xl font-bold" />
-            <EditableElement tagName="p" fieldKey="expText" defaultContent={expText} className="text-sm" />
+            <EditableElement tagName="p" fieldKey="expYears" sectionId={sectionId} defaultContent={expYears} className="text-xl font-bold" />
+            <EditableElement tagName="p" fieldKey="expText" sectionId={sectionId} defaultContent={expText} className="text-sm" />
           </div>
         </div>
       </div>
@@ -90,6 +98,7 @@ interface VisionMissionBlockProps {
   missionTitle: string;
   missionDesc1: string;
   missionDesc2: string;
+  sectionId?: string;
 }
 
 export const VisionMissionBlock = ({
@@ -98,26 +107,28 @@ export const VisionMissionBlock = ({
   visionDesc2 = "Chúng tôi không ngừng đổi mới...",
   missionTitle = "Sứ mệnh",
   missionDesc1 = "Cung cấp các giải pháp điện lạnh...",
-  missionDesc2 = "Mang đến những không gian sống..."
-}: VisionMissionBlockProps) => (
+  missionDesc2 = "Mang đến những không gian sống...",
+  sectionId,
+  ...props
+}: any) => (
   <section className="py-12 md:py-16 bg-muted">
     <div className="container-custom">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
         <div className="bg-white p-8 rounded-lg shadow">
           <h2 className="text-2xl font-bold text-primary mb-4 flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-            <EditableElement fieldKey="visionTitle" defaultContent={visionTitle} />
+            <EditableElement fieldKey="visionTitle" sectionId={sectionId} defaultContent={props.visionTitle || visionTitle} />
           </h2>
-          <EditableElement tagName="p" fieldKey="visionDesc1" defaultContent={visionDesc1} className="mb-4" />
-          <EditableElement tagName="p" fieldKey="visionDesc2" defaultContent={visionDesc2} />
+          <EditableElement tagName="p" fieldKey="visionDesc1" sectionId={sectionId} defaultContent={props.visionDesc1 || visionDesc1} className="mb-4" />
+          <EditableElement tagName="p" fieldKey="visionDesc2" sectionId={sectionId} defaultContent={props.visionDesc2 || visionDesc2} />
         </div>
         <div className="bg-white p-8 rounded-lg shadow">
           <h2 className="text-2xl font-bold text-primary mb-4 flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2"><path d="m12 14 4-4"></path><path d="M3.34 19a10 10 0 1 1 17.32 0"></path></svg>
-            <EditableElement fieldKey="missionTitle" defaultContent={missionTitle} />
+            <EditableElement fieldKey="missionTitle" sectionId={sectionId} defaultContent={props.missionTitle || missionTitle} />
           </h2>
-          <EditableElement tagName="p" fieldKey="missionDesc1" defaultContent={missionDesc1} className="mb-4" />
-          <EditableElement tagName="p" fieldKey="missionDesc2" defaultContent={missionDesc2} />
+          <EditableElement tagName="p" fieldKey="missionDesc1" sectionId={sectionId} defaultContent={props.missionDesc1 || missionDesc1} className="mb-4" />
+          <EditableElement tagName="p" fieldKey="missionDesc2" sectionId={sectionId} defaultContent={props.missionDesc2 || missionDesc2} />
         </div>
       </div>
     </div>
@@ -125,33 +136,38 @@ export const VisionMissionBlock = ({
 );
 
 // --- Core Values Block ---
-export const CoreValuesBlock = ({ title = "Giá trị cốt lõi" }) => (
-  <section className="py-12 md:py-16">
-    <div className="container-custom">
-      <EditableElement 
-        tagName="h2" 
-        fieldKey="title" 
-        defaultContent={title} 
-        className="text-2xl md:text-3xl font-bold text-primary mb-10 text-center" 
-      />
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {[
-          { key: 'v1', icon: 'M3 7h18 M3 11h18 M3 15h14 M3 19h4', title: 'Chất lượng hàng đầu', desc: 'Chúng tôi cam kết...' },
-          { key: 'v2', icon: 'M12 2v20 m17 5-5-3-5 3 m17 19-5 3-5-3 M2 12h20 m5 7-3 5 3 5 m19 7 3 5-3 5', title: 'Đổi mới sáng tạo', desc: 'Không ngừng cải tiến...' },
-          { key: 'v3', icon: 'M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42z', title: 'Khách hàng là trọng tâm', desc: 'Luôn đặt nhu cầu...' }
-        ].map(val => (
-          <div key={val.key} className="bg-white p-6 rounded-lg shadow-md border-t-4 border-primary">
-            <div className="mb-4 text-primary">
-              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={val.icon}></path></svg>
+export const CoreValuesBlock = ({ title = "Giá trị cốt lõi", sectionId, ...props }: any) => {
+  const values = [
+    { key: 'v1', icon: 'M3 7h18 M3 11h18 M3 15h14 M3 19h4', title: props.v1_title || 'Chất lượng hàng đầu', desc: props.v1_desc || 'Chúng tôi cam kết...' },
+    { key: 'v2', icon: 'M12 2v20 m17 5-5-3-5 3 m17 19-5 3-5-3 M2 12h20 m5 7-3 5 3 5 m19 7 3 5-3 5', title: props.v2_title || 'Đổi mới sáng tạo', desc: props.v2_desc || 'Không ngừng cải tiến...' },
+    { key: 'v3', icon: 'M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42z', title: props.v3_title || 'Khách hàng là trọng tâm', desc: props.v3_desc || 'Luôn đặt nhu cầu...' }
+  ];
+
+  return (
+    <section className="py-12 md:py-16">
+      <div className="container-custom">
+        <EditableElement 
+          tagName="h2" 
+          fieldKey="title" 
+          sectionId={sectionId}
+          defaultContent={title} 
+          className="text-2xl md:text-3xl font-bold text-primary mb-10 text-center" 
+        />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {values.map(val => (
+            <div key={val.key} className="bg-white p-6 rounded-lg shadow-md border-t-4 border-primary">
+              <div className="mb-4 text-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={val.icon}></path></svg>
+              </div>
+              <EditableElement tagName="h3" fieldKey={`${val.key}_title`} sectionId={sectionId} defaultContent={val.title} className="text-xl font-semibold mb-2" />
+              <EditableElement tagName="p" fieldKey={`${val.key}_desc`} sectionId={sectionId} defaultContent={val.desc} />
             </div>
-            <EditableElement tagName="h3" fieldKey={`${val.key}_title`} defaultContent={val.title} className="text-xl font-semibold mb-2" />
-            <EditableElement tagName="p" fieldKey={`${val.key}_desc`} defaultContent={val.desc} />
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 // --- Leadership Block ---
 interface Leader {
@@ -161,12 +177,12 @@ interface Leader {
   keyPrefix: string;
 }
 
-export const LeadershipBlock = ({ title = "Đội ngũ lãnh đạo" }) => {
+export const LeadershipBlock = ({ title = "Đội ngũ lãnh đạo", sectionId, ...props }: any) => {
   const leaders: Leader[] = [
-    { name: "Nguyễn Văn A", position: "Chủ tịch Hội đồng Quản trị", photo: "https://i.pravatar.cc/300?img=1", keyPrefix: "l1" },
-    { name: "Trần Thị B", position: "Tổng Giám đốc", photo: "https://i.pravatar.cc/300?img=5", keyPrefix: "l2" },
-    { name: "Lê Văn C", position: "Phó Tổng Giám đốc", photo: "https://i.pravatar.cc/300?img=3", keyPrefix: "l3" },
-    { name: "Phạm Thị D", position: "Giám đốc Tài chính", photo: "https://i.pravatar.cc/300?img=4", keyPrefix: "l4" }
+    { name: props.l1_name || "Nguyễn Văn A", position: props.l1_pos || "Chủ tịch Hội đồng Quản trị", photo: props.l1_image || "https://i.pravatar.cc/300?img=1", keyPrefix: "l1" },
+    { name: props.l2_name || "Trần Thị B", position: props.l2_pos || "Tổng Giám đốc", photo: props.l2_image || "https://i.pravatar.cc/300?img=5", keyPrefix: "l2" },
+    { name: props.l3_name || "Lê Văn C", position: props.l3_pos || "Phó Tổng Giám đốc", photo: props.l3_image || "https://i.pravatar.cc/300?img=3", keyPrefix: "l3" },
+    { name: props.l4_name || "Phạm Thị D", position: props.l4_pos || "Giám đốc Tài chính", photo: props.l4_image || "https://i.pravatar.cc/300?img=4", keyPrefix: "l4" }
   ];
 
   return (
@@ -175,6 +191,7 @@ export const LeadershipBlock = ({ title = "Đội ngũ lãnh đạo" }) => {
         <EditableElement 
           tagName="h2" 
           fieldKey="title" 
+          sectionId={sectionId}
           defaultContent={title} 
           className="text-2xl md:text-3xl font-bold text-primary mb-10 text-center" 
         />
@@ -184,14 +201,15 @@ export const LeadershipBlock = ({ title = "Đội ngũ lãnh đạo" }) => {
               <EditableElement
                 type="image"
                 fieldKey={`${leader.keyPrefix}_image`}
+                sectionId={sectionId}
                 defaultContent={leader.photo}
                 className="w-full h-64"
               >
                 <img alt={leader.name} className="w-full h-full object-cover object-center" />
               </EditableElement>
               <div className="p-4">
-                <EditableElement tagName="h3" fieldKey={`${leader.keyPrefix}_name`} defaultContent={leader.name} className="text-xl font-semibold text-primary" />
-                <EditableElement tagName="p" fieldKey={`${leader.keyPrefix}_pos`} defaultContent={leader.position} className="text-muted-foreground" />
+                <EditableElement tagName="h3" fieldKey={`${leader.keyPrefix}_name`} sectionId={sectionId} defaultContent={leader.name} className="text-xl font-semibold text-primary" />
+                <EditableElement tagName="p" fieldKey={`${leader.keyPrefix}_pos`} sectionId={sectionId} defaultContent={leader.position} className="text-muted-foreground" />
               </div>
             </div>
           ))}
@@ -202,16 +220,16 @@ export const LeadershipBlock = ({ title = "Đội ngũ lãnh đạo" }) => {
 };
 
 // --- Achievements Block ---
-export const AchievementsBlock = ({ title = "Thành tựu nổi bật" }) => (
+export const AchievementsBlock = ({ title = "Thành tựu nổi bật", sectionId }: { title?: string; sectionId?: string }) => (
   <section className="py-12 md:py-16">
     <div className="container-custom">
       <EditableElement 
         tagName="h2" 
         fieldKey="title" 
+        sectionId={sectionId}
         defaultContent={title} 
         className="text-2xl md:text-3xl font-bold text-primary mb-10 text-center" 
       />
-      {/* ... keeping it simple for now, can expand later ... */}
       <div className="bg-primary/5 p-8 rounded-2xl text-center">
         <p className="text-lg text-primary font-medium italic">"Chặng đường 20 năm khẳng định vị thế và niềm tin của khách hàng."</p>
       </div>

@@ -7,6 +7,7 @@ interface EditableElementProps {
   type?: 'text' | 'image';
   className?: string;
   tagName?: keyof JSX.IntrinsicElements;
+  sectionId?: string; // Explicit section ID prop
   children?: React.ReactNode;
 }
 
@@ -16,16 +17,88 @@ export const EditableElement = ({
   type = 'text',
   className = '',
   tagName,
+  sectionId: explicitSectionId,
   children,
 }: EditableElementProps) => {
-  const { editMode, contentData, updateField, requestImageChange } = useVisualEditor();
+  const { 
+    editMode, 
+    contentData, 
+    updateField, 
+    updateSectionProps,
+    requestImageChange, 
+    selectedSectionId, 
+    slug 
+  } = useVisualEditor();
+  
+  const [requesting, setRequesting] = React.useState(false);
   const contentRef = useRef<HTMLElement>(null);
+
+  // Use explicit sectionId from props, fallback to context's selectedSectionId
+  const effectiveSectionId = explicitSectionId || selectedSectionId;
 
   // Default tagName based on type if not provided
   const Tag = (tagName || (type === 'image' ? 'div' : 'span')) as any;
 
-  // Determine current content
-  const currentContent = contentData[fieldKey] !== undefined ? contentData[fieldKey] : defaultContent;
+  // Find current content: try section props first, then global contentData, then defaultContent
+  let currentContent = contentData[fieldKey] !== undefined ? contentData[fieldKey] : defaultContent;
+  
+  if (effectiveSectionId && contentData.sections) {
+    const section = contentData.sections.find((s: any) => s.id === effectiveSectionId);
+    if (section && section.props && section.props[fieldKey] !== undefined) {
+      currentContent = section.props[fieldKey];
+    }
+  }
+
+  // Handle data updates
+  const handleContentUpdate = (value: string) => {
+    if (effectiveSectionId) {
+      updateSectionProps(effectiveSectionId, { [fieldKey]: value });
+    } else {
+      updateField(fieldKey, value);
+    }
+  };
+
+  const handleImagePickerClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    console.log(`[EditableElement] Clicked for:`, {
+      fieldKey,
+      sectionId: effectiveSectionId,
+      slug
+    });
+
+    setRequesting(true);
+    
+    try {
+      const messageData = {
+        type: 'VISUAL_EDIT_PICK_IMAGE',
+        fieldKey,
+        sectionId: effectiveSectionId,
+        slug
+      };
+
+      // Call standard requestImageChange
+      if (typeof requestImageChange === 'function') {
+        requestImageChange(fieldKey);
+      }
+      
+      // Dispatch to parent & top as backup
+      window.parent.postMessage(messageData, '*');
+      if (window.top !== window.parent) {
+        window.top?.postMessage(messageData, '*');
+      }
+
+      // alert('Đã gửi yêu cầu thay ảnh tới hệ thống cha. Đang chờ phản hồi...');
+
+      // Auto-reset requesting if it takes too long
+      setTimeout(() => setRequesting(false), 8000);
+    } catch (err) {
+      console.error('[EditableElement] Failed to request image change:', err);
+      alert('Không thể mở trình chọn ảnh: ' + (err as Error).message);
+      setRequesting(false);
+    }
+  };
 
   // Sync ref when not in focus (only for text)
   useEffect(() => {
@@ -33,6 +106,13 @@ export const EditableElement = ({
       contentRef.current.textContent = currentContent;
     }
   }, [currentContent, type]);
+
+  // Reset requesting if content changed
+  useEffect(() => {
+    if (type === 'image' && currentContent !== defaultContent) {
+      setRequesting(false);
+    }
+  }, [currentContent, defaultContent, type]);
 
   if (!editMode) {
     if (type === 'image') {
@@ -55,7 +135,7 @@ export const EditableElement = ({
         suppressContentEditableWarning
         onBlur={(e: React.FocusEvent<HTMLElement>) => {
           const newText = e.currentTarget.textContent || '';
-          updateField(fieldKey, newText);
+          handleContentUpdate(newText);
         }}
         className={`outline-dashed outline-1 outline-blue-400 hover:outline-2 hover:bg-blue-50/50 transition-all cursor-text min-w-[20px] inline-block ${className}`}
       >
@@ -68,11 +148,6 @@ export const EditableElement = ({
   return (
     <Tag
       className={`relative group cursor-pointer outline-dashed outline-1 outline-blue-400 hover:outline-2 transition-all ${className}`}
-      onClick={(e: React.MouseEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-        requestImageChange(fieldKey);
-      }}
     >
       {/* Render the actual image with dynamic src */}
       {React.Children.map(children, child => {
@@ -82,13 +157,25 @@ export const EditableElement = ({
         return child;
       }) || <img src={currentContent} className="w-full h-full object-cover" alt="" />}
 
-      {/* Hover Overlay */}
-      <div className="absolute inset-0 bg-blue-600/20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-        <div className="bg-white/90 px-3 py-1.5 rounded-full shadow-lg flex items-center gap-2 transform translate-y-2 group-hover:translate-y-0 transition-transform">
-          <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          </svg>
-          <span className="text-xs font-semibold text-blue-600">Thay đổi ảnh</span>
+      {/* Hover Overlay - Attached onClick here explicitly */}
+      <div 
+        onClick={handleImagePickerClick}
+        className={`absolute inset-0 bg-blue-600/20 flex items-center justify-center transition-opacity z-30 ${requesting ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
+      >
+        <div className="bg-white/90 px-4 py-2 rounded-full shadow-xl flex items-center gap-2 transform translate-y-2 group-hover:translate-y-0 transition-all hover:scale-105 active:scale-95 border-2 border-blue-500">
+          {requesting ? (
+            <>
+              <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+              <span className="text-sm font-bold text-blue-600">Đang chuẩn bị...</span>
+            </>
+          ) : (
+            <>
+              <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <span className="text-sm font-bold text-blue-600 uppercase tracking-tight">Thay đổi ảnh</span>
+            </>
+          )}
         </div>
       </div>
     </Tag>

@@ -69,6 +69,19 @@ const StaticPage: React.FC<StaticPageProps> = ({ slug: propSlug }) => {
                         setEditableData(data);
                     }
                     break;
+                case 'VISUAL_EDIT_IMAGE_SELECTED':
+                    const { sectionId, fieldKey, imageUrl } = data;
+                    if (sectionId && editableData?.sections) {
+                        setEditableData((prev: any) => {
+                            const newSections = (prev?.sections || []).map((s: any) => 
+                                s.id === sectionId 
+                                    ? { ...s, props: { ...s.props, [fieldKey]: imageUrl } } 
+                                    : s
+                            );
+                            return { ...prev, sections: newSections };
+                        });
+                    }
+                    break;
                 case 'VISUAL_EDIT_ADD_SECTION':
                     // handled by admin mostly, but can be synced back
                     break;

@@ -110,20 +110,38 @@ export function useVisualEditor(iframeRef: React.RefObject<HTMLIFrameElement>) {
 
     // Handle incoming messages from iframe
     const handleMessage = useCallback((event: MessageEvent) => {
-        if (event.data?.type === 'VISUAL_EDIT_UPDATE') {
-            if (event.data.data?.sections) {
-                setSections(event.data.data.sections);
+        let data = event.data;
+        
+        // Handle stringified messages
+        if (typeof data === 'string') {
+            try {
+                data = JSON.parse(data);
+            } catch (e) {
+                return; // Not a JSON message we care about
+            }
+        }
+
+        if (!data || !data.type) return;
+
+        if (data.type === 'VISUAL_EDIT_UPDATE') {
+            if (data.data?.sections) {
+                setSections(data.data.sections);
                 setHasPendingChanges(true);
             }
-        } else if (event.data?.type === 'VISUAL_EDIT_SECTION_SELECTED') {
-            setSelectedSectionId(event.data.sectionId);
-        } else if (event.data?.type === 'VISUAL_EDIT_PICK_IMAGE') {
+        } else if (data.type === 'VISUAL_EDIT_SECTION_SELECTED') {
+            setSelectedSectionId(data.sectionId);
+        } else if (data.type === 'VISUAL_EDIT_PICK_IMAGE') {
             setImagePicker({
                 isOpen: true,
-                fieldId: event.data.fieldKey,
-                sectionId: event.data.sectionId
+                fieldId: data.fieldKey,
+                sectionId: data.sectionId
             });
-        } else if (event.data?.type === 'VISUAL_EDIT_READY') {
+        } else if (data.type === 'VISUAL_EDIT_SYNC_SECTIONS') {
+            // If we don't have sections yet, populate from iframe
+            if (sections.length === 0 && data.sections) {
+                setSections(data.sections);
+            }
+        } else if (data.type === 'VISUAL_EDIT_READY') {
             sendToIframe('VISUAL_EDIT_UPDATE_DATA', { sections });
         }
     }, [sections, sendToIframe]);
@@ -195,6 +213,14 @@ export function useVisualEditor(iframeRef: React.RefObject<HTMLIFrameElement>) {
                 };
                 updateSection(imagePicker.sectionId, { props: newProps });
             }
+        } else if (!imagePicker.sectionId && imagePicker.fieldId) {
+            // Trường hợp cập nhật các field toàn cục (với sectionId = null)
+            sendToIframe('VISUAL_EDIT_IMAGE_SELECTED', {
+                fieldKey: imagePicker.fieldId,
+                imageUrl: url,
+                sectionId: null
+            });
+            setHasPendingChanges(true);
         }
         setImagePicker(prev => ({ ...prev, isOpen: false }));
     };
