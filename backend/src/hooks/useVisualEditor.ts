@@ -121,8 +121,7 @@ export function useVisualEditor(iframeRef: React.RefObject<HTMLIFrameElement>) {
             }
         }
 
-        if (!data || !data.type) return;
-
+        if (data.type === 'VISUAL_EDIT_UPDATE_DATA_FROM_IFRAME') {
             if (data.data?.sections) {
                 console.log('[VisualEditor Parent] Update sections from iframe', data.data.sections.length);
                 setSections(data.data.sections);
