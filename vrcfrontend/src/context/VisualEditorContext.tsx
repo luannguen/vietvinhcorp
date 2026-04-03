@@ -12,6 +12,7 @@ interface VisualEditorContextType {
   removeSection: (id: string) => void;
   reorderSections: (newSections: any[]) => void;
   moveSection: (id: string, direction: 'up' | 'down') => void;
+  syncSections: (sections: any[]) => void;
   selectedSectionId: string | null;
   setSelectedSectionId: (id: string | null) => void;
   requestImageChange: (fieldKey: string) => void;
@@ -28,6 +29,7 @@ const VisualEditorContext = createContext<VisualEditorContextType>({
   removeSection: () => {},
   reorderSections: () => {},
   moveSection: () => {},
+  syncSections: () => {},
   selectedSectionId: null,
   setSelectedSectionId: () => {},
   requestImageChange: () => {},
@@ -138,10 +140,22 @@ export const VisualEditorProvider = ({ children, slug }: VisualEditorProviderPro
     });
   }, [editMode, syncWithParent]);
 
+  const syncSections = React.useCallback((sections: any[]) => {
+    setContentData((prev: any) => {
+      // Only initialize if context doesn't have sections yet
+      if (!prev.sections || prev.sections.length === 0) {
+        console.log('[VisualEditorContext] Hydrating context with sections:', sections.length);
+        return { ...prev, sections };
+      }
+      return prev;
+    });
+  }, []);
+
   const updateSectionProps = React.useCallback((id: string, newProps: any) => {
     if (!editMode) return;
     setContentData((prev: any) => {
-      const sections = (prev.sections || []).map((s: any) => 
+      const currentSections = prev.sections || [];
+      const sections = currentSections.map((s: any) => 
         s.id === id ? { ...s, props: { ...s.props, ...newProps } } : s
       );
       const newData = { ...prev, sections };
@@ -178,6 +192,7 @@ export const VisualEditorProvider = ({ children, slug }: VisualEditorProviderPro
       switch (type) {
         case 'VISUAL_EDIT_UPDATE_DATA':
           if (sections) {
+            console.log('[VisualEditorContext] Updating data from parent:', sections.length);
             setContentData((prev: any) => ({ ...prev, sections }));
           }
           break;
@@ -248,7 +263,7 @@ export const VisualEditorProvider = ({ children, slug }: VisualEditorProviderPro
   return (
     <VisualEditorContext.Provider value={{ 
       editMode, contentData, updateField, updateSectionProps, 
-      addSection, removeSection, reorderSections, moveSection,
+      addSection, removeSection, reorderSections, moveSection, syncSections,
       selectedSectionId, setSelectedSectionId,
       requestImageChange, isLoading, slug 
     }}>

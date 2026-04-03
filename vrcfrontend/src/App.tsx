@@ -85,10 +85,10 @@ const App = () => (
             {/* Public routes */}
             <Route path="/" element={<MainLayout />}>
               <Route index element={<Index />} />
-              <Route path="about" element={<Navigate to="/about-vvc" replace />} />
-              <Route path="gioi-thieu" element={<Navigate to="/about-vvc" replace />} />
-              <Route path="about-us" element={<Navigate to="/about-vvc" replace />} />
-              <Route path="about-vvc" element={<About />} />
+              <Route path="about" element={<Navigate to="/about-us" replace />} />
+              <Route path="gioi-thieu" element={<Navigate to="/about-us" replace />} />
+              <Route path="about-us" element={<About />} />
+              <Route path="about-vvc" element={<Navigate to="/about-us" replace />} />
               <Route path="intro" element={<StaticPage slug="intro" />} />
               <Route path="page/:slug" element={<StaticPage />} />
               <Route path="products" element={<Products />} />

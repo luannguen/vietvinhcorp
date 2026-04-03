@@ -4,7 +4,7 @@ import { getBlock } from './SectionRegistry';
 import { EditWrapper } from './EditWrapper';
 
 export const VisualPageRenderer = ({ customSections }: { customSections?: any[] }) => {
-    const { editMode, contentData, slug } = useVisualEditor();
+    const { editMode, contentData, slug, syncSections } = useVisualEditor();
     const [selectedSectionId, setSelectedSectionId] = useState<string | null>(null);
 
     // Dynamic sections from JSON content or custom fallback
@@ -14,6 +14,11 @@ export const VisualPageRenderer = ({ customSections }: { customSections?: any[] 
 
     // Listen for messages from Admin (e.g., Select Section)
     useEffect(() => {
+        // Hydrate context with initial sections if empty
+        if (sections && sections.length > 0 && (!contentData.sections || contentData.sections.length === 0)) {
+            syncSections(sections);
+        }
+
         // Signal to parent that we are ready and provide current sections (especially for hardcoded pages like About)
         if (sections && sections.length > 0) {
             window.parent.postMessage({ 

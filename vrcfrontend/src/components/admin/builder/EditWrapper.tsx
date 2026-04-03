@@ -17,8 +17,7 @@ export const EditWrapper = ({ id, type, isSelected, onSelect, onDelete, children
       className={`relative group transition-all duration-300 ${isHovered ? 'ring-2 ring-primary/40' : ''} ${isSelected ? 'ring-4 ring-primary ring-offset-2 z-20 shadow-2xl' : ''}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onClick={(e) => {
-        e.stopPropagation();
+      onClick={() => {
         onSelect(id);
       }}
     >

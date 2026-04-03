@@ -27,7 +27,8 @@ import { Switch } from "@/components/ui/switch";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useToast } from "@/components/ui/use-toast";
-import { Loader2, Plus, Pencil, Trash2, FileText, Image as ImageIcon, Eye } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Loader2, Plus, Pencil, Trash2, FileText, Image as ImageIcon, Eye, Wand2, Layout, Code, ExternalLink } from "lucide-react";
 
 export default function PagesPage() {
     const [pages, setPages] = useState<StaticPage[]>([]);
@@ -43,7 +44,17 @@ export default function PagesPage() {
         is_active: true,
     });
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [showRawJson, setShowRawJson] = useState(false);
     const { toast } = useToast();
+
+    const isJsonContent = (content: string | null) => {
+        if (!content) return false;
+        try {
+            return content.trim().startsWith('{"sections":');
+        } catch (e) {
+            return false;
+        }
+    };
 
     useEffect(() => {
         fetchPages();
@@ -89,6 +100,7 @@ export default function PagesPage() {
             });
         }
         setSelectedFile(null);
+        setShowRawJson(false); // Reset show JSON mode
         setIsDialogOpen(true);
     };
 
@@ -245,15 +257,17 @@ export default function PagesPage() {
                                             variant="ghost"
                                             size="icon"
                                             asChild
+                                            title="Chỉnh sửa trực quan"
                                         >
                                             <Link to={`/pages/visual-edit/${page.slug}`}>
-                                                <Eye className="h-4 w-4 text-blue-500" />
+                                                <Wand2 className="h-4 w-4 text-blue-500" />
                                             </Link>
                                         </Button>
                                         <Button
                                             variant="ghost"
                                             size="icon"
                                             onClick={() => handleOpenDialog(page)}
+                                            title="Sửa thông tin cơ bản"
                                         >
                                             <Pencil className="h-4 w-4" />
                                         </Button>
@@ -262,6 +276,7 @@ export default function PagesPage() {
                                             size="icon"
                                             className="text-destructive hover:text-destructive"
                                             onClick={() => handleDelete(page.id)}
+                                            title="Xóa trang"
                                         >
                                             <Trash2 className="h-4 w-4" />
                                         </Button>
@@ -344,18 +359,76 @@ export default function PagesPage() {
 
                         <div className="space-y-2">
                             <Label htmlFor="content">Content</Label>
-                            <ReactQuill
-                                theme="snow"
-                                value={formData.content || ""}
-                                onChange={(value) =>
-                                    setFormData({ ...formData, content: value })
-                                }
-                                placeholder="Enter your page content here..."
-                                className="h-[400px] mb-12"
-                            />
-                            <p className="text-xs text-muted-foreground">
-                                Nội dung được soạn thảo ở đây sẽ tự động hiển thị trực quan trên Client.
-                            </p>
+                            {isJsonContent(formData.content) && !showRawJson ? (
+                                <div className="space-y-4">
+                                    <Alert className="bg-blue-50 border-blue-200">
+                                        <Layout className="h-4 w-4 text-blue-600" />
+                                        <AlertTitle className="text-blue-700 font-bold">Visual Editor Detected</AlertTitle>
+                                        <AlertDescription className="text-blue-600 text-sm">
+                                            Trang này được xây dựng bằng thiết kế trực quan. Nội dung được lưu trữ dưới dạng cấu trúc Sections. 
+                                            Để chỉnh sửa nội dung và bố cục, vui lòng sử dụng trình chỉnh sửa trực quan chuyên biệt.
+                                        </AlertDescription>
+                                    </Alert>
+                                    
+                                    <div className="flex flex-wrap gap-3 py-2">
+                                        <Button 
+                                            asChild 
+                                            className="bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center gap-2"
+                                        >
+                                            <Link to={`/pages/visual-edit/${formData.slug}`}>
+                                                <Wand2 className="h-4 w-4" />
+                                                Mở Visual Editor
+                                            </Link>
+                                        </Button>
+                                        
+                                        <Button 
+                                            variant="outline" 
+                                            type="button"
+                                            onClick={() => setShowRawJson(true)}
+                                            className="rounded-full border-slate-200 text-slate-600 hover:bg-slate-50 flex items-center gap-2"
+                                        >
+                                            <Code className="h-4 w-4" />
+                                            Xem mã JSON (Expert Only)
+                                        </Button>
+                                    </div>
+                                    
+                                    <div className="bg-slate-50 rounded-lg p-4 border border-slate-100 flex items-center gap-4">
+                                        <div className="bg-blue-100 p-2 rounded-full">
+                                            <FileText className="h-5 w-5 text-blue-600" />
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-medium text-slate-800">Thông tin bổ sung</p>
+                                            <p className="text-xs text-slate-500">Bạn vẫn có thể thay đổi Tiêu đề, Slug và Ảnh đại diện ở trên.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : (
+                                <>
+                                    <ReactQuill
+                                        theme="snow"
+                                        value={formData.content || ""}
+                                        onChange={(value) =>
+                                            setFormData({ ...formData, content: value })
+                                        }
+                                        placeholder="Enter your page content here..."
+                                        className="h-[400px] mb-12"
+                                    />
+                                    {showRawJson && isJsonContent(formData.content) && (
+                                        <Button 
+                                            variant="ghost" 
+                                            size="sm" 
+                                            type="button"
+                                            onClick={() => setShowRawJson(false)}
+                                            className="mt-2 text-blue-600 hover:text-blue-700"
+                                        >
+                                            Quay lại giao diện thông báo
+                                        </Button>
+                                    )}
+                                    <p className="text-xs text-muted-foreground mt-2">
+                                        Nội dung được soạn thảo ở đây sẽ hiển thị trực quan trên Client.
+                                    </p>
+                                </>
+                            )}
                         </div>
 
                         <DialogFooter>

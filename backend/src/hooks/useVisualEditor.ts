@@ -127,14 +127,13 @@ export function useVisualEditor(iframeRef: React.RefObject<HTMLIFrameElement>) {
         if (data.type === 'VISUAL_EDIT_UPDATE' || data.type === 'VISUAL_EDIT_UPDATE_DATA_FROM_IFRAME') {
             const sectionsData = data.sections || data.data?.sections;
             if (sectionsData && Array.isArray(sectionsData)) {
-                console.log('[VisualEditor Parent] Syncing sections from iframe', sectionsData.length);
+                console.log('[VisualEditor Parent] Syncing sections from iframe:', sectionsData.length);
                 setSections(sectionsData);
                 setHasPendingChanges(true);
             }
         } else if (data.type === 'VISUAL_EDIT_SECTION_SELECTED') {
-            console.log('[VisualEditor Parent] Section selected:', data.sectionId);
+            console.log('[VisualEditor Parent] Section selected in iframe:', data.sectionId);
             setSelectedSectionId(data.sectionId);
-            setHasPendingChanges(true); // Treat selection as interaction that might have unsynced data
         } else if (data.type === 'VISUAL_EDIT_PICK_IMAGE') {
             setImagePicker({
                 isOpen: true,
@@ -142,13 +141,17 @@ export function useVisualEditor(iframeRef: React.RefObject<HTMLIFrameElement>) {
                 sectionId: data.sectionId
             });
         } else if (data.type === 'VISUAL_EDIT_SYNC_SECTIONS') {
-            // Fired by VisualPageRenderer on mount to ensure parent has current sections
+            // Fired by VisualPageRenderer on mount or when hydration happens
             if (data.sections && Array.isArray(data.sections)) {
-                console.log('[VisualEditor Parent] Initial sections sync:', data.sections.length);
+                console.log('[VisualEditor Parent] Full sections sync from iframe:', data.sections.length);
                 setSections(data.sections);
+                // Also update page metadata if it was a new page or empty
+                if (isNewPage && !pageMetadata.title) {
+                    setPageMetadata(prev => ({ ...prev, title: `Trang ${data.slug || ''}` }));
+                }
             }
         } else if (data.type === 'VISUAL_EDIT_READY') {
-            console.log('[VisualEditor Parent] Iframe ready, sending current sections');
+            console.log('[VisualEditor Parent] Iframe ready, sending current sections:', sections.length);
             sendToIframe('VISUAL_EDIT_UPDATE_DATA', { sections });
         }
     }, [sections, sendToIframe]);
