@@ -121,10 +121,12 @@ export function useVisualEditor(iframeRef: React.RefObject<HTMLIFrameElement>) {
             }
         }
 
-        if (data.type === 'VISUAL_EDIT_UPDATE_DATA_FROM_IFRAME') {
-            if (data.data?.sections) {
-                console.log('[VisualEditor Parent] Update sections from iframe', data.data.sections.length);
-                setSections(data.data.sections);
+        // Standardize on VISUAL_EDIT_UPDATE (used by frontend) or VISUAL_EDIT_UPDATE_DATA_FROM_IFRAME (legacy)
+        if (data.type === 'VISUAL_EDIT_UPDATE' || data.type === 'VISUAL_EDIT_UPDATE_DATA_FROM_IFRAME') {
+            const sectionsData = data.sections || data.data?.sections;
+            if (sectionsData) {
+                console.log('[VisualEditor Parent] Syncing sections from iframe', sectionsData.length);
+                setSections(sectionsData);
                 setHasPendingChanges(true);
             }
         } else if (data.type === 'VISUAL_EDIT_SECTION_SELECTED') {
@@ -136,8 +138,10 @@ export function useVisualEditor(iframeRef: React.RefObject<HTMLIFrameElement>) {
                 sectionId: data.sectionId
             });
         } else if (data.type === 'VISUAL_EDIT_SYNC_SECTIONS') {
-            // Priority: If the iframe provides hardcoded or default sections, and we don't have user-saved ones or we want to force sync
-            setSections(data.sections);
+            // Fired by VisualPageRenderer on mount to ensure parent has current sections
+            if (data.sections) {
+                setSections(data.sections);
+            }
         } else if (data.type === 'VISUAL_EDIT_READY') {
             sendToIframe('VISUAL_EDIT_UPDATE_DATA', { sections });
         }
