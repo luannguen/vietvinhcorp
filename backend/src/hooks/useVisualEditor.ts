@@ -121,16 +121,20 @@ export function useVisualEditor(iframeRef: React.RefObject<HTMLIFrameElement>) {
             }
         }
 
-        // Standardize on VISUAL_EDIT_UPDATE (used by frontend) or VISUAL_EDIT_UPDATE_DATA_FROM_IFRAME (legacy)
+        if (!data || typeof data !== 'object') return;
+
+        // Standardize protocol: handle both legacy and new names
         if (data.type === 'VISUAL_EDIT_UPDATE' || data.type === 'VISUAL_EDIT_UPDATE_DATA_FROM_IFRAME') {
             const sectionsData = data.sections || data.data?.sections;
-            if (sectionsData) {
+            if (sectionsData && Array.isArray(sectionsData)) {
                 console.log('[VisualEditor Parent] Syncing sections from iframe', sectionsData.length);
                 setSections(sectionsData);
                 setHasPendingChanges(true);
             }
         } else if (data.type === 'VISUAL_EDIT_SECTION_SELECTED') {
+            console.log('[VisualEditor Parent] Section selected:', data.sectionId);
             setSelectedSectionId(data.sectionId);
+            setHasPendingChanges(true); // Treat selection as interaction that might have unsynced data
         } else if (data.type === 'VISUAL_EDIT_PICK_IMAGE') {
             setImagePicker({
                 isOpen: true,
@@ -139,10 +143,12 @@ export function useVisualEditor(iframeRef: React.RefObject<HTMLIFrameElement>) {
             });
         } else if (data.type === 'VISUAL_EDIT_SYNC_SECTIONS') {
             // Fired by VisualPageRenderer on mount to ensure parent has current sections
-            if (data.sections) {
+            if (data.sections && Array.isArray(data.sections)) {
+                console.log('[VisualEditor Parent] Initial sections sync:', data.sections.length);
                 setSections(data.sections);
             }
         } else if (data.type === 'VISUAL_EDIT_READY') {
+            console.log('[VisualEditor Parent] Iframe ready, sending current sections');
             sendToIframe('VISUAL_EDIT_UPDATE_DATA', { sections });
         }
     }, [sections, sendToIframe]);

@@ -78,8 +78,14 @@ const AboutContent = () => {
 };
 
 const About = () => {
+  // Determine slug from URL path, removing leading slash
+  // For example: /about-vvc -> about-vvc, /about-us -> about-us
+  const pathname = window.location.pathname;
+  const urlSlug = pathname.startsWith('/') ? pathname.substring(1) : pathname;
+  const effectiveSlug = urlSlug || 'about-vvc';
+
   return (
-    <VisualEditorProvider slug="about-vvc">
+    <VisualEditorProvider slug={effectiveSlug}>
       <AboutContent />
     </VisualEditorProvider>
   );
