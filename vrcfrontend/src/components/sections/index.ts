@@ -129,7 +129,7 @@ export const registerAllBlocks = () => {
     type: 'about_hero',
     name: 'About: Hero',
     component: AboutHeroBlock,
-    defaultProps: { title: 'Giới thiệu', description: 'Tổng công ty Kỹ thuật lạnh Việt Nam (VRC)...' },
+    defaultProps: { title: 'Giới thiệu', description: 'Tổng công ty Kỹ thuật lạnh Việt Nam (VVC)...' },
     fields: [
       { id: 'title', label: 'Tiêu đề', type: 'text' },
       { id: 'description', label: 'Mô tả', type: 'textarea' }

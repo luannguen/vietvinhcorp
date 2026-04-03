@@ -358,7 +358,7 @@ const Products = () => {
           <div className="relative z-10 max-w-3xl mx-auto space-y-6">
             <h2 className="text-3xl md:text-4xl font-bold">Bạn cần giải pháp thiết kế riêng?</h2>
             <p className="text-blue-100 text-lg">
-              Đội ngũ kỹ sư của VRC sẵn sàng khảo sát và tư vấn giải pháp tối ưu nhất cho công trình của bạn.
+              Đội ngũ kỹ sư của VVC sẵn sàng khảo sát và tư vấn giải pháp tối ưu nhất cho công trình của bạn.
             </p>
             <Button size="lg" variant="secondary" className="font-bold px-8 shadow-xl hover:shadow-2xl transition-all hover:scale-105" asChild>
               <AppLink routeKey="CONTACT">Liên hệ tư vấn ngay</AppLink>

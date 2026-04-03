@@ -76,7 +76,7 @@ export const newsAPI = {
                     content: item.content,
                     image: item.image_url,
                     publishDate: item.created_at, // Use created_at or generic date
-                    author: item.organizer || "VRC",
+                    author: item.organizer || "VVC",
                     category: "Sự kiện", // Or fetch category name if joined
                     tags: item.tags || [],
                     location: item.location,
@@ -154,7 +154,7 @@ export const newsAPI = {
                     content: eventData.content,
                     image: eventData.image_url,
                     publishDate: eventData.created_at,
-                    author: eventData.organizer || "VRC",
+                    author: eventData.organizer || "VVC",
                     category: "Sự kiện",
                     tags: eventData.tags || [],
                     location: eventData.location,

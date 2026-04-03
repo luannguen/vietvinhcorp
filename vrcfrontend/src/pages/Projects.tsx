@@ -62,7 +62,7 @@ const Projects = () => {
           <div className="max-w-3xl">
             <h1 className="text-white mb-6">Dự án tiêu biểu</h1>
             <p className="text-xl md:text-2xl mb-8">
-              Những công trình thực tế đã được VRC thiết kế, cung cấp thiết bị và thi công lắp đặt trên khắp cả nước.
+              Những công trình thực tế đã được VVC thiết kế, cung cấp thiết bị và thi công lắp đặt trên khắp cả nước.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link to="/contact" className="btn-accent">
@@ -83,7 +83,7 @@ const Projects = () => {
             <div>
               <h2 className="mb-6">Năng lực và kinh nghiệm</h2>
               <p className="text-muted-foreground mb-6">
-                Với hơn 20 năm kinh nghiệm, VRC đã thực hiện hàng trăm dự án lớn nhỏ trong lĩnh vực điện lạnh công nghiệp và dân dụng. Chúng tôi tự hào là đối tác tin cậy của nhiều tập đoàn lớn và các đơn vị hàng đầu trong các ngành công nghiệp.
+                Với hơn 20 năm kinh nghiệm, VVC đã thực hiện hàng trăm dự án lớn nhỏ trong lĩnh vực điện lạnh công nghiệp và dân dụng. Chúng tôi tự hào là đối tác tin cậy của nhiều tập đoàn lớn và các đơn vị hàng đầu trong các ngành công nghiệp.
               </p>
               <ul className="space-y-3">
                 <li className="flex items-start">
@@ -125,7 +125,7 @@ const Projects = () => {
           <div className="text-center mb-10">
             <h2 className="mb-4">Danh mục dự án</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              VRC tự hào thực hiện các dự án đa dạng với quy mô khác nhau, từ hệ thống điều hòa không khí trung tâm cho tòa nhà thương mại đến các hệ thống làm lạnh công nghiệp phức tạp.
+              VVC tự hào thực hiện các dự án đa dạng với quy mô khác nhau, từ hệ thống điều hòa không khí trung tâm cho tòa nhà thương mại đến các hệ thống làm lạnh công nghiệp phức tạp.
             </p>
           </div>
 
@@ -238,7 +238,7 @@ const Projects = () => {
             <h2 className="mb-6">Bạn có dự án cần tư vấn?</h2>
             <p className="text-muted-foreground mb-8">
               Hãy liên hệ với đội ngũ kỹ sư của chúng tôi để được tư vấn giải pháp tối ưu cho dự án của bạn.
-              VRC cam kết mang đến các giải pháp điện lạnh hiện đại, hiệu quả và tiết kiệm chi phí.
+              VVC cam kết mang đến các giải pháp điện lạnh hiện đại, hiệu quả và tiết kiệm chi phí.
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
               <Link to="/contact" className="btn-primary">

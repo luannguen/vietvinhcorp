@@ -9,7 +9,7 @@ interface AboutHeroBlockProps {
 
 export const AboutHeroBlock = ({ 
   title = "Giới thiệu", 
-  description = "Tổng công ty Kỹ thuật lạnh Việt Nam (VRC) - Đơn vị tiên phong..." 
+  description = "Tổng công ty Kỹ thuật lạnh Việt Nam (VVC) - Đơn vị tiên phong..." 
 }: AboutHeroBlockProps) => (
   <div className="bg-gradient-to-b from-primary/10 to-transparent py-12 md:py-20">
     <div className="container-custom">
@@ -44,7 +44,7 @@ export const HistoryBlock = ({
   title = "Lịch sử phát triển",
   p1 = "Được thành lập vào năm 2003...",
   p2 = "Từ một đơn vị chuyên về lắp đặt...",
-  p3 = "Ngày nay, VRC tự hào là đối tác...",
+  p3 = "Ngày nay, VVC tự hào là đối tác...",
   image = "/lovable-uploads/0bd3c048-8e37-4775-a6bc-0b54ec07edbe.png",
   expYears = "20+",
   expText = "Năm kinh nghiệm"

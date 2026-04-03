@@ -74,7 +74,7 @@ const Services = () => {
             <div>
               <h2 className="mb-6">Dịch vụ toàn diện</h2>
               <p className="text-muted-foreground mb-6">
-                Với hơn 20 năm kinh nghiệm trong lĩnh vực điện lạnh công nghiệp và dân dụng, VRC đã trở thành đối tác tin cậy của hàng nghìn khách hàng trên cả nước. Chúng tôi tự hào cung cấp các dịch vụ kỹ thuật chất lượng cao với đội ngũ chuyên viên được đào tạo bài bản.
+                Với hơn 20 năm kinh nghiệm trong lĩnh vực điện lạnh công nghiệp và dân dụng, VVC đã trở thành đối tác tin cậy của hàng nghìn khách hàng trên cả nước. Chúng tôi tự hào cung cấp các dịch vụ kỹ thuật chất lượng cao với đội ngũ chuyên viên được đào tạo bài bản.
               </p>
               <ul className="space-y-3">
                 <li className="flex items-start">
@@ -232,7 +232,7 @@ const Services = () => {
           <div className="text-center max-w-3xl mx-auto">
             <h2 className="mb-6">Bắt đầu với dịch vụ của chúng tôi</h2>
             <p className="text-muted-foreground mb-8">
-              Hãy liên hệ với chúng tôi ngay hôm nay để được tư vấn và báo giá các dịch vụ điện lạnh phù hợp với nhu cầu của bạn. Đội ngũ kỹ thuật của VRC luôn sẵn sàng hỗ trợ.
+              Hãy liên hệ với chúng tôi ngay hôm nay để được tư vấn và báo giá các dịch vụ điện lạnh phù hợp với nhu cầu của bạn. Đội ngũ kỹ thuật của VVC luôn sẵn sàng hỗ trợ.
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
               <Link to="/contact" className="btn-primary">

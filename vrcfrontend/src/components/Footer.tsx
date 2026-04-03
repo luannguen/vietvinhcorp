@@ -28,7 +28,7 @@ const Footer = () => {
   }, []);
 
   const copyrightText = settings['copyright_text'] || t('copyright');
-  const contactEmail = settings['contact_email'] || 'info@vrc.com.vn';
+  const contactEmail = settings['contact_email'] || 'info@VVC.com.vn';
   const contactAddress = settings['contact_address'] || '123 Nguyễn Văn Linh, Quận 7, TP. Hồ Chí Minh, Việt Nam';
   const siteDescription = settings['site_description'] || 'Cung cấp giải pháp điện lạnh toàn diện cho mọi doanh nghiệp và công trình.';
   const siteLogo = settings['site_logo'] || '/lovable-uploads/0bd3c048-8e37-4775-a6bc-0b54ec07edbe.png';
@@ -44,7 +44,7 @@ const Footer = () => {
             <div className="mb-4">
               <img
                 src={siteLogo}
-                alt="VRC Logo"
+                alt="VVC Logo"
                 className="h-16 object-contain"
               />
             </div>

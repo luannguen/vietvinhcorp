@@ -80,10 +80,10 @@ const SEOHelmet: React.FC<SEOHelmetProps> = ({ title, description, keywords, ima
 
     if (!mounted) return null;
 
-    const siteTitle = settings['site_title'] || 'VRC - Tổng công ty kỹ thuật điện lạnh Việt Nam';
+    const siteTitle = settings['site_title'] || 'VVC - Tổng công ty kỹ thuật điện lạnh Việt Nam';
     const finalTitle = title ? `${title} | ${siteTitle}` : siteTitle;
-    const finalDescription = description || settings['site_description'] || 'Giải pháp điện lạnh toàn diện cho mọi công trình';
-    const finalKeywords = keywords || settings['site_keywords'] || 'điện lạnh, vrc, hvac';
+    const finalDescription = description || settings['site_description'] || 'Giải pháp điện lạnh toàn diện cho mọi công trình. Uy tín, Chất lượng, Hiệu quả.';
+    const finalKeywords = keywords || settings['site_keywords'] || 'điện lạnh, vvc, hvac, mep';
     const finalImage = image || settings['og_image_url'] || '/lovable-uploads/0bd3c048-8e37-4775-a6bc-0b54ec07edbe.png';
 
     return (
@@ -96,7 +96,7 @@ const SEOHelmet: React.FC<SEOHelmetProps> = ({ title, description, keywords, ima
             <meta property="og:description" content={finalDescription} />
             <meta property="og:image" content={finalImage} />
             <meta property="og:type" content={settings['og_type'] || 'website'} />
-            <meta property="og:site_name" content={settings['site_name'] || 'VRC'} />
+            <meta property="og:site_name" content={settings['site_name'] || 'VVC'} />
 
             <meta name="twitter:card" content={settings['twitter_card'] || 'summary_large_image'} />
             <meta name="twitter:title" content={finalTitle} />

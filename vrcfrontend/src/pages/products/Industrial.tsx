@@ -28,31 +28,31 @@ const IndustrialProducts = () => {
       <div className="container mx-auto py-12 px-4">
         <div className="grid md:grid-cols-3 gap-8">
           <div className="md:col-span-2">
-            <h2 className="text-2xl md:text-3xl font-bold text-primary mb-6">Điều Hòa Công Nghiệp VRC-5000</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-primary mb-6">Điều Hòa Công Nghiệp VVC-5000</h2>
               <div className="bg-gray-100 p-4 rounded-lg mb-8">              <img 
                 src="https://images.pexels.com/photos/186077/pexels-photo-186077.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" 
-                alt="Điều hòa công nghiệp VRC-5000" 
+                alt="Điều hòa công nghiệp VVC-5000" 
                 className="w-full h-auto rounded-lg mb-4"
               />
               <div className="grid grid-cols-4 gap-2">
                 <img 
                   src="https://images.pexels.com/photos/3779837/pexels-photo-3779837.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" 
-                  alt="Điều hòa công nghiệp VRC-5000 - 1" 
+                  alt="Điều hòa công nghiệp VVC-5000 - 1" 
                   className="w-full h-24 object-cover rounded cursor-pointer"
                 />
                 <img 
                   src="https://images.pexels.com/photos/3779835/pexels-photo-3779835.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" 
-                  alt="Điều hòa công nghiệp VRC-5000 - 2" 
+                  alt="Điều hòa công nghiệp VVC-5000 - 2" 
                   className="w-full h-24 object-cover rounded cursor-pointer"
                 />
                 <img 
                   src="https://images.pexels.com/photos/442151/pexels-photo-442151.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" 
-                  alt="Điều hòa công nghiệp VRC-5000 - 3" 
+                  alt="Điều hòa công nghiệp VVC-5000 - 3" 
                   className="w-full h-24 object-cover rounded cursor-pointer"
                 />
                 <img 
                   src="https://images.pexels.com/photos/236748/pexels-photo-236748.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" 
-                  alt="Điều hòa công nghiệp VRC-5000 - Lắp đặt" 
+                  alt="Điều hòa công nghiệp VVC-5000 - Lắp đặt" 
                   className="w-full h-24 object-cover rounded cursor-pointer"
                 />
               </div>
@@ -68,12 +68,12 @@ const IndustrialProducts = () => {
               <TabsContent value="overview" className="mt-6">
                 <div className="space-y-4">
                   <p>
-                    Điều hòa công nghiệp VRC-5000 là giải pháp làm mát hiệu quả dành cho các không gian lớn như nhà xưởng, 
+                    Điều hòa công nghiệp VVC-5000 là giải pháp làm mát hiệu quả dành cho các không gian lớn như nhà xưởng, 
                     nhà máy sản xuất và các công trình công nghiệp. Với công suất làm lạnh lên đến 50.000 BTU, 
                     hệ thống có thể đáp ứng nhu cầu của các không gian rộng lớn với tải nhiệt cao.
                   </p>
                   <p>
-                    Được thiết kế với công nghệ tiết kiệm năng lượng hiện đại, VRC-5000 giúp giảm điện năng tiêu thụ đến 40% 
+                    Được thiết kế với công nghệ tiết kiệm năng lượng hiện đại, VVC-5000 giúp giảm điện năng tiêu thụ đến 40% 
                     so với các hệ thống thông thường, đồng thời vẫn đảm bảo hiệu suất làm mát tối ưu cho môi trường công nghiệp.
                   </p>
                   <p>
@@ -117,7 +117,7 @@ const IndustrialProducts = () => {
 
                   <div className="mt-8">
                     <h3 className="text-xl font-semibold mb-4">Ứng dụng</h3>
-                    <p>Điều hòa công nghiệp VRC-5000 phù hợp với nhiều loại không gian như:</p>
+                    <p>Điều hòa công nghiệp VVC-5000 phù hợp với nhiều loại không gian như:</p>
                     <ul className="list-disc pl-5 mt-2 space-y-1">
                       <li>Nhà xưởng sản xuất và nhà máy công nghiệp</li>
                       <li>Kho hàng và trung tâm phân phối</li>
@@ -187,7 +187,7 @@ const IndustrialProducts = () => {
                   <div className="grid gap-4">
                     <div className="p-4 border rounded-lg flex justify-between items-center">
                       <div>
-                        <h4 className="font-medium">Hướng dẫn sử dụng VRC-5000</h4>
+                        <h4 className="font-medium">Hướng dẫn sử dụng VVC-5000</h4>
                         <p className="text-sm text-muted-foreground">PDF - 2.5MB</p>
                       </div>
                       <Button variant="outline">Tải xuống</Button>
@@ -195,7 +195,7 @@ const IndustrialProducts = () => {
                     
                     <div className="p-4 border rounded-lg flex justify-between items-center">
                       <div>
-                        <h4 className="font-medium">Hướng dẫn lắp đặt VRC-5000</h4>
+                        <h4 className="font-medium">Hướng dẫn lắp đặt VVC-5000</h4>
                         <p className="text-sm text-muted-foreground">PDF - 3.8MB</p>
                       </div>
                       <Button variant="outline">Tải xuống</Button>
@@ -203,7 +203,7 @@ const IndustrialProducts = () => {
                     
                     <div className="p-4 border rounded-lg flex justify-between items-center">
                       <div>
-                        <h4 className="font-medium">Brochure VRC-5000</h4>
+                        <h4 className="font-medium">Brochure VVC-5000</h4>
                         <p className="text-sm text-muted-foreground">PDF - 1.7MB</p>
                       </div>
                       <Button variant="outline">Tải xuống</Button>
@@ -231,12 +231,12 @@ const IndustrialProducts = () => {
                 
                 <div className="mt-6 space-y-6">
                   <div className="bg-muted p-4 rounded-lg">
-                    <h4 className="font-medium mb-2">VRC-5000</h4>
+                    <h4 className="font-medium mb-2">VVC-5000</h4>
                     <p className="text-xl font-semibold text-primary">Liên hệ để nhận giá</p>
                   </div>
                   
                   <Button className="w-full" asChild>
-                    <Link to="/contact?product=vrc-5000">
+                    <Link to="/contact?product=VVC-5000">
                       Yêu cầu báo giá ngay
                     </Link>
                   </Button>
@@ -258,12 +258,12 @@ const IndustrialProducts = () => {
                   <div className="w-1/3 bg-gray-200">
                     <img 
                       src="https://images.unsplash.com/photo-1534398079543-7ae6d016b86a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" 
-                      alt="Kho lạnh bảo quản VRC-KL500" 
+                      alt="Kho lạnh bảo quản VVC-KL500" 
                       className="w-full h-full object-cover"
                     />
                   </div>
                   <div className="p-4 w-2/3">
-                    <h4 className="font-medium mb-1">Kho lạnh bảo quản VRC-KL500</h4>
+                    <h4 className="font-medium mb-1">Kho lạnh bảo quản VVC-KL500</h4>
                     <p className="text-sm text-muted-foreground mb-2">Kho lạnh công nghiệp</p>
                     <Link to="/products/cold-storage" className="text-primary hover:underline text-sm">
                       Xem chi tiết
@@ -275,12 +275,12 @@ const IndustrialProducts = () => {
                   <div className="w-1/3 bg-gray-200">
                     <img 
                       src="https://images.unsplash.com/photo-1562769203-2d3ee3970449?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" 
-                      alt="Máy làm lạnh nước công nghiệp VRC-Chiller" 
+                      alt="Máy làm lạnh nước công nghiệp VVC-Chiller" 
                       className="w-full h-full object-cover"
                     />
                   </div>
                   <div className="p-4 w-2/3">
-                    <h4 className="font-medium mb-1">Máy làm lạnh nước VRC-Chiller</h4>
+                    <h4 className="font-medium mb-1">Máy làm lạnh nước VVC-Chiller</h4>
                     <p className="text-sm text-muted-foreground mb-2">Chiller công nghiệp</p>
                     <Link to="/products/chiller" className="text-primary hover:underline text-sm">
                       Xem chi tiết
@@ -292,12 +292,12 @@ const IndustrialProducts = () => {
                   <div className="w-1/3 bg-gray-200">
                     <img 
                       src="https://images.unsplash.com/photo-1527149074866-a9733dcc96e2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" 
-                      alt="Hệ thống VRV/VRF VRC-Multi" 
+                      alt="Hệ thống VRV/VRF VVC-Multi" 
                       className="w-full h-full object-cover"
                     />
                   </div>
                   <div className="p-4 w-2/3">
-                    <h4 className="font-medium mb-1">Hệ thống VRV/VRF VRC-Multi</h4>
+                    <h4 className="font-medium mb-1">Hệ thống VRV/VRF VVC-Multi</h4>
                     <p className="text-sm text-muted-foreground mb-2">Điều hòa đa cục</p>
                     <Link to="/products/commercial" className="text-primary hover:underline text-sm">
                       Xem chi tiết
@@ -322,7 +322,7 @@ const IndustrialProducts = () => {
               <CardContent className="p-6">
                 <h3 className="font-semibold text-lg mb-2">Nhà máy sản xuất ABC</h3>
                 <p className="text-muted-foreground mb-4">
-                  Lắp đặt hệ thống điều hòa công nghiệp VRC-5000 cho nhà máy sản xuất với diện tích 2000m²
+                  Lắp đặt hệ thống điều hòa công nghiệp VVC-5000 cho nhà máy sản xuất với diện tích 2000m²
                 </p>
                 <Link to="/projects/industrial" className="text-primary hover:underline flex items-center">
                   Xem chi tiết
@@ -340,7 +340,7 @@ const IndustrialProducts = () => {
               <CardContent className="p-6">
                 <h3 className="font-semibold text-lg mb-2">Khu công nghiệp XYZ</h3>
                 <p className="text-muted-foreground mb-4">
-                  Cung cấp và lắp đặt 15 hệ thống điều hòa công nghiệp VRC-5000 cho các xưởng sản xuất
+                  Cung cấp và lắp đặt 15 hệ thống điều hòa công nghiệp VVC-5000 cho các xưởng sản xuất
                 </p>
                 <Link to="/projects/industrial" className="text-primary hover:underline flex items-center">
                   Xem chi tiết

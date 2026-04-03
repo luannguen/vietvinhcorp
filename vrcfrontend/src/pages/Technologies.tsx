@@ -158,7 +158,7 @@ const Technologies = () => {
             <div>
               <h2 className="mb-6">Công nghệ tiên tiến</h2>
               <p className="text-muted-foreground mb-6">
-                VRC luôn đi đầu trong việc ứng dụng các công nghệ tiên tiến nhất trong lĩnh vực kỹ thuật lạnh và điều hòa không khí. Chúng tôi không ngừng nghiên cứu và phát triển để mang đến những giải pháp hiệu quả, tiết kiệm năng lượng và thân thiện với môi trường.
+                VVC luôn đi đầu trong việc ứng dụng các công nghệ tiên tiến nhất trong lĩnh vực kỹ thuật lạnh và điều hòa không khí. Chúng tôi không ngừng nghiên cứu và phát triển để mang đến những giải pháp hiệu quả, tiết kiệm năng lượng và thân thiện với môi trường.
               </p>
               <ul className="space-y-3">
                 <li className="flex items-start">
@@ -200,7 +200,7 @@ const Technologies = () => {
           <div className="text-center mb-10">
             <h2 className="mb-4">Công nghệ hiện đại</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Khám phá các công nghệ tiên tiến được VRC áp dụng trong các giải pháp kỹ thuật lạnh và điều hòa không khí.
+              Khám phá các công nghệ tiên tiến được VVC áp dụng trong các giải pháp kỹ thuật lạnh và điều hòa không khí.
             </p>
           </div>
 
