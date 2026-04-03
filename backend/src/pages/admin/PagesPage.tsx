@@ -28,7 +28,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useToast } from "@/components/ui/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Loader2, Plus, Pencil, Trash2, FileText, Image as ImageIcon, Eye, Wand2, Layout, Code, ExternalLink } from "lucide-react";
+import { Loader2, Plus, Pencil, Trash2, FileText, Image as ImageIcon, Eye, Wand2, Layout, Code } from "lucide-react";
 
 export default function PagesPage() {
     const [pages, setPages] = useState<StaticPage[]>([]);
