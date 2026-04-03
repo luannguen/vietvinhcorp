@@ -60,7 +60,7 @@ export const ImagePickerModal: React.FC<ImagePickerModalProps> = ({
             const result = await mediaService.uploadImage(file);
             toast.success('Tải ảnh lên thành công');
             await fetchImages();
-            if (result.url) setSelectedUrl(result.url);
+            if (result && result.url) setSelectedUrl(result.url);
         } catch (error: any) {
             console.error('Upload error:', error);
             toast.error(error.message || 'Lỗi khi tải ảnh');
