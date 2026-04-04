@@ -19,6 +19,8 @@ import {
 import { TeamHeroBlock, TeamGridBlock } from './TeamBlocks';
 import { RefrigerationBlock, MEBlock, DataCenterBlock, ServiceLifecycleBlock, ContactFormBlock } from './IndustryBlocks';
 import { NewsEventsBlock, ProjectsBlock, ProductsBlock } from './HomeSections';
+import { HomeBannerSlider } from './HomeBannerSlider';
+
 
 // Function to register all blocks
 export const registerAllBlocks = () => {
@@ -407,7 +409,19 @@ export const registerAllBlocks = () => {
       { id: 'subtitle', label: 'Mô tả', type: 'textarea' }
     ]
   });
+
+  registerBlock({
+    type: 'home_banner_slider',
+    name: 'Home: Banner Slider',
+    component: HomeBannerSlider,
+    defaultProps: {},
+    fields: [
+      { id: 'info', label: 'Thông tin' }
+    ]
+
+  });
 };
+
 
 export { 
   HeroBlock, 
@@ -434,5 +448,7 @@ export {
   NewsEventsBlock,
   ProjectsBlock,
   ProductsBlock,
-  ContactFormBlock
+  ContactFormBlock,
+  HomeBannerSlider
 };
+

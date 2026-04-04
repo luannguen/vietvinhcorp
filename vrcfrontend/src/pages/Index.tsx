@@ -8,16 +8,8 @@ import {
 } from '../components/sections';
 
 const DEFAULT_HOME_SECTIONS = [
-  { id: 'hero', type: 'hero', props: { 
-    title: 'TỔNG CÔNG TY KỸ THUẬT LẠNH VIỆT NAM', 
-    description: 'Chuyên gia hàng đầu trong lĩnh vực Hệ thống lạnh, Cơ điện và Hạ tầng Trung tâm dữ liệu.',
-    backgroundImage: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=2000',
-    alignment: 'center',
-    buttonText: 'Khám phá sản phẩm',
-    buttonLink: '/products',
-    button2Text: 'Liên hệ tư vấn',
-    button2Link: '/contact'
-  }},
+  { id: 'banner', type: 'home_banner_slider', props: {} },
+
   { id: 'refrigeration', type: 'refrigeration', props: {} },
   { id: 'me_systems', type: 'me_systems', props: {} },
   { id: 'data_center', type: 'data_center', props: {} },

@@ -8,14 +8,45 @@ import { Project, Product, Category } from '@/components/data/types';
 import { mockNewsItems } from '@/components/data/mock/newsData';
 
 // --- NEWS & EVENTS BLOCK ---
+import { newsAPI } from '@/components/data/services/newsService';
+import { NewsItem } from '@/components/data/models/news';
+
 export const NewsEventsBlock = ({
   title = "Tin tức & Sự kiện",
   subtitle = "Cập nhật những hoạt động mới nhất, công nghệ tiên tiến và thông tin ngành từ VietVinhCorp.",
   sectionId
 }: any) => {
-  // Use first 4 items from mockNewsItems (1 featured + 3 list)
-  const featuredNews = mockNewsItems[0];
-  const otherNews = mockNewsItems.slice(1, 4);
+  const [newsList, setNewsList] = useState<NewsItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      const result = await newsAPI.getAll();
+      if (result.success) {
+        setNewsList(result.data.slice(0, 4));
+      }
+      setLoading(false);
+    };
+    fetchNews();
+  }, []);
+
+  if (loading) {
+    return (
+      <section className="py-20 bg-white">
+        <div className="container-custom text-center">
+          <div className="animate-pulse flex flex-col items-center">
+            <div className="h-8 w-64 bg-slate-200 rounded mb-4"></div>
+            <div className="h-4 w-96 bg-slate-100 rounded"></div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (newsList.length === 0) return null;
+
+  const featuredNews = newsList[0];
+  const otherNews = newsList.slice(1);
 
   return (
     <section className="py-20 bg-white">
@@ -33,7 +64,7 @@ export const NewsEventsBlock = ({
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Featured Post */}
           <div className="lg:col-span-2 group">
-            <Link to={`/news/${featuredNews.id}`} className="block relative overflow-hidden rounded-2xl aspect-[16/9]">
+            <Link to={`/news/${featuredNews.slug}`} className="block relative overflow-hidden rounded-2xl aspect-[16/9]">
               <img 
                 src={featuredNews.image} 
                 alt={featuredNews.title} 
@@ -45,7 +76,7 @@ export const NewsEventsBlock = ({
                     {featuredNews.category}
                   </span>
                   <span className="flex items-center gap-1">
-                    <Calendar className="w-4 h-4" /> {featuredNews.publishDate}
+                    <Calendar className="w-4 h-4" /> {new Date(featuredNews.publishDate).toLocaleDateString('vi-VN')}
                   </span>
                 </div>
                 <h3 className="text-2xl md:text-3xl font-bold text-white mb-4 group-hover:text-secondary transition-colors">
@@ -61,7 +92,7 @@ export const NewsEventsBlock = ({
           {/* Side List */}
           <div className="space-y-6">
             {otherNews.map((news) => (
-              <Link key={news.id} to={`/news/${news.id}`} className="flex gap-4 group">
+              <Link key={news.id} to={`/news/${news.slug}`} className="flex gap-4 group">
                 <div className="flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden bg-muted">
                   <img src={news.image} alt={news.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
                 </div>
@@ -70,7 +101,7 @@ export const NewsEventsBlock = ({
                   <h4 className="font-bold text-base line-clamp-2 group-hover:text-primary transition-colors leading-snug">
                     {news.title}
                   </h4>
-                  <div className="text-xs text-muted-foreground mt-2">{news.publishDate}</div>
+                  <div className="text-xs text-muted-foreground mt-2">{new Date(news.publishDate).toLocaleDateString('vi-VN')}</div>
                 </div>
               </Link>
             ))}

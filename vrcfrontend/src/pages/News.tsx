@@ -95,7 +95,7 @@ const News = () => {
                   </span>
                 </div>
                 <h2 className="text-2xl md:text-3xl font-bold text-primary mb-3">
-                  <Link to={`/news/${featuredNews.id}`} className="hover:text-accent">
+                  <Link to={`/news/${featuredNews.slug}`} className="hover:text-accent">
                     {featuredNews.title}
                   </Link>
                 </h2>
@@ -113,7 +113,7 @@ const News = () => {
                 </div>
 
                 <Button asChild>
-                  <Link to={`/news/${featuredNews.id}`}>
+                  <Link to={`/news/${featuredNews.slug}`}>
                     Xem chi tiết
                     <ChevronRight size={16} className="ml-1" />
                   </Link>
@@ -134,7 +134,7 @@ const News = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {filteredNews.slice(1).map(item => (
                 <div key={item.id} className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
-                  <Link to={item.type === "news" ? `/news/${item.id}` : `/event-details/${item.id}`} className="block aspect-[4/3] overflow-hidden">
+                  <Link to={item.type === "news" ? `/news/${item.slug}` : `/event-details/${item.id}`} className="block aspect-[4/3] overflow-hidden">
                     <img
                       src={item.image}
                       alt={item.title}
@@ -154,7 +154,7 @@ const News = () => {
                     </div>
 
                     <h3 className="text-lg font-bold text-primary mb-2 hover:text-accent">
-                      <Link to={item.type === "news" ? `/news/${item.id}` : `/event-details/${item.id}`}>
+                      <Link to={item.type === "news" ? `/news/${item.slug}` : `/event-details/${item.id}`}>
                         {item.title}
                       </Link>
                     </h3>
@@ -261,7 +261,7 @@ const News = () => {
                       />
                     </Link>
                     <div>
-                      <Link to={news.type === "news" ? `/news/${news.id}` : `/event-details/${news.id}`} className="font-medium text-sm hover:text-primary line-clamp-2">
+                      <Link to={news.type === "news" ? `/news/${news.slug}` : `/event-details/${news.id}`} className="font-medium text-sm hover:text-primary line-clamp-2">
                         {news.title}
                       </Link>
                       <div className="text-xs text-muted-foreground mt-1 flex items-center">

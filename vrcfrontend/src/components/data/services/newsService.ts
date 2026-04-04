@@ -52,7 +52,8 @@ export const newsAPI = {
                 type: "news", // Default type, or infer if column exists. 
                 // Actually table news is just news. Events are separate table. 
                 // But frontend might mix them. For now let's say "news".
-                eventDate: ""
+                eventDate: "",
+                slug: item.slug
             }));
 
             // If frontend expects mix of news and events, we might need to fetch events too and merge.
@@ -84,7 +85,8 @@ export const newsAPI = {
                     comments: 0,
                     views: item.participants_count,
                     type: "event",
-                    eventDate: item.start_date
+                    eventDate: item.start_date,
+                    slug: item.id // Fallback to ID for slug if no slug in event table
                 }));
 
                 // Merge and sort
@@ -106,8 +108,12 @@ export const newsAPI = {
         }
     },
 
-    getById: async (id: number | string): Promise<Result<NewsItem>> => {
+    getById: async (idOrSlug: string): Promise<Result<NewsItem>> => {
         try {
+            // Check if input looks like a UUID
+            const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(idOrSlug);
+            const column = isUuid ? 'id' : 'slug';
+
             // Check news first
             const { data: newsData, error: newsError } = await supabase
                 .from('news')
@@ -115,7 +121,7 @@ export const newsAPI = {
                      *,
                      categories (name)
                 `)
-                .eq('id', id)
+                .eq(column, idOrSlug)
                 .maybeSingle();
 
             if (newsData) {
@@ -134,16 +140,17 @@ export const newsAPI = {
                     comments: 0,
                     views: newsData.views,
                     type: "news",
-                    eventDate: ""
+                    eventDate: "",
+                    slug: newsData.slug
                 };
                 return success(item);
             }
 
-            // Check events
+            // Check events (Events usually don't have slug yet, but handle just in case or by id)
             const { data: eventData, error: eventError } = await supabase
                 .from('events')
                 .select('*')
-                .eq('id', id)
+                .eq(isUuid ? 'id' : 'id', idOrSlug) // For now events only by ID if slug not guaranteed
                 .maybeSingle();
 
             if (eventData) {
@@ -162,7 +169,8 @@ export const newsAPI = {
                     comments: 0,
                     views: eventData.participants_count,
                     type: "event",
-                    eventDate: eventData.start_date
+                    eventDate: eventData.start_date,
+                    slug: eventData.id // Fallback to ID for slug
                 };
                 return success(item);
             }

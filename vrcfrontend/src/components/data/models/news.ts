@@ -15,4 +15,5 @@ export interface NewsItem {
     views: number;
     type: "news" | "event";
     eventDate?: string;
+    slug: string;
 }
