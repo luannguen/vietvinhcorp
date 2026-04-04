@@ -148,10 +148,16 @@ INSERT INTO static_pages (slug, title, content, excerpt) VALUES
 (
     'intro', 
     'Giới thiệu chung', 
-    '<h1>Giới thiệu chung</h1><p>Nội dung giới thiệu chi tiết...</p>',
+    '<h1>Giới thiệu chung</h1><p>Nội dung giới thiệu chi tiết...</p>', 
     'Bài giới thiệu chi tiết về doanh nghiệp.'
+),
+(
+    'ho-so-nang-luc', 
+    'Hồ sơ năng lực', 
+    '{"sections":[{"id":"cap-prof-hero","type":"capability_profile","props":{"title":"Hồ sơ năng lực Viet Vinh Corp","description":"Khám phá năng lực thiết kế, thi công và vận hành hệ thống điện lạnh hàng đầu của VVC. Cam kết chất lượng, tiến độ và giải pháp tối ưu bảo vệ môi trường.","previewImage":"https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80","pdfUrl":"https://rfzuevsyegqbdlttmloa.supabase.co/storage/v1/object/public/documents/VVC_Capability_Profile_2024.pdf","downloadText":"Tải xuống Hồ sơ năng lực (PDF)"}},{"id":"cap-prof-contact","type":"contact_form","props":{}}]}', 
+    'Tài liệu chi tiết về năng lực và kinh nghiệm triển khai dự án điện lạnh của Viet Vinh Corp.'
 )
-ON CONFLICT (slug) DO UPDATE SET title = EXCLUDED.title, content = EXCLUDED.content;
+ON CONFLICT (slug) DO UPDATE SET title = EXCLUDED.title, content = EXCLUDED.content, excerpt = EXCLUDED.excerpt;
 
 -- 2.6 Navigation
 DO $$
@@ -175,14 +181,14 @@ BEGIN
     ('Liên hệ', '/contact', 'internal', 'header', 7, true);
 
     -- FOOTER NAVIGATION
-    -- Column 1: Về VRC
+    -- Column 1: Về VVC
     INSERT INTO navigation (label, path, type, position, order_index, is_active)
     VALUES ('Về VVC', '#', 'custom', 'footer', 1, true)
     RETURNING id INTO footer_col_1;
 
     INSERT INTO navigation (parent_id, label, path, type, position, order_index, is_active) VALUES
     (footer_col_1, 'Giới thiệu chung', '/about-us', 'internal', 'footer', 1, true),
-    (footer_col_1, 'Hồ sơ năng lực', '/intro', 'internal', 'footer', 2, true),
+    (footer_col_1, 'Hồ sơ năng lực', '/ho-so-nang-luc', 'internal', 'footer', 2, true),
     (footer_col_1, 'Tuyển dụng', '/careers', 'internal', 'footer', 3, true);
 
     -- Column 2: Dịch vụ & Hỗ trợ

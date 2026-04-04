@@ -20,6 +20,7 @@ import { TeamHeroBlock, TeamGridBlock } from './TeamBlocks';
 import { RefrigerationBlock, MEBlock, DataCenterBlock, ServiceLifecycleBlock, ContactFormBlock } from './IndustryBlocks';
 import { NewsEventsBlock, ProjectsBlock, ProductsBlock } from './HomeSections';
 import { HomeBannerSlider } from './HomeBannerSlider';
+import { CapabilityProfileBlock } from './CapabilityProfileBlock';
 
 
 // Function to register all blocks
@@ -416,9 +417,32 @@ export const registerAllBlocks = () => {
     component: HomeBannerSlider,
     defaultProps: {},
     fields: [
-      { id: 'info', label: 'Thông tin' }
+      { id: 'info', label: 'Thông tin', type: 'text' }
     ]
+  });
 
+  registerBlock({
+    type: 'capability_profile',
+    name: 'Hồ sơ năng lực',
+    component: CapabilityProfileBlock,
+    defaultProps: {
+      title: 'Hồ sơ năng lực Viet Vinh Corp',
+      description: 'Tài liệu chi tiết về năng lực thiết kế, thi công và vận hành các hệ thống điện lạnh công nghiệp tiêu chuẩn quốc tế của VVC.',
+      previewImage: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80',
+      pdfUrl: '#',
+      downloadText: 'Tải xuống Hồ sơ năng lực (PDF)',
+      pdfFileName: '',
+      pdfFileSize: ''
+    },
+    fields: [
+      { id: 'title', label: 'Tiêu đề', type: 'text' },
+      { id: 'description', label: 'Mô tả', type: 'textarea' },
+      { id: 'previewImage', label: 'Ảnh xem trước', type: 'image' },
+      { id: 'pdfUrl', label: 'Link file PDF', type: 'text' },
+      { id: 'downloadText', label: 'Chữ trên nút tải', type: 'text' },
+      { id: 'pdfFileName', label: 'Tên file', type: 'text' },
+      { id: 'pdfFileSize', label: 'Dung lượng', type: 'text' }
+    ]
   });
 };
 
@@ -449,6 +473,7 @@ export {
   ProjectsBlock,
   ProductsBlock,
   ContactFormBlock,
-  HomeBannerSlider
+  HomeBannerSlider,
+  CapabilityProfileBlock
 };
 
