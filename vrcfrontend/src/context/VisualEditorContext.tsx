@@ -56,6 +56,8 @@ export const VisualEditorProvider = ({ children, slug }: VisualEditorProviderPro
   }, []);
 
   const syncWithParent = React.useCallback((newData: any) => {
+    if (!editMode) return;
+    
     window.parent.postMessage(
       {
         type: 'VISUAL_EDIT_UPDATE',
@@ -64,7 +66,7 @@ export const VisualEditorProvider = ({ children, slug }: VisualEditorProviderPro
       },
       '*'
     );
-  }, [slug]);
+  }, [slug, editMode]);
 
   // Handle updates from EditableElement (Legacy/Simple)
   const updateField = React.useCallback((fieldKey: string, value: string) => {
@@ -232,9 +234,16 @@ export const VisualEditorProvider = ({ children, slug }: VisualEditorProviderPro
   // Fetch initial content
   useEffect(() => {
     const fetchContent = async () => {
+      // If in editMode, we wait for parent to push initial data
+      if (editMode) {
+        console.log('[VisualEditor Child] In edit_mode, skipping internal fetch, waiting for parent.');
+        setIsLoading(false);
+        return;
+      }
+
       setIsLoading(true);
       try {
-        const { data, error } = await supabase
+        const { data, error: fetchError } = await supabase
           .from('static_pages')
           .select('content')
           .eq('slug', slug)
@@ -242,7 +251,6 @@ export const VisualEditorProvider = ({ children, slug }: VisualEditorProviderPro
 
         if (data && data.content) {
           try {
-             // We try to parse content as JSON. If it fails, maybe it was normal HTML.
             const parsed = JSON.parse(data.content);
             setContentData(parsed);
           } catch (e) {
@@ -258,7 +266,18 @@ export const VisualEditorProvider = ({ children, slug }: VisualEditorProviderPro
     };
 
     fetchContent();
-  }, [slug]);
+  }, [slug, editMode]);
+
+  // Handle signalling Readiness to Admin
+  useEffect(() => {
+    if (editMode && !isLoading) {
+      console.log('[VisualEditor Child] Signalling READY to parent for slug:', slug);
+      window.parent.postMessage({ type: 'VISUAL_EDIT_READY', slug }, '*');
+      
+      // Also request initial data sync just in case
+      window.parent.postMessage({ type: 'VISUAL_EDIT_SYNC_REQUEST', slug }, '*');
+    }
+  }, [editMode, isLoading, slug]);
 
   return (
     <VisualEditorContext.Provider value={{ 

@@ -32,7 +32,7 @@ export function useVisualEditor(iframeRef: React.RefObject<HTMLIFrameElement>) {
 
     // Determine iframe source
     useEffect(() => {
-        const frontendUrl = import.meta.env.VITE_FRONTEND_URL || 'http://localhost:8081';
+        const frontendUrl = import.meta.env.VITE_FRONTEND_URL || 'http://localhost:8080';
         // For new pages, we use the home page as a canvas
         const previewSlug = isNewPage ? '' : urlSlug;
         setIframeSrc(`${frontendUrl}/${previewSlug}?edit_mode=true${isNewPage ? '&new=true' : ''}`);
@@ -150,8 +150,9 @@ export function useVisualEditor(iframeRef: React.RefObject<HTMLIFrameElement>) {
                     setPageMetadata(prev => ({ ...prev, title: `Trang ${data.slug || ''}` }));
                 }
             }
-        } else if (data.type === 'VISUAL_EDIT_READY') {
-            console.log('[VisualEditor Parent] Iframe ready, sending current sections:', sections.length);
+        } else if (data.type === 'VISUAL_EDIT_READY' || data.type === 'VISUAL_EDIT_SYNC_REQUEST') {
+            const iframeSlug = data.slug || 'unknown';
+            console.log(`[VisualEditor Parent] Iframe READY/SYNC_REQ (${iframeSlug}), pushing ${sections.length} sections to child.`);
             sendToIframe('VISUAL_EDIT_UPDATE_DATA', { sections });
         }
     }, [sections, sendToIframe]);

@@ -21,10 +21,38 @@ const MainNavigation = ({ isMobile = false }: MainNavigationProps) => {
       setIsLoading(true);
       const result = await navigationService.getNavigationItems();
       if (result.success && result.data.length > 0) {
-        const headerItems = result.data.filter(item => 
+        // 1. Filter for header items
+        const allHeaderItems = result.data.filter(item => 
           (item.position === 'header' || !item.position) && item.path !== '/'
         );
-        setNavItems(headerItems);
+
+        // 2. Build the tree
+        const itemMap: Record<string, NavigationItem> = {};
+        const roots: NavigationItem[] = [];
+
+        // First pass: Create a map of items and filter for root items
+        allHeaderItems.forEach(item => {
+          itemMap[item.id] = { ...item, children: [] };
+        });
+
+        // Second pass: Assign children to parents or to root
+        allHeaderItems.forEach(item => {
+          const mappedItem = itemMap[item.id];
+          if (item.parent_id && itemMap[item.parent_id]) {
+            itemMap[item.parent_id].children?.push(mappedItem);
+          } else if (!item.parent_id) {
+            roots.push(mappedItem);
+          }
+        });
+
+        // 3. Sort children by order_index
+        roots.forEach(root => {
+          if (root.children) {
+            root.children.sort((a, b) => (a.order_index || 0) - (b.order_index || 0));
+          }
+        });
+
+        setNavItems(roots);
       }
       setIsLoading(false);
     };

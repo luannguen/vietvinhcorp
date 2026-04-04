@@ -38,7 +38,7 @@ const SectionDispatcher: React.FC<{ section: SectionProps }> = ({ section }) => 
     switch (section.type) {
         case 'hero':
             return (
-                <div className={cn(
+                <div id={section.id} className={cn(
                     "py-20 flex flex-col items-center text-center px-4",
                     section.props.alignment === 'left' && "items-start text-left",
                     section.props.alignment === 'right' && "items-end text-right"
@@ -51,7 +51,7 @@ const SectionDispatcher: React.FC<{ section: SectionProps }> = ({ section }) => 
             );
         case 'rich_text':
             return (
-                <div className="py-12 bg-white">
+                <div id={section.id} className="py-12 bg-white">
                     <div className="container-custom">
                         <div 
                             className="prose prose-lg max-w-none"
@@ -64,7 +64,7 @@ const SectionDispatcher: React.FC<{ section: SectionProps }> = ({ section }) => 
             const columns = section.props.columns || 3;
             const gap = (section.props.gap || 8) * 4; // Assuming Tailwind spacing scale
             return (
-                <div className={cn(
+                <div id={section.id} className={cn(
                     "py-16",
                     section.props.padding === 'small' ? 'py-8' : 
                     section.props.padding === 'large' ? 'py-24' : 'py-16'
@@ -81,7 +81,7 @@ const SectionDispatcher: React.FC<{ section: SectionProps }> = ({ section }) => 
             );
         case 'cards':
             return (
-                <div className="py-16 bg-slate-50">
+                <div id={section.id} className="py-16 bg-slate-50">
                     <div className="container-custom text-center">
                         <h2 className="text-3xl font-bold mb-12">{section.props.title || 'Danh sách Card'}</h2>
                         <div className={`grid grid-cols-1 md:grid-cols-${section.props.columns || 3} gap-8`}>
@@ -98,7 +98,7 @@ const SectionDispatcher: React.FC<{ section: SectionProps }> = ({ section }) => 
             );
         case 'features':
             return (
-                <div className="py-20 bg-primary/5">
+                <div id={section.id} className="py-20 bg-primary/5">
                     <div className="container-custom text-center">
                         <h2 className="text-3xl font-bold mb-4">{section.props.title || 'Tính năng nổi bật'}</h2>
                         <p className="text-muted-foreground mb-12 max-w-2xl mx-auto">{section.props.subtitle || 'Giải pháp toàn diện cho mọi nhu cầu của khách hàng.'}</p>

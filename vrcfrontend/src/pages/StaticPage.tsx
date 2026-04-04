@@ -4,6 +4,8 @@ import { pageService, StaticPage as IStaticPage } from '@/services/pageService';
 import { Loader2 } from 'lucide-react';
 import NotFound from './NotFound';
 import { VisualSectionRenderer } from '@/components/visual-editor/VisualSectionRenderer';
+import { VisualEditorProvider } from '@/context/VisualEditorContext';
+import { VisualPageRenderer } from '@/components/admin/builder/VisualPageRenderer';
 
 interface StaticPageProps {
     slug?: string;
@@ -56,47 +58,20 @@ const StaticPage: React.FC<StaticPageProps> = ({ slug: propSlug }) => {
         fetchPage();
     }, [slug]);
 
-    // Handle messages from Admin Editor
+    // Handle hash scrolling
     useEffect(() => {
-        if (!isEditMode) return;
+        if (!loading && window.location.hash) {
+            const id = window.location.hash.substring(1);
+            setTimeout(() => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                }
+            }, 500); // Give it a moment to render
+        }
+    }, [loading, window.location.hash]);
 
-        const handleMessage = (event: MessageEvent) => {
-            const { type, ...data } = event.data;
-
-            switch (type) {
-                case 'VISUAL_EDIT_UPDATE_DATA':
-                    if (data.sections) {
-                        setEditableData(data);
-                    }
-                    break;
-                case 'VISUAL_EDIT_IMAGE_SELECTED':
-                    const { sectionId, fieldKey, imageUrl } = data;
-                    if (sectionId && editableData?.sections) {
-                        setEditableData((prev: any) => {
-                            const newSections = (prev?.sections || []).map((s: any) => 
-                                s.id === sectionId 
-                                    ? { ...s, props: { ...s.props, [fieldKey]: imageUrl } } 
-                                    : s
-                            );
-                            return { ...prev, sections: newSections };
-                        });
-                    }
-                    break;
-                case 'VISUAL_EDIT_ADD_SECTION':
-                    // handled by admin mostly, but can be synced back
-                    break;
-                default:
-                    break;
-            }
-        };
-
-        window.addEventListener('message', handleMessage);
-        
-        // Signal to parent that we are ready
-        window.parent.postMessage({ type: 'VISUAL_EDIT_READY' }, '*');
-
-        return () => window.removeEventListener('message', handleMessage);
-    }, [isEditMode]);
+    // Fetching and error handling logic remains above
 
     if (loading) {
         return (
@@ -113,12 +88,18 @@ const StaticPage: React.FC<StaticPageProps> = ({ slug: propSlug }) => {
     // Render Visual Editor mode if enabled and we have sections
     if (isEditMode || (editableData && editableData.sections)) {
         return (
-            <main className="flex-grow">
-                <VisualSectionRenderer 
-                    sections={editableData?.sections || []} 
-                    isEditMode={isEditMode} 
-                />
-            </main>
+            <VisualEditorProvider slug={slug || ''}>
+                <main className="flex-grow">
+                    {isEditMode ? (
+                        <VisualPageRenderer />
+                    ) : (
+                        <VisualSectionRenderer 
+                            sections={editableData?.sections || []} 
+                            isEditMode={false} 
+                        />
+                    )}
+                </main>
+            </VisualEditorProvider>
         );
     }
 
