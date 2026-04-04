@@ -17,6 +17,7 @@ import {
   QualityPrinciplesBlock
 } from './AboutBlocks';
 import { TeamHeroBlock, TeamGridBlock } from './TeamBlocks';
+import { RefrigerationBlock, MEBlock, DataCenterBlock, ServiceLifecycleBlock, ContactFormBlock } from './IndustryBlocks';
 
 // Function to register all blocks
 export const registerAllBlocks = () => {
@@ -295,6 +296,74 @@ export const registerAllBlocks = () => {
       { id: 'description', label: 'Mô tả', type: 'textarea' }
     ]
   });
+
+  // --- Industry Blocks ---
+  registerBlock({
+    type: 'refrigeration',
+    name: 'Industry: Hệ thống lạnh',
+    component: RefrigerationBlock,
+    defaultProps: {
+      title: 'Hệ Thống Lạnh Công Nghiệp',
+      description: 'VVC cung cấp các giải pháp làm lạnh chuyên sâu...',
+    },
+    fields: [
+      { id: 'title', label: 'Tiêu đề', type: 'text' },
+      { id: 'description', label: 'Mô tả', type: 'textarea' },
+      { id: 'image', label: 'Hình ảnh', type: 'image' }
+    ]
+  });
+
+  registerBlock({
+    type: 'me_systems',
+    name: 'Industry: Cơ điện (M&E)',
+    component: MEBlock,
+    defaultProps: {
+      title: 'Tổng Thầu Cơ Điện (M&E)',
+      description: 'Giải pháp cơ điện toàn diện cho các công trình...',
+    },
+    fields: [
+      { id: 'title', label: 'Tiêu đề', type: 'text' },
+      { id: 'description', label: 'Mô tả', type: 'textarea' },
+      { id: 'image', label: 'Hình ảnh', type: 'image' }
+    ]
+  });
+
+  registerBlock({
+    type: 'data_center',
+    name: 'Industry: Trung tâm dữ liệu',
+    component: DataCenterBlock,
+    defaultProps: {
+      title: 'Trung Tâm Dữ Liệu & Quản Lý Tập Trung',
+      description: 'Tư vấn và triển khai hạ tầng trung tâm dữ liệu...',
+    },
+    fields: [
+      { id: 'title', label: 'Tiêu đề', type: 'text' },
+      { id: 'description', label: 'Mô tả', type: 'textarea' },
+      { id: 'image', label: 'Hình ảnh', type: 'image' }
+    ]
+  });
+
+  registerBlock({
+    type: 'service_lifecycle',
+    name: 'Industry: Vòng đời dịch vụ',
+    component: ServiceLifecycleBlock,
+    defaultProps: {
+      title: 'Vòng Đời Dịch Vụ Toàn Diện',
+      description: 'Chúng tôi đồng hành cùng khách hàng từ khâu lên ý tưởng...',
+    },
+    fields: [
+      { id: 'title', label: 'Tiêu đề', type: 'text' },
+      { id: 'description', label: 'Mô tả', type: 'textarea' }
+    ]
+  });
+
+  registerBlock({
+    type: 'contact_form',
+    name: 'General: Contact Form',
+    component: ContactFormBlock,
+    defaultProps: {},
+    fields: []
+  });
 };
 
 export { 
@@ -314,5 +383,10 @@ export {
   ProductionFacilitiesBlock,
   QualityPrinciplesBlock,
   TeamHeroBlock,
-  TeamGridBlock
+  TeamGridBlock,
+  RefrigerationBlock,
+  MEBlock,
+  DataCenterBlock,
+  ServiceLifecycleBlock,
+  ContactFormBlock
 };
