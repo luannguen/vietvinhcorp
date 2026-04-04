@@ -6,6 +6,10 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import SEOHelmet from "@/components/common/SEOHelmet";
 import MainLayout from "./components/layouts/MainLayout";
+import { registerAllBlocks } from "./components/sections";
+
+// Register all visual editor blocks
+registerAllBlocks();
 
 // Loading component
 const PageLoader = () => (

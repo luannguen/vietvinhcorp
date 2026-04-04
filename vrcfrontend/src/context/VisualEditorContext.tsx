@@ -146,8 +146,12 @@ export const VisualEditorProvider = ({ children, slug }: VisualEditorProviderPro
     setContentData((prev: any) => {
       // Only initialize if context doesn't have sections yet
       if (!prev.sections || prev.sections.length === 0) {
-        console.log('[VisualEditorContext] Hydrating context with sections:', sections.length);
-        return { ...prev, sections };
+        const sectionsWithIds = sections.map((s: any, idx: number) => ({
+          ...s,
+          id: s.id || `sec_${Date.now()}_${idx}_${Math.random().toString(36).substr(2, 4)}`
+        }));
+        console.log('[VisualEditorContext] Hydrating context with sections:', sectionsWithIds.length);
+        return { ...prev, sections: sectionsWithIds };
       }
       return prev;
     });

@@ -4,11 +4,12 @@ import { useVisualEditor } from '../../context/VisualEditorContext';
 interface EditableElementProps {
   fieldKey: string;
   defaultContent: string;
-  type?: 'text' | 'image';
+  type?: 'text' | 'image' | 'rich-text';
   className?: string;
   tagName?: keyof JSX.IntrinsicElements;
   sectionId?: string; // Explicit section ID prop
   children?: React.ReactNode;
+  onUpdate?: (value: string) => void; // Optional custom update handler
 }
 
 export const EditableElement = ({
@@ -19,6 +20,7 @@ export const EditableElement = ({
   tagName,
   sectionId: explicitSectionId,
   children,
+  onUpdate,
 }: EditableElementProps) => {
   const { 
     editMode, 
@@ -51,6 +53,11 @@ export const EditableElement = ({
 
   // Handle data updates
   const handleContentUpdate = (value: string) => {
+    if (onUpdate) {
+      onUpdate(value);
+      return;
+    }
+
     if (effectiveSectionId) {
       updateSectionProps(effectiveSectionId, { [fieldKey]: value });
     } else {
@@ -100,10 +107,14 @@ export const EditableElement = ({
     }
   };
 
-  // Sync ref when not in focus (only for text)
+  // Sync ref when not in focus (only for text and rich-text)
   useEffect(() => {
-    if (type === 'text' && contentRef.current && contentRef.current.textContent !== currentContent) {
-      contentRef.current.textContent = currentContent;
+    if (contentRef.current) {
+      if (type === 'text' && contentRef.current.textContent !== currentContent) {
+        contentRef.current.textContent = currentContent;
+      } else if (type === 'rich-text' && contentRef.current.innerHTML !== currentContent) {
+        contentRef.current.innerHTML = currentContent;
+      }
     }
   }, [currentContent, type]);
 
@@ -123,23 +134,31 @@ export const EditableElement = ({
         return child;
       }) || <img src={currentContent} className={className} alt="" />;
     }
+    if (type === 'rich-text') {
+      return (
+        <Tag 
+          className={className} 
+          dangerouslySetInnerHTML={{ __html: currentContent }} 
+        />
+      );
+    }
     return <Tag className={className}>{currentContent}</Tag>;
   }
 
-  // Edit Mode for Text
-  if (type === 'text') {
+  // Edit Mode for Text / Rich Text
+  if (type === 'text' || type === 'rich-text') {
     return (
       <Tag
         ref={contentRef}
         contentEditable
         suppressContentEditableWarning
         onBlur={(e: React.FocusEvent<HTMLElement>) => {
-          const newText = e.currentTarget.textContent || '';
-          handleContentUpdate(newText);
+          const newValue = type === 'rich-text' ? e.currentTarget.innerHTML : (e.currentTarget.textContent || '');
+          handleContentUpdate(newValue);
         }}
         className={`outline-dashed outline-1 outline-blue-400 hover:outline-2 hover:bg-blue-50/50 transition-all cursor-text min-w-[20px] inline-block ${className}`}
       >
-        {currentContent}
+        {type === 'rich-text' ? null : currentContent}
       </Tag>
     );
   }

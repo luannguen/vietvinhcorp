@@ -133,6 +133,23 @@ export const BLOCK_LIBRARY = [
             { id: 'icon_image', label: 'Icon/Ảnh minh họa', type: 'image' }
         ]
     },
+    {
+        type: 'media_section',
+        name: 'Media & Content',
+        icon: '🖼️',
+        fields: [
+            { id: 'title', label: 'Tiêu đề', type: 'text' },
+            { id: 'layout', label: 'Bố cục', type: 'select', options: [
+                { label: 'Ảnh bên Trái', value: 'image-left' },
+                { label: 'Ảnh bên Phải', value: 'image-right' },
+                { label: 'Ảnh trên Đầu', value: 'image-top' },
+                { label: 'Ảnh dưới Cùng', value: 'image-bottom' }
+            ]},
+            { id: 'image', label: 'Hình ảnh', type: 'image' },
+            { id: 'imageWidth', label: 'Độ rộng ảnh (%)', type: 'number' },
+            { id: 'description', label: 'Mô tả', type: 'textarea' }
+        ]
+    },
 ];
 
 

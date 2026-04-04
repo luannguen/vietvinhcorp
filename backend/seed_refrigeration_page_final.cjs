@@ -30,70 +30,58 @@ const pageContent = {
     },
     {
       id: 'tu-lanh',
-      type: 'rich_text',
+      type: 'media_section',
       props: {
-        content: `
-          <h2 id="tu-lanh" style="color: #0c4a6e; font-size: 2.25rem; font-weight: bold; margin-bottom: 1.5rem;">HỆ THỐNG TỦ LẠNH CÔNG NGHIỆP</h2>
-          <div style="display: flex; flex-direction: column; gap: 2rem; align-items: center; margin-bottom: 3rem;">
-            <img src="industrial_refrigerator_display_1775261885220.png" alt="Tủ lạnh công nghiệp" style="width: 100%; border-radius: 1rem; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);" />
-            <div>
-              <p style="font-size: 1.125rem; line-height: 1.75; color: #4b5563; margin-bottom: 1rem;">
-                Hệ thống tủ lạnh công nghiệp của VVC được thiết kế dành riêng cho các chuỗi siêu thị, nhà hàng và khách sạn lớn. Chúng tôi tập trung vào việc duy trì nhiệt độ ổn định tuyệt đối để đảm bảo độ tươi ngon của thực phẩm.
-              </p>
-              <ul style="list-style-type: disc; margin-left: 1.5rem; color: #4b5563; font-size: 1.125rem;">
-                <li>Tủ trưng bày thực phẩm tươi sống với kính cường lực chống đọng sương.</li>
-                <li>Tủ đông đứng mặt kính, tủ đông đảo cho siêu thị.</li>
-                <li>Hệ thống máy nén trung tâm vận hành êm ái, độ ồn thấp.</li>
-                <li>Thiết kế sang trọng, tối ưu hóa không gian trưng bày.</li>
-              </ul>
-            </div>
-          </div>
+        title: 'HỆ THỐNG TỦ LẠNH CÔNG NGHIỆP',
+        image: 'industrial_refrigerator_display_1775261885220.png',
+        layout: 'image-right',
+        imageWidth: 50,
+        description: `
+          <p>Hệ thống tủ lạnh công nghiệp của VVC được thiết kế dành riêng cho các chuỗi siêu thị, nhà hàng và khách sạn lớn. Chúng tôi tập trung vào việc duy trì nhiệt độ ổn định tuyệt đối để đảm bảo độ tươi ngon của thực phẩm.</p>
+          <ul>
+            <li>Tủ trưng bày thực phẩm tươi sống với kính cường lực chống đọng sương.</li>
+            <li>Tủ đông đứng mặt kính, tủ đông đảo cho siêu thị.</li>
+            <li>Hệ thống máy nén trung tâm vận hành êm ái, độ ồn thấp.</li>
+            <li>Thiết kế sang trọng, tối ưu hóa không gian trưng bày.</li>
+          </ul>
         `
       }
     },
     {
       id: 'kho-lanh',
-      type: 'rich_text',
+      type: 'media_section',
       props: {
-        content: `
-          <h2 id="kho-lanh" style="color: #0c4a6e; font-size: 2.25rem; font-weight: bold; margin-bottom: 1.5rem;">HỆ THỐNG KHO LẠNH CHUYÊN DỤNG</h2>
-          <div style="display: flex; flex-direction: column; gap: 2rem; align-items: center; margin-bottom: 3rem;">
-            <img src="cold_storage_warehouse_1775261855807.png" alt="Kho lạnh công nghiệp" style="width: 100%; border-radius: 1rem; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);" />
-            <div>
-              <p style="font-size: 1.125rem; line-height: 1.75; color: #4b5563; margin-bottom: 1rem;">
-                VVC là chuyên gia hàng đầu trong việc xây dựng các kho lạnh quy mô lớn từ 10 đến 10.000 tấn. Chúng tôi áp dụng các tiêu chuẩn quốc tế trong cách nhiệt và vận hành máy móc.
-              </p>
-              <ul style="list-style-type: disc; margin-left: 1.5rem; color: #4b5563; font-size: 1.125rem;">
-                <li>Kho bảo quản nông sản, trái cây xuất khẩu (nhiệt độ dương).</li>
-                <li>Kho trữ đông thủy hải sản, thịt gia súc (nhiệt độ âm sâu -18°C đến -25°C).</li>
-                <li>Kho lạnh dược phẩm đạt chuẩn GSP.</li>
-                <li>Panel cách nhiệt PIR chống cháy, khóa camlock hiện đại.</li>
-              </ul>
-            </div>
-          </div>
+        title: 'HỆ THỐNG KHO LẠNH CHUYÊN DỤNG',
+        image: 'cold_storage_warehouse_1775261855807.png',
+        layout: 'image-left',
+        imageWidth: 50,
+        description: `
+          <p>VVC là chuyên gia hàng đầu trong việc xây dựng các kho lạnh quy mô lớn từ 10 đến 10.000 tấn. Chúng tôi áp dụng các tiêu chuẩn quốc tế trong cách nhiệt và vận hành máy móc.</p>
+          <ul>
+            <li>Kho bảo quản nông sản, trái cây xuất khẩu (nhiệt độ dương).</li>
+            <li>Kho trữ đông thủy hải sản, thịt gia súc (nhiệt độ âm sâu -18°C đến -25°C).</li>
+            <li>Kho lạnh dược phẩm đạt chuẩn GSP.</li>
+            <li>Panel cách nhiệt PIR chống cháy, khóa camlock hiện đại.</li>
+          </ul>
         `
       }
     },
     {
       id: 'cap-dong',
-      type: 'rich_text',
+      type: 'media_section',
       props: {
-        content: `
-          <h2 id="cap-dong" style="color: #0c4a6e; font-size: 2.25rem; font-weight: bold; margin-bottom: 1.5rem;">HỆ THỐNG CẤP ĐÔNG NHANH (IQF & AIR BLAST)</h2>
-          <div style="display: flex; flex-direction: column; gap: 2rem; align-items: center; margin-bottom: 3rem;">
-            <img src="flash_freezing_system_1775261870309.png" alt="Hệ thống cấp đông nhanh" style="width: 100%; border-radius: 1rem; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);" />
-            <div>
-              <p style="font-size: 1.125rem; line-height: 1.75; color: #4b5563; margin-bottom: 1rem;">
-                Công nghệ cấp đông nhanh của VVC giúp giữ trọn vẹn giá trị dinh dưỡng và màu sắc tự nhiên của sản phẩm. Đây là yếu tố then chốt cho các doanh nghiệp xuất khẩu thực phẩm cao cấp.
-              </p>
-              <ul style="list-style-type: disc; margin-left: 1.5rem; color: #4b5563; font-size: 1.125rem;">
-                <li>Hệ thống băng chuyền IQF cho tôm, cá, trái cây cắt miếng.</li>
-                <li>Hầm đông gió (Air Blast Freezer) công suất lớn.</li>
-                <li>Tốc độ hạ nhiệt cực nhanh, ngăn chặn sự hình thành tinh thể đá lớn.</li>
-                <li>Sử dụng gas NH3 hoặc Freon tùy theo quy mô và yêu cầu kỹ thuật.</li>
-              </ul>
-            </div>
-          </div>
+        title: 'HỆ THỐNG CẤP ĐÔNG NHANH (IQF & AIR BLAST)',
+        image: 'flash_freezing_system_1775261870309.png',
+        layout: 'image-right',
+        imageWidth: 50,
+        description: `
+          <p>Công nghệ cấp đông nhanh của VVC giúp giữ trọn vẹn giá trị dinh dưỡng và màu sắc tự nhiên của sản phẩm. Đây là yếu tố then chốt cho các doanh nghiệp xuất khẩu thực phẩm cao cấp.</p>
+          <ul>
+            <li>Hệ thống băng chuyền IQF cho tôm, cá, trái cây cắt miếng.</li>
+            <li>Hầm đông gió (Air Blast Freezer) công suất lớn.</li>
+            <li>Tốc độ hạ nhiệt cực nhanh, ngăn chặn sự hình thành tinh thể đá lớn.</li>
+            <li>Sử dụng gas NH3 hoặc Freon tùy theo quy mô và yêu cầu kỹ thuật.</li>
+          </ul>
         `
       }
     }

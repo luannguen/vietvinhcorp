@@ -5,6 +5,7 @@ import { GridBlock } from './GridBlock';
 import { CardBlock } from './CardBlock';
 import { FeatureListBlock } from './FeatureListBlock';
 import { ImageBlock } from './ImageBlock';
+import { MediaSectionBlock } from './MediaSectionBlock';
 import { 
   AboutHeroBlock, 
   HistoryBlock, 
@@ -30,6 +31,9 @@ export const registerAllBlocks = () => {
     fields: [
       { id: 'title', label: 'Tiêu đề', type: 'text' },
       { id: 'description', label: 'Mô tả', type: 'textarea' },
+      { id: 'backgroundImage', label: 'Ảnh nền', type: 'image' },
+      { id: 'buttonText', label: 'Chữ trên nút', type: 'text' },
+      { id: 'buttonLink', label: 'Liên kết nút', type: 'text' },
       { id: 'alignment', label: 'Căn lề', type: 'select', options: [
         { label: 'Trái', value: 'left' },
         { label: 'Giữa', value: 'center' },
@@ -85,7 +89,12 @@ export const registerAllBlocks = () => {
     },
     fields: [
       { id: 'title', label: 'Tiêu đề lưới card', type: 'text' },
-      { id: 'columns', label: 'Số cột hiển thị', type: 'number' }
+      { id: 'columns', label: 'Số cột hiển thị', type: 'number' },
+      { id: 'style', label: 'Kiểu dáng', type: 'select', options: [
+        { label: 'Đổ bóng', value: 'elevated' },
+        { label: 'Viền', value: 'bordered' },
+        { label: 'Phẳng', value: 'flat' }
+      ]}
     ]
   });
 
@@ -104,7 +113,8 @@ export const registerAllBlocks = () => {
     },
     fields: [
       { id: 'title', label: 'Tiêu đề chính', type: 'text' },
-      { id: 'subtitle', label: 'Tiêu đề phụ', type: 'textarea' }
+      { id: 'subtitle', label: 'Tiêu đề phụ', type: 'textarea' },
+      { id: 'columns', label: 'Số cột', type: 'number' }
     ]
   });
 
@@ -123,6 +133,37 @@ export const registerAllBlocks = () => {
       { id: 'alt', label: 'Mô tả (Alt)', type: 'text' },
       { id: 'caption', label: 'Chú thích', type: 'text' },
       { id: 'width', label: 'Độ rộng (%)', type: 'number' }
+    ]
+  });
+  
+  registerBlock({
+    type: 'media_section',
+    name: 'Media & Content',
+    component: MediaSectionBlock,
+    defaultProps: {
+      title: 'Media Section Title',
+      description: '<p>Edit your content here...</p>',
+      image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80',
+      layout: 'image-right',
+      imageWidth: 50,
+      bgColor: 'white'
+    },
+    fields: [
+      { id: 'title', label: 'Tiêu đề', type: 'text' },
+      { id: 'description', label: 'Nội dung', type: 'rich-text' },
+      { id: 'image', label: 'Hình ảnh', type: 'image' },
+      { id: 'layout', label: 'Bố cục', type: 'select', options: [
+        { label: 'Ảnh bên trái', value: 'image-left' },
+        { label: 'Ảnh bên phải', value: 'image-right' },
+        { label: 'Ảnh ở trên', value: 'image-top' },
+        { label: 'Ảnh ở dưới', value: 'image-bottom' }
+      ]},
+      { id: 'imageWidth', label: 'Độ rộng ảnh (%)', type: 'number' },
+      { id: 'bgColor', label: 'Màu nền', type: 'select', options: [
+        { label: 'Trắng', value: 'white' },
+        { label: 'Muted', value: 'muted' },
+        { label: 'Xanh nhạt', value: 'primary-light' }
+      ]}
     ]
   });
 
@@ -230,6 +271,7 @@ export {
   CardBlock, 
   FeatureListBlock,
   ImageBlock,
+  MediaSectionBlock,
   AboutHeroBlock,
   HistoryBlock,
   VisionMissionBlock,

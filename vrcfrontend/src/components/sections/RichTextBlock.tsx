@@ -1,17 +1,19 @@
-import React from 'react';
+import { EditableElement } from '../admin/EditableElement';
 
 interface RichTextBlockProps {
   content: string;
   padding?: 'none' | 'small' | 'medium' | 'large';
   maxWidth?: string;
   className?: string;
+  sectionId?: string;
 }
 
 export const RichTextBlock = ({ 
   content = "Enter content here...", 
   padding = 'medium',
   maxWidth = '800px',
-  className = ''
+  className = '',
+  sectionId
 }: RichTextBlockProps) => {
   const paddingClasses = {
     none: 'py-0',
@@ -22,11 +24,16 @@ export const RichTextBlock = ({
 
   return (
     <div className={`container-custom ${paddingClasses[padding]} ${className}`}>
-      <div 
-        className="prose prose-lg dark:prose-invert max-w-none prose-headings:text-primary prose-a:text-secondary"
-        style={{ maxWidth: maxWidth }}
-        dangerouslySetInnerHTML={{ __html: content }}
-      />
+      <div style={{ maxWidth: maxWidth }} className="mx-auto">
+        <EditableElement 
+          tagName="div" 
+          fieldKey="content" 
+          type="rich-text"
+          sectionId={sectionId} 
+          defaultContent={content}
+          className="prose prose-lg dark:prose-invert max-w-none prose-headings:text-primary prose-a:text-secondary"
+        />
+      </div>
     </div>
   );
 };

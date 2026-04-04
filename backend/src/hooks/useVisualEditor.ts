@@ -82,7 +82,12 @@ export function useVisualEditor(iframeRef: React.RefObject<HTMLIFrameElement>) {
                 if (page.content) {
                     try {
                         const parsed = JSON.parse(page.content);
-                        setSections(parsed.sections || []);
+                        const rawSections = parsed.sections || [];
+                        const processedSections = rawSections.map((s: any, idx: number) => ({
+                            ...s,
+                            id: s.id || `sec_${Date.now()}_${idx}_${Math.random().toString(36).substr(2, 4)}`
+                        }));
+                        setSections(processedSections);
                     } catch (e) {
                         setSections([]);
                     }

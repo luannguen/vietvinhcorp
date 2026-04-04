@@ -1,4 +1,5 @@
-import React from 'react';
+import { EditableElement } from '../admin/EditableElement';
+import { useVisualEditor } from '../../context/VisualEditorContext';
 
 interface CardItem {
   id: string;
@@ -15,6 +16,7 @@ interface CardBlockProps {
   style?: 'elevated' | 'bordered' | 'flat';
   padding?: 'none' | 'small' | 'medium' | 'large';
   title?: string;
+  sectionId?: string;
 }
 
 export const CardBlock = ({ 
@@ -22,8 +24,11 @@ export const CardBlock = ({
   columns = 3, 
   style = 'elevated', 
   padding = 'medium',
-  title
+  title,
+  sectionId
 }: CardBlockProps) => {
+  const { updateSectionProps } = useVisualEditor();
+  
   const paddingClasses = {
     none: 'py-0',
     small: 'py-8',
@@ -44,29 +49,69 @@ export const CardBlock = ({
     flat: 'bg-gray-50'
   };
 
+  const handleUpdateItem = (index: number, key: keyof CardItem, value: string) => {
+    if (!sectionId) return;
+    const newItems = [...items];
+    newItems[index] = { ...newItems[index], [key]: value };
+    updateSectionProps(sectionId, { items: newItems });
+  };
+
   return (
     <div className={`container-custom ${paddingClasses[padding]}`}>
-      {title && <h2 className="text-3xl font-bold text-primary mb-12 text-center">{title}</h2>}
+      {title !== undefined && (
+        <EditableElement 
+          tagName="h2" 
+          fieldKey="title" 
+          sectionId={sectionId} 
+          defaultContent={title} 
+          className="text-3xl font-bold text-primary mb-12 text-center" 
+        />
+      )}
       <div className={`grid ${gridCols[columns]} gap-8`}>
-        {items.map((item) => (
+        {items.map((item, idx) => (
           <div 
-            key={item.id} 
+            key={item.id || idx} 
             className={`rounded-xl overflow-hidden transition-all duration-300 transform hover:-translate-y-1 ${cardStyles[style]}`}
           >
-            {item.image && (
-              <div className="aspect-video overflow-hidden">
-                <img src={item.image} className="w-full h-full object-cover" alt={item.title} />
-              </div>
-            )}
+            <div className="aspect-video overflow-hidden bg-primary/5 flex items-center justify-center">
+              <EditableElement 
+                type="image" 
+                fieldKey={`items.${idx}.image`} 
+                sectionId={sectionId} 
+                defaultContent={item.image || item.icon || '/assets/placeholder.svg'}
+                onUpdate={(val) => handleUpdateItem(idx, item.image ? 'image' : 'icon' as any, val)}
+                className="w-full h-full"
+              >
+                {item.image ? (
+                  <img src={item.image} className="w-full h-full object-cover" alt={item.title} />
+                ) : item.icon && item.icon.startsWith('<svg') ? (
+                  <div dangerouslySetInnerHTML={{ __html: item.icon }} className="w-12 h-12 text-primary" />
+                ) : (
+                  <img src={item.icon || '/assets/placeholder.svg'} className="w-12 h-12 object-contain text-primary" alt="" />
+                )}
+              </EditableElement>
+            </div>
             <div className="p-6">
-              <h3 className="text-xl font-bold text-primary mb-3">{item.title}</h3>
-              <p className="text-muted-foreground leading-relaxed">
-                {item.description}
-              </p>
+              <EditableElement 
+                tagName="h3" 
+                fieldKey={`items.${idx}.title`} 
+                sectionId={sectionId} 
+                defaultContent={item.title} 
+                className="text-xl font-bold text-primary mb-3 block" 
+                onUpdate={(val) => handleUpdateItem(idx, 'title', val)}
+              />
+              <EditableElement 
+                tagName="p" 
+                fieldKey={`items.${idx}.description`} 
+                sectionId={sectionId} 
+                defaultContent={item.description} 
+                className="text-muted-foreground leading-relaxed block" 
+                onUpdate={(val) => handleUpdateItem(idx, 'description', val)}
+              />
               {item.link && (
-                <a href={item.link} className="mt-4 inline-flex items-center text-secondary font-semibold hover:gap-2 transition-all">
+                <div className="mt-4 inline-flex items-center text-secondary font-semibold hover:gap-2 transition-all cursor-pointer">
                   Chi tiết <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/></svg>
-                </a>
+                </div>
               )}
             </div>
           </div>

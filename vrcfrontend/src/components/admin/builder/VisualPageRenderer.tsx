@@ -4,8 +4,7 @@ import { getBlock } from './SectionRegistry';
 import { EditWrapper } from './EditWrapper';
 
 export const VisualPageRenderer = ({ customSections }: { customSections?: any[] }) => {
-    const { editMode, contentData, slug, syncSections } = useVisualEditor();
-    const [selectedSectionId, setSelectedSectionId] = useState<string | null>(null);
+    const { editMode, contentData, slug, syncSections, selectedSectionId, setSelectedSectionId } = useVisualEditor();
 
     // Dynamic sections from JSON content or custom fallback
     const sections = (contentData?.sections && contentData.sections.length > 0) 
@@ -82,7 +81,7 @@ export const VisualPageRenderer = ({ customSections }: { customSections?: any[] 
                 }
 
                 const Component = blockDef.component;
-                const sectionId = section.id || `section-${index}`;
+                const sectionId = section.id;
 
                 // Wrap in a standard section container
                 const content = (
