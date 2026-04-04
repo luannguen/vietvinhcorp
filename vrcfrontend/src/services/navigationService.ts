@@ -12,21 +12,7 @@ export const navigationService = {
 
             if (error) throw error;
 
-            // Build tree structure
-            const items = data as NavigationItem[];
-            const rootItems = items.filter(i => !i.parent_id);
-
-            const buildTree = (parents: NavigationItem[]): NavigationItem[] => {
-                return parents.map(parent => {
-                    const children = items.filter(i => i.parent_id === parent.id);
-                    if (children.length > 0) {
-                        return { ...parent, children: buildTree(children) };
-                    }
-                    return parent;
-                });
-            };
-
-            return success(buildTree(rootItems));
+            return success(data as NavigationItem[]);
         } catch (error) {
             console.error('Error fetching navigation:', error);
             return failure('Failed to fetch navigation items');

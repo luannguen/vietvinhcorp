@@ -30,7 +30,10 @@ export default function MenuManager() {
         setLoading(true);
         const result = await navigationService.getNavigationItems();
         if (result.success) {
-            setItems(result.data?.filter(i => (i.position || 'header') === position) || []);
+            // Only show root items for the main sorting list
+            const headerOrFooter = result.data?.filter(i => (i.position || 'header') === position) || [];
+            const roots = headerOrFooter.filter(i => !i.parent_id);
+            setItems(roots);
         } else {
             toast.error(t('no_menu_items'));
         }
@@ -46,13 +49,13 @@ export default function MenuManager() {
         setIsEditing(true);
     };
 
-    const handleCreate = () => {
         setEditingItem({
             label: '',
             path: '',
             is_active: true,
             order_index: items.length + 1,
             position: position,
+            parent_id: null,
             children: []
         });
         setIsEditing(true);

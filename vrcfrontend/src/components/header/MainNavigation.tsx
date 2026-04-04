@@ -21,16 +21,16 @@ const MainNavigation = ({ isMobile = false }: MainNavigationProps) => {
       setIsLoading(true);
       const result = await navigationService.getNavigationItems();
       if (result.success && result.data.length > 0) {
-        // 1. Filter for header items
+        // 1. Filter for header items (including Home '/')
         const allHeaderItems = result.data.filter(item => 
-          (item.position === 'header' || !item.position) && item.path !== '/'
+          (item.position === 'header' || !item.position)
         );
 
         // 2. Build the tree
         const itemMap: Record<string, NavigationItem> = {};
         const roots: NavigationItem[] = [];
 
-        // First pass: Create a map of items and filter for root items
+        // First pass: Create a map of items with current data
         allHeaderItems.forEach(item => {
           itemMap[item.id] = { ...item, children: [] };
         });
@@ -45,13 +45,17 @@ const MainNavigation = ({ isMobile = false }: MainNavigationProps) => {
           }
         });
 
-        // 3. Sort children by order_index
-        roots.forEach(root => {
-          if (root.children) {
-            root.children.sort((a, b) => (a.order_index || 0) - (b.order_index || 0));
-          }
-        });
+        // 3. Sort roots and all children recursively
+        const sortItems = (items: NavigationItem[]) => {
+          items.sort((a, b) => (a.order_index || 0) - (b.order_index || 0));
+          items.forEach(item => {
+            if (item.children && item.children.length > 0) {
+              sortItems(item.children);
+            }
+          });
+        };
 
+        sortItems(roots);
         setNavItems(roots);
       }
       setIsLoading(false);
@@ -74,7 +78,11 @@ const MainNavigation = ({ isMobile = false }: MainNavigationProps) => {
     };
 
     if (item.path && pathToKeyMap[item.path]) {
-      return t(pathToKeyMap[item.path]);
+      const translated = t(pathToKeyMap[item.path]);
+      // If translation exists and is not equal to key, use it
+      if (translated && translated !== pathToKeyMap[item.path]) {
+        return translated;
+      }
     }
 
     return item.label;

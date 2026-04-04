@@ -17,8 +17,36 @@ const Footer = () => {
       try {
         const navResult = await navigationService.getNavigationItems();
         if (navResult.success && navResult.data) {
-          const footerRoots = navResult.data.filter(item => item.position === 'footer');
-          setFooterMenus(footerRoots);
+          // 1. Build the tree for all footer items
+          const allFooterItems = navResult.data.filter(item => item.position === 'footer');
+          const itemMap: Record<string, NavigationItem> = {};
+          const roots: NavigationItem[] = [];
+
+          allFooterItems.forEach(item => {
+            itemMap[item.id] = { ...item, children: [] };
+          });
+
+          allFooterItems.forEach(item => {
+            const mappedItem = itemMap[item.id];
+            if (item.parent_id && itemMap[item.parent_id]) {
+              itemMap[item.parent_id].children?.push(mappedItem);
+            } else if (!item.parent_id) {
+              roots.push(mappedItem);
+            }
+          });
+
+          // 2. Sort roots and all children recursively
+          const sortItems = (items: NavigationItem[]) => {
+            items.sort((a, b) => (a.order_index || 0) - (b.order_index || 0));
+            items.forEach(item => {
+              if (item.children && item.children.length > 0) {
+                sortItems(item.children);
+              }
+            });
+          };
+
+          sortItems(roots);
+          setFooterMenus(roots);
         }
       } catch (error) {
         console.error("Failed to load footer nav", error);
