@@ -1,10 +1,5 @@
 import { VisualEditorProvider, useVisualEditor } from '../context/VisualEditorContext';
 import { VisualPageRenderer } from '../components/admin/builder/VisualPageRenderer';
-import HeroSection from "@/components/HeroSection";
-import FeaturedTopics from "@/components/FeaturedTopics";
-import LatestPublications from "@/components/LatestPublications";
-import { DataResources } from "@/components/DataResources";
-import ContactForm from "@/components/ContactForm";
 import { 
   RefrigerationBlock, 
   MEBlock, 
@@ -26,8 +21,10 @@ const DEFAULT_HOME_SECTIONS = [
   { id: 'refrigeration', type: 'refrigeration', props: {} },
   { id: 'me_systems', type: 'me_systems', props: {} },
   { id: 'data_center', type: 'data_center', props: {} },
+  { id: 'products', type: 'product_categories', props: {} },
+  { id: 'projects', type: 'featured_projects', props: {} },
   { id: 'service_lifecycle', type: 'service_lifecycle', props: {} },
-  { id: 'latest_news', type: 'features', props: { title: 'Tin tức & Sự kiện', subtitle: 'Cập nhật các hoạt động và công nghệ mới nhất từ VVC' }},
+  { id: 'news_events', type: 'news_events', props: {} },
   { id: 'contact', type: 'contact_form', props: {} }
 ];
 

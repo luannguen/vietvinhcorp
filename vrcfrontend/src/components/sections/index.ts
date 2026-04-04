@@ -18,6 +18,7 @@ import {
 } from './AboutBlocks';
 import { TeamHeroBlock, TeamGridBlock } from './TeamBlocks';
 import { RefrigerationBlock, MEBlock, DataCenterBlock, ServiceLifecycleBlock, ContactFormBlock } from './IndustryBlocks';
+import { NewsEventsBlock, ProjectsBlock, ProductsBlock } from './HomeSections';
 
 // Function to register all blocks
 export const registerAllBlocks = () => {
@@ -364,6 +365,48 @@ export const registerAllBlocks = () => {
     defaultProps: {},
     fields: []
   });
+
+  registerBlock({
+    type: 'news_events',
+    name: 'Home: Tin tức & Sự kiện',
+    component: NewsEventsBlock,
+    defaultProps: {
+      title: 'Tin tức & Sự kiện',
+      subtitle: 'Cập nhật những hoạt động mới nhất từ VietVinhCorp.'
+    },
+    fields: [
+      { id: 'title', label: 'Tiêu đề', type: 'text' },
+      { id: 'subtitle', label: 'Mô tả', type: 'textarea' }
+    ]
+  });
+
+  registerBlock({
+    type: 'featured_projects',
+    name: 'Home: Dự án tiêu biểu',
+    component: ProjectsBlock,
+    defaultProps: {
+      title: 'Dự Án Tiêu Biểu',
+      subtitle: 'Những công trình thực tế khẳng định năng lực VietVinhCorp.'
+    },
+    fields: [
+      { id: 'title', label: 'Tiêu đề', type: 'text' },
+      { id: 'subtitle', label: 'Mô tả', type: 'textarea' }
+    ]
+  });
+
+  registerBlock({
+    type: 'product_categories',
+    name: 'Home: Sản phẩm phân phối',
+    component: ProductsBlock,
+    defaultProps: {
+      title: 'Sản Phẩm Phân Phối',
+      subtitle: 'Đảm bảo hệ thống vật tư tiêu chuẩn quốc tế.'
+    },
+    fields: [
+      { id: 'title', label: 'Tiêu đề', type: 'text' },
+      { id: 'subtitle', label: 'Mô tả', type: 'textarea' }
+    ]
+  });
 };
 
 export { 
@@ -388,5 +431,8 @@ export {
   MEBlock,
   DataCenterBlock,
   ServiceLifecycleBlock,
+  NewsEventsBlock,
+  ProjectsBlock,
+  ProductsBlock,
   ContactFormBlock
 };
