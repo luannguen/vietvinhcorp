@@ -16,6 +16,7 @@ import {
   ProductionFacilitiesBlock,
   QualityPrinciplesBlock
 } from './AboutBlocks';
+import { TeamHeroBlock, TeamGridBlock } from './TeamBlocks';
 
 // Function to register all blocks
 export const registerAllBlocks = () => {
@@ -265,6 +266,35 @@ export const registerAllBlocks = () => {
     defaultProps: { title: 'Nguyên tắc chất lượng của VVC' },
     fields: [{ id: 'title', label: 'Tiêu đề', type: 'text' }]
   });
+
+  // --- Team Page Blocks ---
+  registerBlock({
+    type: 'team_hero',
+    name: 'Team: Hero',
+    component: TeamHeroBlock,
+    defaultProps: { 
+      title: 'Đội ngũ chuyên gia', 
+      description: 'Hội tụ những tinh hoa trong ngành kỹ thuật lạnh...' 
+    },
+    fields: [
+      { id: 'title', label: 'Tiêu đề', type: 'text' },
+      { id: 'description', label: 'Mô tả', type: 'textarea' }
+    ]
+  });
+
+  registerBlock({
+    type: 'team_grid',
+    name: 'Team: Danh sách',
+    component: TeamGridBlock,
+    defaultProps: { 
+      title: 'Gặp gỡ đội ngũ của chúng tôi', 
+      description: 'Đội ngũ kỹ sư và chuyên viên dày dặn kinh nghiệm...' 
+    },
+    fields: [
+      { id: 'title', label: 'Tiêu đề', type: 'text' },
+      { id: 'description', label: 'Mô tả', type: 'textarea' }
+    ]
+  });
 };
 
 export { 
@@ -282,5 +312,7 @@ export {
   LeadershipBlock,
   AchievementsBlock,
   ProductionFacilitiesBlock,
-  QualityPrinciplesBlock
+  QualityPrinciplesBlock,
+  TeamHeroBlock,
+  TeamGridBlock
 };

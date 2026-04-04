@@ -150,6 +150,28 @@ export const BLOCK_LIBRARY = [
             { id: 'description', label: 'Mô tả', type: 'textarea' }
         ]
     },
+    {
+        type: 'team_hero',
+        name: 'Team: Hero',
+        icon: '👥',
+        category: 'Team',
+        defaultProps: { title: 'Đội ngũ', subtitle: 'Chúng tôi là một tập thể...' },
+        fields: [
+            { id: 'title', label: 'Tiêu đề', type: 'text' },
+            { id: 'subtitle', label: 'Mô tả', type: 'textarea' }
+        ]
+    },
+    {
+        type: 'team_grid',
+        name: 'Team: Lưới thành viên',
+        icon: '⊞',
+        category: 'Team',
+        defaultProps: { title: 'Đội ngũ nhân sự', description: 'Gặp gỡ những chuyên gia của chúng tôi' },
+        fields: [
+            { id: 'title', label: 'Tiêu đề lưới', type: 'text' },
+            { id: 'description', label: 'Mô tả lưới', type: 'textarea' }
+        ]
+    },
 ];
 
 

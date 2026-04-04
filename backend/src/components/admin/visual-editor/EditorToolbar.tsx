@@ -81,7 +81,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
 
                 {!isNewPage && (
                     <Button variant="ghost" size="sm" asChild className="rounded-full">
-                        <a href={`${frontendUrl}/${slug === 'about-us' || slug === 'news' || slug === 'products' ? slug : slug}`} target="_blank" rel="noreferrer">
+                        <a href={`${frontendUrl}/${['about-us', 'news', 'products', 'team'].includes(slug) ? slug : slug}`} target="_blank" rel="noreferrer">
                             <ExternalLink className="h-4 w-4 mr-2" />
                             Xem
                         </a>

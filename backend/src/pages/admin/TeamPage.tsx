@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { teamService } from '@/services/teamService';
 import { TeamMember } from '@/components/data/types';
 import { Button } from "@/components/ui/button";
-import { Plus, Edit, Trash2, GripVertical } from 'lucide-react';
+import { Plus, Edit, Trash2, GripVertical, Wand2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import TeamForm from '@/components/admin/team/TeamForm';
 import {
     Table,
@@ -87,10 +88,18 @@ const TeamPage = () => {
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <h1 className="text-2xl font-bold text-gray-900">{t('team_management')}</h1>
-                <Button onClick={handleCreate}>
-                    <Plus className="h-4 w-4 mr-2" />
-                    {t('add_member')}
-                </Button>
+                <div className="flex gap-2">
+                    <Button variant="outline" asChild className="rounded-full shadow-sm hover:bg-slate-50 border-slate-200">
+                        <Link to="/pages/visual-edit/team">
+                            <Wand2 className="mr-2 h-4 w-4 text-blue-500" />
+                            Chỉnh sửa giao diện
+                        </Link>
+                    </Button>
+                    <Button onClick={handleCreate} className="rounded-full">
+                        <Plus className="h-4 w-4 mr-2" />
+                        {t('add_member')}
+                    </Button>
+                </div>
             </div>
 
             <div className="bg-white shadow rounded-lg overflow-hidden">
