@@ -78,15 +78,15 @@ ON CONFLICT (slug) DO NOTHING;
 
 -- 2.2 Site Settings
 INSERT INTO public.site_settings (key, value, description) VALUES
-('site_name', 'VRC', 'Tên ngắn của website'),
-('site_title', 'VRC - Tổng công ty kỹ thuật điện lạnh Việt Nam', 'Tiêu đề đầy đủ'),
+('site_name', 'VVC', 'Tên ngắn của website'),
+('site_title', 'VVC - Tổng công ty kỹ thuật điện lạnh Việt Nam', 'Tiêu đề đầy đủ'),
 ('site_description', 'Giải pháp điện lạnh toàn diện cho mọi công trình. Uy tín, Chất lượng, Hiệu quả.', 'Mô tả SEO'),
-('site_keywords', 'điện lạnh, vrc, hvac, construction, cơ điện lạnh, bảo trì', 'Từ khóa SEO'),
+('site_keywords', 'điện lạnh, vvc, hvac, construction, cơ điện lạnh, bảo trì', 'Từ khóa SEO'),
 ('og_image_url', '/lovable-uploads/0bd3c048-8e37-4775-a6bc-0b54ec07edbe.png', 'Ảnh chia sẻ MXH'),
-('contact_email', 'info@vrc.com.vn', 'Email liên hệ'),
+('contact_email', 'info@vvc.com.vn', 'Email liên hệ'),
 ('contact_phone', '028 3833 3333', 'Hotline'),
 ('contact_address', '123 Nguyễn Văn Linh, Quận 7, TP. Hồ Chí Minh', 'Địa chỉ'),
-('copyright_text', '© 2025 VRC - Tổng công ty kỹ thuật điện lạnh Việt Nam. Tất cả quyền được bảo lưu.', 'Text bản quyền')
+('copyright_text', '© 2025 VVC - Tổng công ty kỹ thuật điện lạnh Việt Nam. Tất cả quyền được bảo lưu.', 'Text bản quyền')
 ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value;
 
 -- 2.3 Achievements
@@ -101,19 +101,19 @@ ON CONFLICT DO NOTHING;
 INSERT INTO public.faqs (question, answer, sort_order, category) VALUES
 (
     'Làm thế nào để chọn công suất điều hòa phù hợp?',
-    'Để chọn công suất điều hòa phù hợp, bạn cần tính toán dựa trên diện tích phòng, số người sử dụng, hướng phòng, thiết bị sinh nhiệt trong phòng và vị trí địa lý. Thông thường, cần 9.000 BTU cho phòng 15m², 12.000 BTU cho phòng 20m², 18.000 BTU cho phòng 30m². Với không gian công nghiệp hoặc thương mại, VRC có đội ngũ kỹ sư sẽ tính toán chi tiết và đề xuất giải pháp tối ưu.',
+    'Để chọn công suất điều hòa phù hợp, bạn cần tính toán dựa trên diện tích phòng, số người sử dụng, hướng phòng, thiết bị sinh nhiệt trong phòng và vị trí địa lý. Thông thường, cần 9.000 BTU cho phòng 15m², 12.000 BTU cho phòng 20m², 18.000 BTU cho phòng 30m². Với không gian công nghiệp hoặc thương mại, VVC có đội ngũ kỹ sư sẽ tính toán chi tiết và đề xuất giải pháp tối ưu.',
     1,
     'product'
 ),
 (
     'Thời gian bảo hành cho các sản phẩm của VRC là bao lâu?',
-    'VRC cung cấp chế độ bảo hành 24 tháng cho tất cả các sản phẩm điều hòa dân dụng, 36 tháng đối với máy nén của hệ thống VRV/VRF, và 12 tháng đối với các thiết bị công nghiệp. Ngoài ra, chúng tôi có các gói bảo trì và gia hạn bảo hành để đảm bảo hệ thống của bạn luôn vận hành ổn định và hiệu quả trong suốt vòng đời sản phẩm.',
+    'VVC cung cấp chế độ bảo hành 24 tháng cho tất cả các sản phẩm điều hòa dân dụng, 36 tháng đối với máy nén của hệ thống VRV/VRF, và 12 tháng đối với các thiết bị công nghiệp. Ngoài ra, chúng tôi có các gói bảo trì và gia hạn bảo hành để đảm bảo hệ thống của bạn luôn vận hành ổn định và hiệu quả trong suốt vòng đời sản phẩm.',
     2,
     'service'
 ),
 (
     'Chi phí lắp đặt hệ thống kho lạnh phụ thuộc vào yếu tố nào?',
-    'Chi phí lắp đặt kho lạnh phụ thuộc vào nhiều yếu tố như: diện tích kho, nhiệt độ yêu cầu, loại hàng hóa cần bảo quản, độ dày panel cách nhiệt, hệ thống điện, hệ thống giám sát, và các trang thiết bị đi kèm. VRC cung cấp giải pháp kho lạnh theo yêu cầu cụ thể của từng khách hàng với mức giá cạnh tranh nhất trên thị trường.',
+    'Chi phí lắp đặt kho lạnh phụ thuộc vào nhiều yếu tố như: diện tích kho, nhiệt độ yêu cầu, loại hàng hóa cần bảo quản, độ dày panel cách nhiệt, hệ thống điện, hệ thống giám sát, và các trang thiết bị đi kèm. VVC cung cấp giải pháp kho lạnh theo yêu cầu cụ thể của từng khách hàng với mức giá cạnh tranh nhất trên thị trường.',
     3,
     'pricing'
 )
@@ -124,26 +124,26 @@ INSERT INTO static_pages (slug, title, content, excerpt) VALUES
 (
     'chinh-sach-bao-mat', 
     'Chính sách bảo mật', 
-    '<h1>Chính sách bảo mật</h1><p>VRC cam kết bảo mật thông tin cá nhân của khách hàng...</p><p>Nội dung đang cập nhật.</p>',
-    'Cam kết của VRC về bảo mật thông tin khách hàng.'
+    '<h1>Chính sách bảo mật</h1><p>VVC cam kết bảo mật thông tin cá nhân của khách hàng...</p><p>Nội dung đang cập nhật.</p>',
+    'Cam kết của VVC về bảo mật thông tin khách hàng.'
 ),
 (
     'dieu-khoan-su-dung', 
     'Điều khoản sử dụng', 
-    '<h1>Điều khoản sử dụng</h1><p>Chào mừng bạn đến với website VRC...</p>',
-    'Các quy định và điều khoản khi sử dụng dịch vụ của VRC.'
+    '<h1>Điều khoản sử dụng</h1><p>Chào mừng bạn đến với website VVC...</p>',
+    'Các quy định và điều khoản khi sử dụng dịch vụ của VVC.'
 ),
 (
     'chinh-sach-cookie', 
     'Chính sách Cookie', 
     '<h1>Chính sách Cookie</h1><p>Website này sử dụng cookie để nâng cao trải nghiệm...</p>',
-    'Thông tin về cách VRC sử dụng cookie trên website.'
+    'Thông tin về cách VVC sử dụng cookie trên website.'
 ),
 (
     'about-us', 
     'Về chúng tôi', 
-    '<h1>Về VRC</h1><p>Tổng công ty kỹ thuật điện lạnh Việt Nam (VRC) là đơn vị hàng đầu...</p>',
-    'Giới thiệu tổng quan về lịch sử, sứ mệnh và tầm nhìn của VRC.'
+    '<h1>Về VVC</h1><p>Tổng công ty kỹ thuật điện lạnh Việt Nam (VVC) là đơn vị hàng đầu...</p>',
+    'Giới thiệu tổng quan về lịch sử, sứ mệnh và tầm nhìn của VVC.'
 ),
 (
     'intro', 
@@ -177,7 +177,7 @@ BEGIN
     -- FOOTER NAVIGATION
     -- Column 1: Về VRC
     INSERT INTO navigation (label, path, type, position, order_index, is_active)
-    VALUES ('Về VRC', '#', 'custom', 'footer', 1, true)
+    VALUES ('Về VVC', '#', 'custom', 'footer', 1, true)
     RETURNING id INTO footer_col_1;
 
     INSERT INTO navigation (parent_id, label, path, type, position, order_index, is_active) VALUES

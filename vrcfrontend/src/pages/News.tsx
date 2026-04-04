@@ -1,9 +1,8 @@
-import { useState } from "react";
-import { CalendarIcon, ChevronRight, User } from "lucide-react";
+import React, { useState } from "react";
+import { CalendarIcon, ChevronRight, User, Search } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { SearchIcon } from "@/components/ui/search-icon";
 import { useNews } from "@/hooks/useNews";
 
 const News = () => {
@@ -222,7 +221,7 @@ const News = () => {
                   className="bg-primary text-white px-4 py-2 rounded-r-md hover:bg-primary/90 transition-colors"
                   onClick={handleSearch}
                 >
-                  <SearchIcon size={18} />
+                  <Search size={18} />
                 </button>
               </div>
             </div>
@@ -253,7 +252,7 @@ const News = () => {
               <div className="space-y-4">
                 {filteredNews.slice(0, 5).map(news => (
                   <div key={news.id} className="flex gap-3">
-                    <Link to={news.type === "news" ? `/news/${news.id}` : `/event-details/${news.id}`} className="block w-20 h-20 flex-shrink-0">
+                    <Link to={news.type === "news" ? `/news/${news.slug}` : `/event-details/${news.id}`} className="block w-20 h-20 flex-shrink-0">
                       <img
                         src={news.image}
                         alt={news.title}
