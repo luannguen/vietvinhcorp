@@ -48,14 +48,14 @@ export default function MenuManager() {
         setEditingItem(item);
         setIsEditing(true);
     };
-
+    const handleCreate = () => {
         setEditingItem({
             label: '',
             path: '',
             is_active: true,
             order_index: items.length + 1,
             position: position,
-            parent_id: null,
+            parent_id: undefined,
             children: []
         });
         setIsEditing(true);

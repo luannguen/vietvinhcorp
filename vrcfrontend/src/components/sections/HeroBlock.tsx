@@ -7,6 +7,9 @@ interface HeroBlockProps {
   alignment?: 'left' | 'center';
   buttonText?: string;
   buttonLink?: string;
+  button2Text?: string;
+  button2Link?: string;
+  badge?: string;
   sectionId?: string;
 }
 
@@ -16,8 +19,11 @@ export const HeroBlock = ({
   backgroundImage,
   alignment = 'left',
   sectionId,
+  badge,
   buttonText,
-  buttonLink
+  buttonLink,
+  button2Text,
+  button2Link
 }: HeroBlockProps) => {
   return (
     <div className={`relative py-20 md:py-32 overflow-hidden ${backgroundImage ? 'text-white' : ''}`}>
@@ -35,6 +41,15 @@ export const HeroBlock = ({
       </div>
       <div className={`container-custom relative z-10 ${alignment === 'center' ? 'text-center items-center' : 'text-left'}`}>
         <div className={`max-w-3xl ${alignment === 'center' ? 'mx-auto' : ''}`}>
+          {badge && (
+            <EditableElement 
+              tagName="span" 
+              fieldKey="badge" 
+              sectionId={sectionId} 
+              defaultContent={badge} 
+              className="inline-block px-3 py-1 rounded-full bg-white/10 text-white/90 text-sm font-medium mb-6 backdrop-blur-sm border border-white/10" 
+            />
+          )}
           <EditableElement 
             tagName="h1" 
             fieldKey="title" 
@@ -49,18 +64,30 @@ export const HeroBlock = ({
             defaultContent={description} 
             className={`text-lg md:text-xl mb-8 opacity-90 max-w-2xl leading-relaxed ${alignment === 'center' ? 'mx-auto' : ''}`} 
           />
-          {buttonText && (
-            <div className="inline-flex items-center">
-              <EditableElement 
-                tagName="a" 
-                fieldKey="buttonText" 
-                sectionId={sectionId} 
-                defaultContent={buttonText}
-                className="px-6 py-3 rounded-lg bg-secondary text-white font-semibold hover:bg-secondary/90 transition-all shadow-lg hover:shadow-xl active:scale-95"
-              />
-              {/* Note: buttonLink isn't directly editable in preview yet, but remains active */}
-            </div>
-          )}
+          <div className={`flex flex-wrap gap-4 items-center ${alignment === 'center' ? 'justify-center' : ''}`}>
+            {buttonText && (
+              <div className="inline-flex items-center">
+                <EditableElement 
+                  tagName="a" 
+                  fieldKey="buttonText" 
+                  sectionId={sectionId} 
+                  defaultContent={buttonText}
+                  className="px-6 py-3 rounded-lg bg-secondary text-white font-bold hover:bg-secondary/90 transition-all shadow-lg hover:shadow-xl active:scale-95"
+                />
+              </div>
+            )}
+            {button2Text && (
+              <div className="inline-flex items-center">
+                <EditableElement 
+                  tagName="a" 
+                  fieldKey="button2Text" 
+                  sectionId={sectionId} 
+                  defaultContent={button2Text}
+                  className="px-6 py-3 rounded-lg bg-white/10 text-white font-bold hover:bg-white/20 transition-all border border-white/20 active:scale-95"
+                />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

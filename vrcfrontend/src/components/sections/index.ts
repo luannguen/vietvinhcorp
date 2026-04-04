@@ -32,8 +32,11 @@ export const registerAllBlocks = () => {
       { id: 'title', label: 'Tiêu đề', type: 'text' },
       { id: 'description', label: 'Mô tả', type: 'textarea' },
       { id: 'backgroundImage', label: 'Ảnh nền', type: 'image' },
-      { id: 'buttonText', label: 'Chữ trên nút', type: 'text' },
-      { id: 'buttonLink', label: 'Liên kết nút', type: 'text' },
+      { id: 'buttonText', label: 'Chữ trên nút 1', type: 'text' },
+      { id: 'buttonLink', label: 'Liên kết nút 1', type: 'text' },
+      { id: 'button2Text', label: 'Chữ trên nút 2', type: 'text' },
+      { id: 'button2Link', label: 'Liên kết nút 2', type: 'text' },
+      { id: 'badge', label: 'Badge/Tagline', type: 'text' },
       { id: 'alignment', label: 'Căn lề', type: 'select', options: [
         { label: 'Trái', value: 'left' },
         { label: 'Giữa', value: 'center' },
