@@ -22,6 +22,8 @@ import ResourcesPage from './pages/admin/ResourcesPage'; // Added
 import AchievementsPage from './pages/admin/AchievementsPage';
 import FAQsPage from './pages/admin/FAQsPage';
 import TeamPage from './pages/admin/TeamPage';
+import RecruitmentPage from './pages/admin/RecruitmentPage';
+import ApplicationsPage from './pages/admin/ApplicationsPage';
 import VisualEditorPage from './pages/admin/VisualEditorPage';
 import ForgotPasswordPage from './components/admin/pages/auth/ForgotPasswordPage';
 import ResetPasswordPage from './components/admin/pages/auth/ResetPasswordPage';
@@ -58,6 +60,8 @@ function App() {
               <Route path="achievements" element={<AchievementsPage />} />
               <Route path="faqs" element={<FAQsPage />} />
               <Route path="team" element={<TeamPage />} />
+              <Route path="recruitment" element={<RecruitmentPage />} />
+              <Route path="applications" element={<ApplicationsPage />} />
             </Route>
 
             {/* System Settings - Granular Permissions */}

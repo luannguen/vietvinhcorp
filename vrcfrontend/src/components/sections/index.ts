@@ -21,6 +21,7 @@ import { RefrigerationBlock, MEBlock, DataCenterBlock, ServiceLifecycleBlock, Co
 import { NewsEventsBlock, ProjectsBlock, ProductsBlock } from './HomeSections';
 import { HomeBannerSlider } from './HomeBannerSlider';
 import { CapabilityProfileBlock } from './CapabilityProfileBlock';
+import { JobsListBlock } from './JobsListBlock';
 
 
 // Function to register all blocks
@@ -442,6 +443,20 @@ export const registerAllBlocks = () => {
       { id: 'downloadText', label: 'Chữ trên nút tải', type: 'text' },
       { id: 'pdfFileName', label: 'Tên file', type: 'text' },
       { id: 'pdfFileSize', label: 'Dung lượng', type: 'text' }
+    ]
+  });
+
+  registerBlock({
+    type: 'jobs_list',
+    name: 'Tuyển dụng: Danh sách công việc',
+    component: JobsListBlock,
+    defaultProps: {
+      title: 'Cơ hội nghề nghiệp tại Viet Vinh Corp',
+      subtitle: 'Chúng tôi luôn tìm kiếm những tài năng đồng hành cùng sứ mệnh phát triển bền vững.'
+    },
+    fields: [
+      { id: 'title', label: 'Tiêu đề', type: 'text' },
+      { id: 'subtitle', label: 'Mô tả phụ', type: 'textarea' }
     ]
   });
 };

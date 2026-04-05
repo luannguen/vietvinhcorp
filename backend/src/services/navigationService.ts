@@ -19,9 +19,12 @@ export const navigationService = {
 
     async createNavigationItem(item: Partial<NavigationItem>): Promise<Result<NavigationItem>> {
         try {
+            // Sanitize: Remove children array and other non-DB fields
+            const { children, id, created_at, ...validItem } = item as any;
+            
             const { data, error } = await supabase
                 .from('navigation')
-                .insert([item])
+                .insert([validItem])
                 .select()
                 .single();
 
@@ -35,9 +38,12 @@ export const navigationService = {
 
     async updateNavigationItem(id: string, updates: Partial<NavigationItem>): Promise<Result<NavigationItem>> {
         try {
+            // Sanitize: Only send known columns to DB, exclude children and primary key
+            const { children, id: _, created_at, ...validUpdates } = updates as any;
+
             const { data, error } = await supabase
                 .from('navigation')
-                .update(updates)
+                .update(validUpdates)
                 .eq('id', id)
                 .select()
                 .single();

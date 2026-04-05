@@ -135,7 +135,31 @@ export default function MenuManager() {
             result = await navigationService.createNavigationItem(itemToSave);
         }
 
-        if (result.success) {
+        if (result.success && result.data) {
+            const savedParent = result.data;
+            
+            // Persist children as separate rows with matching parent_id
+            if (processedChildren && processedChildren.length > 0) {
+                const childPromises = processedChildren.map(child => {
+                    const childData = { 
+                        ...child, 
+                        parent_id: savedParent.id,
+                        position: position // Match parent position
+                    };
+                    
+                    // If it was a temp item, create it, otherwise update
+                    if (child.id?.startsWith('temp-')) {
+                        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                        const { id, ...newChildData } = childData;
+                        return navigationService.createNavigationItem(newChildData);
+                    } else {
+                        return navigationService.updateNavigationItem(child.id, childData);
+                    }
+                });
+                
+                await Promise.all(childPromises);
+            }
+
             toast.success(itemToSave.id ? t('item_updated') : t('item_created'));
             setIsEditing(false);
             fetchItems();

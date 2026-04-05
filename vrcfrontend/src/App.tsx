@@ -46,6 +46,7 @@ const EventDetail = lazy(() => import("./pages/EventDetail"));
 const ProjectDetail = lazy(() => import("./pages/ProjectDetail"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const SearchResults = lazy(() => import("./pages/SearchResults"));
+const JobDetail = lazy(() => import("./pages/JobDetail"));
 
 // Legal pages
 const Privacy = lazy(() => import("./pages/legal/Privacy"));
@@ -131,6 +132,7 @@ const App = () => (
               <Route path="publications/energy-efficiency-report" element={<EnergyEfficiencyReport />} />
               <Route path="contact" element={<Contact />} />
               <Route path="team" element={<TeamPage />} />
+              <Route path="recruitment/:slug" element={<JobDetail />} />
               <Route path="legal/privacy" element={<Privacy />} />
               <Route path="legal/terms" element={<Terms />} />
               <Route path="legal/cookies" element={<Cookies />} />
