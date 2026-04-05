@@ -143,7 +143,6 @@ export default function ServiceForm({ initialData, onSuccess, onCancel }: Servic
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <FormField
-                        control={form.control}
                         name="title"
                         render={({ field }) => (
                             <FormItem>
@@ -156,7 +155,6 @@ export default function ServiceForm({ initialData, onSuccess, onCancel }: Servic
                         )}
                     />
                     <FormField
-                        control={form.control}
                         name="slug"
                         render={({ field }) => (
                             <FormItem>
@@ -173,7 +171,6 @@ export default function ServiceForm({ initialData, onSuccess, onCancel }: Servic
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <FormField
-                        control={form.control}
                         name="category_id"
                         render={({ field }) => (
                             <FormItem>
@@ -199,7 +196,6 @@ export default function ServiceForm({ initialData, onSuccess, onCancel }: Servic
                 </div>
 
                 <FormField
-                    control={form.control}
                     name="description"
                     render={({ field }) => (
                         <FormItem>
@@ -213,7 +209,6 @@ export default function ServiceForm({ initialData, onSuccess, onCancel }: Servic
                 />
 
                 <FormField
-                    control={form.control}
                     name="content"
                     render={({ field }) => (
                         <FormItem>
@@ -229,7 +224,6 @@ export default function ServiceForm({ initialData, onSuccess, onCancel }: Servic
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <FormField
-                        control={form.control}
                         name="icon"
                         render={({ field }) => (
                             <FormItem>
@@ -243,7 +237,6 @@ export default function ServiceForm({ initialData, onSuccess, onCancel }: Servic
                         )}
                     />
                     <FormField
-                        control={form.control}
                         name="image_url"
                         render={({ field }) => (
                             <FormItem>
@@ -258,7 +251,6 @@ export default function ServiceForm({ initialData, onSuccess, onCancel }: Servic
                 </div>
 
                 <FormField
-                    control={form.control}
                     name="is_active"
                     render={({ field }) => (
                         <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">

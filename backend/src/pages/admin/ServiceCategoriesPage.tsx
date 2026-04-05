@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Plus, Pencil, Trash2, Search, MoreHorizontal, Loader2 } from "lucide-react";
+import { Plus, Pencil, Trash2, Search, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -14,7 +14,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -24,33 +23,15 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-  DialogFooter,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
-import { serviceService, ServiceCategory, CreateServiceCategoryDTO } from "@/services/serviceService";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { slugify } from "@/lib/utils";
-
-const categorySchema = z.object({
-  name: z.string().min(2, "Tên danh mục phải có ít nhất 2 ký tự"),
-  slug: z.string().min(2, "Slug phải có ít nhất 2 ký tự"),
-  description: z.string().optional(),
-  display_order: z.number().default(0),
-  is_active: z.boolean().default(true),
-});
-
-type CategoryFormValues = z.infer<typeof categorySchema>;
+import { serviceService, ServiceCategory } from "@/services/serviceService";
+import ServiceCategoryForm from "@/components/admin/services/ServiceCategoryForm";
 
 export default function ServiceCategoriesPage() {
   const [categories, setCategories] = useState<ServiceCategory[]>([]);
   const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<ServiceCategory | null>(null);
@@ -69,71 +50,9 @@ export default function ServiceCategoriesPage() {
     fetchCategories();
   }, []);
 
-  const form = useForm<CategoryFormValues>({
-    resolver: zodResolver(categorySchema),
-    defaultValues: {
-      name: "",
-      slug: "",
-      description: "",
-      display_order: 0,
-      is_active: true,
-    },
-  });
-
-  useEffect(() => {
-    if (editingCategory) {
-      form.reset({
-        name: editingCategory.name,
-        slug: editingCategory.slug,
-        description: editingCategory.description || "",
-        display_order: editingCategory.display_order,
-        is_active: editingCategory.is_active,
-      });
-    } else {
-      form.reset({
-        name: "",
-        slug: "",
-        description: "",
-        display_order: 0,
-        is_active: true,
-      });
-    }
-  }, [editingCategory, form]);
-
-  const watchedName = form.watch("name");
-  useEffect(() => {
-    if (!editingCategory && watchedName) {
-      form.setValue("slug", slugify(watchedName));
-    }
-  }, [watchedName, editingCategory, form]);
-
-  const onSubmit = async (data: CategoryFormValues) => {
-    setSubmitting(true);
-    try {
-      if (editingCategory) {
-        const result = await serviceService.updateCategory(editingCategory.id, data);
-        if (result.success) {
-          toast({ title: "Thành công", description: "Đã cập nhật danh mục" });
-          setIsDialogOpen(false);
-          fetchCategories();
-        } else {
-          toast({ variant: "destructive", title: "Lỗi", description: result.error || "Không thể cập nhật" });
-        }
-      } else {
-        const result = await serviceService.createCategory(data as CreateServiceCategoryDTO);
-        if (result.success) {
-          toast({ title: "Thành công", description: "Đã tạo danh mục mới" });
-          setIsDialogOpen(false);
-          fetchCategories();
-        } else {
-          toast({ variant: "destructive", title: "Lỗi", description: result.error || "Không thể tạo" });
-        }
-      }
-    } catch (error: any) {
-      toast({ variant: "destructive", title: "Lỗi hệ thống", description: error.message });
-    } finally {
-      setSubmitting(false);
-    }
+  const handleSuccess = () => {
+    setIsDialogOpen(false);
+    fetchCategories();
   };
 
   const handleDelete = async (id: string) => {
@@ -158,93 +77,20 @@ export default function ServiceCategoriesPage() {
           <h1 className="text-3xl font-bold tracking-tight">Danh mục Dịch vụ</h1>
           <p className="text-muted-foreground">Quản lý các nhóm dịch vụ trên website.</p>
         </div>
-        <Dialog open={isDialogOpen} onOpenChange={(open) => { setIsDialogOpen(open); if (!open) setEditingCategory(null); }}>
-          <DialogTrigger asChild>
-            <Button onClick={() => setEditingCategory(null)}>
-              <Plus className="mr-2 h-4 w-4" /> Thêm danh mục
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <Button onClick={() => { setEditingCategory(null); setIsDialogOpen(true); }}>
+            <Plus className="mr-2 h-4 w-4" /> Thêm danh mục
+          </Button>
+          <DialogContent className="sm:max-w-[500px]">
             <DialogHeader>
               <DialogTitle>{editingCategory ? "Chỉnh sửa danh mục" : "Thêm danh mục mới"}</DialogTitle>
               <DialogDescription>Nhập thông tin cho danh mục dịch vụ.</DialogDescription>
             </DialogHeader>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Tên danh mục</FormLabel>
-                      <FormControl><Input {...field} /></FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="slug"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Slug</FormLabel>
-                      <FormControl><Input {...field} /></FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="description"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Mô tả</FormLabel>
-                      <FormControl><Input {...field} /></FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="display_order"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Thứ tự hiển thị</FormLabel>
-                        <FormControl>
-                          <Input type="number" {...field} onChange={e => field.onChange(parseInt(e.target.value))} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="is_active"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 mt-8">
-                        <div className="space-y-0.5">
-                          <FormLabel className="text-sm">Hoạt động</FormLabel>
-                        </div>
-                        <FormControl>
-                          <Switch
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <DialogFooter className="pt-4">
-                  <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>Hủy</Button>
-                  <Button type="submit" disabled={submitting}>
-                    {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    Lưu
-                  </Button>
-                </DialogFooter>
-              </form>
-            </Form>
+            <ServiceCategoryForm
+              initialData={editingCategory}
+              onSuccess={handleSuccess}
+              onCancel={() => setIsDialogOpen(false)}
+            />
           </DialogContent>
         </Dialog>
       </div>
