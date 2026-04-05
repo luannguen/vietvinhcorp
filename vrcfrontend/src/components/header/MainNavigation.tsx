@@ -8,9 +8,10 @@ import { normalizePath } from '@/utils/urlUtils';
 
 interface MainNavigationProps {
   isMobile?: boolean;
+  onItemClick?: () => void;
 }
 
-const MainNavigation = ({ isMobile = false }: MainNavigationProps) => {
+const MainNavigation = ({ isMobile = false, onItemClick }: MainNavigationProps) => {
   const [navItems, setNavItems] = useState<NavigationItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { t, i18n } = useTranslation();
@@ -187,20 +188,26 @@ const MainNavigation = ({ isMobile = false }: MainNavigationProps) => {
           <div key={item.id}>
             <Link
               to={normalizePath(item.path)}
-              className={`navbar-link text-lg block py-1 ${
-                isActive(item) ? 'text-secondary font-bold border-b-2 border-secondary' : ''
+              onClick={onItemClick}
+              className={`navbar-link text-lg block py-1 transition-colors ${
+                isActive(item) 
+                  ? 'text-secondary font-bold border-b-2 border-secondary' 
+                  : 'text-gray-900 font-medium'
               }`}
             >
               {getTranslatedLabel(item)}
             </Link>
             {item.children && item.children.length > 0 && (
-              <div className="pl-4 space-y-2 mt-2 border-l border-gray-200">
+              <div className="pl-4 space-y-2 mt-2 border-l-2 border-primary/20">
                 {item.children.map(child => (
                   <Link
                     key={child.id}
                     to={normalizePath(child.path)}
-                    className={`hover:text-primary block text-base ${
-                      isActive(child) ? 'text-primary font-semibold' : 'text-muted-foreground'
+                    onClick={onItemClick}
+                    className={`hover:text-primary block text-base py-0.5 transition-colors ${
+                      isActive(child) 
+                        ? 'text-primary font-semibold' 
+                        : 'text-gray-600'
                     }`}
                   >
                     {getTranslatedLabel(child)}
