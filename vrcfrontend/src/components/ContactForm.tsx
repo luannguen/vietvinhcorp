@@ -55,7 +55,7 @@ const ContactForm = () => {
               <form onSubmit={submit} className="space-y-6">
                 {/* Honeypot */}
                 <div style={{ display: 'none' }} aria-hidden="true">
-                  <label htmlFor="confirm_email">Don't fill this out if you're human:</label>
+                  <label htmlFor="confirm_email">{t('honeypot_label', "Don't fill this out if you're human:")}</label>
                   <Input
                     id="confirm_email"
                     name="confirm_email"

@@ -4,6 +4,7 @@ import { Link, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useNews } from "@/hooks/useNews";
+import { useTranslation } from "react-i18next";
 
 const News = () => {
   const {
@@ -16,6 +17,7 @@ const News = () => {
     setActiveTab,
     searchNews
   } = useNews();
+  const { t, i18n } = useTranslation();
 
   const { category, tag } = useParams();
   const [searchTerm, setSearchTerm] = useState("");
@@ -50,15 +52,16 @@ const News = () => {
   // Format date for display
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const locale = i18n.language === 'en' ? 'en-US' : 'vi-VN';
+    return date.toLocaleDateString(locale, { day: '2-digit', month: '2-digit', year: 'numeric' });
   };
 
   if (loading) {
-    return <div className="container-custom py-16 text-center">Đang tải tin tức...</div>;
+    return <div className="container-custom py-16 text-center">{t('loading_news', 'Đang tải tin tức...')}</div>;
   }
-
+  
   if (error) {
-    return <div className="container-custom py-16 text-center text-red-500">Lỗi: {error}</div>;
+    return <div className="container-custom py-16 text-center text-red-500">{t('error')}: {error}</div>;
   }
 
   return (
@@ -66,9 +69,9 @@ const News = () => {
       {/* Tiêu đề trang */}
       <div className="bg-gradient-to-b from-primary/10 to-transparent py-8 md:py-12">
         <div className="container-custom">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary">Tin tức & Sự kiện</h1>
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary">{t('news_events')}</h1>
           <p className="mt-4 text-lg text-muted-foreground max-w-3xl">
-            Cập nhật những thông tin mới nhất về ngành điện lạnh, công nghệ mới và các hoạt động của chúng tôi
+            {t('news_events_desc')}
           </p>
         </div>
       </div>
@@ -107,13 +110,13 @@ const News = () => {
                   </div>
                   <div className="flex items-center">
                     <User size={16} className="mr-1" />
-                    <span>Tác giả: {featuredNews.author}</span>
+                    <span>{t('author')}: {featuredNews.author}</span>
                   </div>
                 </div>
 
                 <Button asChild>
                   <Link to={`/news/${featuredNews.slug}`}>
-                    Xem chi tiết
+                    {t('view_details')}
                     <ChevronRight size={16} className="ml-1" />
                   </Link>
                 </Button>
@@ -123,9 +126,9 @@ const News = () => {
             {/* Tab lọc tin tức/sự kiện */}
             <Tabs defaultValue="all" className="mb-8" value={activeTab} onValueChange={setActiveTab}>
               <TabsList className="grid grid-cols-3 w-full max-w-[400px]">
-                <TabsTrigger value="all">Tất cả</TabsTrigger>
-                <TabsTrigger value="news">Tin tức</TabsTrigger>
-                <TabsTrigger value="events">Sự kiện</TabsTrigger>
+                <TabsTrigger value="all">{t('all')}</TabsTrigger>
+                <TabsTrigger value="news">{t('news')}</TabsTrigger>
+                <TabsTrigger value="events">{t('events')}</TabsTrigger>
               </TabsList>
             </Tabs>
 
@@ -164,7 +167,7 @@ const News = () => {
 
                     <div className="flex justify-between items-center">
                       <div className="text-xs text-muted-foreground">
-                        Tác giả: {item.author}
+                        {t('author')}: {item.author}
                       </div>
                       <div className="flex items-center gap-3 text-xs text-muted-foreground">
                         <span className="flex items-center">
@@ -207,11 +210,11 @@ const News = () => {
           <div className="lg:col-span-1">
             {/* Tìm kiếm */}
             <div className="bg-white p-4 rounded-lg shadow-sm mb-6">
-              <h3 className="font-semibold text-lg mb-3">Tìm kiếm</h3>
+              <h3 className="font-semibold text-lg mb-3">{t('search')}</h3>
               <div className="flex">
                 <input
                   type="text"
-                  placeholder="Tìm kiếm tin tức..."
+                  placeholder={t('search_news_placeholder')}
                   className="flex-grow border rounded-l-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-primary"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
@@ -228,7 +231,7 @@ const News = () => {
 
             {/* Danh mục */}
             <div className="bg-white p-4 rounded-lg shadow-sm mb-6">
-              <h3 className="font-semibold text-lg mb-3">Danh mục</h3>
+              <h3 className="font-semibold text-lg mb-3">{t('categories')}</h3>
               <ul className="space-y-2">
                 {categories.map((category, index) => (
                   <li key={index}>
@@ -248,7 +251,7 @@ const News = () => {
 
             {/* Bài viết gần đây */}
             <div className="bg-white p-4 rounded-lg shadow-sm mb-6">
-              <h3 className="font-semibold text-lg mb-3">Bài viết gần đây</h3>
+              <h3 className="font-semibold text-lg mb-3">{t('recent_posts')}</h3>
               <div className="space-y-4">
                 {filteredNews.slice(0, 5).map(news => (
                   <div key={news.id} className="flex gap-3">

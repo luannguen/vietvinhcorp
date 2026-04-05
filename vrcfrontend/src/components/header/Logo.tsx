@@ -10,7 +10,7 @@ const Logo = ({ isScrolled = false }: LogoProps) => {
   const logoSrc = settings['site_logo'] || '/assets/svg/logo.svg';
 
   return (
-    <Link to="/" className="flex items-center gap-2">
+    <Link to="/" className="flex items-center gap-2 flex-shrink-0 relative z-10">
       <img
         src={logoSrc}
         alt="VVC - Tổng công ty Kỹ thuật lạnh Việt Nam"

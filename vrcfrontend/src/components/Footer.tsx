@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { normalizePath, isExternalLink } from '@/utils/urlUtils';
 
 const Footer = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [footerMenus, setFooterMenus] = useState<NavigationItem[]>([]);
   const { settings, loading } = useSettings();
 
@@ -55,7 +55,106 @@ const Footer = () => {
     fetchNav();
   }, []);
 
-  const copyrightText = settings['copyright_text'] || t('copyright');
+  const getTranslatedLabel = (item: NavigationItem | { label: string, path?: string }) => {
+    const currentLang = i18n.language || 'vi';
+
+    // 1. If language is Vietnamese, priority 100% to the label from database (Admin)
+    if (currentLang.startsWith('vi') && item.label) {
+      return item.label;
+    }
+
+    // 2. Try translating the label directly for other languages (EN, etc.)
+    if (item.label) {
+      // Try direct label (case-sensitive)
+      const translated = t(item.label);
+      if (translated && translated !== item.label) {
+        return translated;
+      }
+      
+      // Try lowercase label (case-insensitive)
+      const lowerTranslated = t(item.label.toLowerCase());
+      if (lowerTranslated && lowerTranslated !== item.label.toLowerCase()) {
+        return lowerTranslated;
+      }
+    }
+
+    // 3. Map paths to keys (fallback)
+    const pathToKeyMap: Record<string, string> = {
+      '/': 'home',
+      '/about': 'about',
+      '/about-us': 'about',
+      '/products': 'products',
+      '/news': 'news',
+      '/contact': 'contact',
+      '/services': 'services',
+      '/projects': 'projects',
+      '/team': 'team',
+      '/recruitment': 'recruitment',
+      '/publications': 'publications',
+      '/technologies': 'technologies',
+      '#': 'explore',
+      '/legal/privacy': 'privacy_policy',
+      '/legal/terms': 'terms_of_use',
+      '/legal/cookies': 'cookie_policy',
+      '/legal/sitemap': 'sitemap',
+      '/ho-so-nang-luc': 'capability_experience',
+    };
+
+    // 4. Map common semantic labels to keys (backup fallback)
+    const labelToKeyMap: Record<string, string> = {
+      'trang chủ': 'home',
+      'về chúng tôi': 'about',
+      'về vvc': 'About VVC',
+      'giới thiệu': 'about',
+      'sản phẩm': 'products',
+      'tin tức': 'news',
+      'liên hệ': 'contact',
+      'dịch vụ': 'services',
+      'dự án': 'projects',
+      'nguồn lực': 'team',
+      'đội ngũ': 'team',
+      'tuyển dụng': 'recruitment',
+      'tài liệu': 'publications',
+      'ấn phẩm': 'publications',
+      'công nghệ': 'technologies',
+      'khám phá': 'explore',
+      'liên kết nhanh': 'quick_links',
+      'quick links': 'quick_links',
+      'hệ thống lạnh': 'industry_refrigeration_title',
+      'hệ thống lạnh công nghiệp': 'industry_refrigeration_title',
+      'tổng thầu cơ điện': 'industry_me_title',
+      'cơ điện': 'M&E System',
+      'trung tâm dữ liệu': 'industry_dc_title',
+      'trung tâm dữ liệu & quản lý tập trung': 'industry_dc_title',
+      'vòng đời dịch vụ': 'industry_lifecycle_title',
+      'hồ sơ năng lực': 'capability_experience',
+      'chính sách bảo mật': 'privacy_policy',
+      'điều khoản sử dụng': 'terms_of_use',
+      'chính sách cookie': 'cookie_policy',
+      'sơ đồ trang': 'sitemap',
+      'tư vấn kỹ thuật': 'technical_support',
+      'bảo trì & sửa chữa': 'industry_lifecycle_title',
+    };
+
+    // Try path next
+    if (item.path && pathToKeyMap[item.path]) {
+      const key = pathToKeyMap[item.path];
+      const translated = t(key);
+      if (translated && translated !== key) return translated;
+    }
+
+    // Try normalized label map last
+    const normalizedLabel = item.label?.toLowerCase().trim() || '';
+    if (normalizedLabel && labelToKeyMap[normalizedLabel]) {
+      const key = labelToKeyMap[normalizedLabel];
+      const translated = t(key);
+      if (translated && translated !== key) return translated;
+    }
+
+    return item.label;
+  };
+
+  const copyrightText = settings['copyright_text'] ? t(settings['copyright_text']) : t('copyright');
   const contactEmail = settings['contact_email'] || 'info@VVC.com.vn';
   const contactAddress = settings['contact_address'] || '123 Nguyễn Văn Linh, Quận 7, TP. Hồ Chí Minh, Việt Nam';
   const siteDescription = settings['site_description'] || 'Cung cấp giải pháp điện lạnh toàn diện cho mọi doanh nghiệp và công trình.';
@@ -106,14 +205,14 @@ const Footer = () => {
           {/* Dynamic Columns from Menu Manager */}
           {footerMenus.map((menu) => (
             <div key={menu.id}>
-              <h4 className="text-white font-semibold mb-4">{menu.label}</h4>
+              <h4 className="text-white font-semibold mb-4">{getTranslatedLabel(menu)}</h4>
               {menu.children && menu.children.length > 0 && (
                 <ul className="space-y-2">
                   {menu.children.map((child) => (
                     <li key={child.id}>
                       {!isExternalLink(child.path) ? (
                         <Link to={normalizePath(child.path)} className="text-gray-300 hover:text-white transition-colors footer-link">
-                          {child.label}
+                          {getTranslatedLabel(child)}
                         </Link>
                       ) : (
                         <a href={child.path} className="text-gray-300 hover:text-white transition-colors footer-link" target="_blank" rel="noopener noreferrer">

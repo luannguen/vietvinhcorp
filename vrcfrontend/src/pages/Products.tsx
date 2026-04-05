@@ -10,11 +10,13 @@ import FAQSection from "@/components/FAQSection";
 import { productService } from "@/services/productService";
 import { Product, Category } from "@/components/data/types";
 import { Loader2, Search, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion"; // Add animation library if available, specifically requested "better UI/AES"
 // If frame-motion isn't installed, standard CSS transitions will be used, but let's assume standard React for now to avoid dependency errors if not present.
 // I will use standard CSS classes for animations to be safe.
 
 const Products = () => {
+  const { t } = useTranslation();
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
@@ -100,7 +102,7 @@ const Products = () => {
             transition={{ delay: 0.2 }}
             className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 tracking-tight text-white"
           >
-            Danh Mục Sản Phẩm
+            {t('product_cat_title')}
           </motion.h1>
           <motion.p
             initial={{ opacity: 0 }}
@@ -108,7 +110,7 @@ const Products = () => {
             transition={{ delay: 0.4 }}
             className="mt-4 text-lg md:text-xl text-blue-100 max-w-2xl mx-auto font-light"
           >
-            Giải pháp kỹ thuật lạnh toàn diện, từ điều hòa dân dụng đến hệ thống công nghiệp tiên tiến.
+            {t('product_cat_desc')}
           </motion.p>
         </div>
       </motion.div>
@@ -127,7 +129,7 @@ const Products = () => {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
               <input
                 type="text"
-                placeholder="Tìm kiếm sản phẩm..."
+                placeholder={t('search_products')}
                 className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 bg-white/50 focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -150,7 +152,7 @@ const Products = () => {
                   onClick={() => setActiveCategory('all')}
                   className="rounded-full px-6"
                 >
-                  Tất cả
+                  {t('all')}
                 </Button>
                 {categories.map((cat) => (
                   <Button
@@ -182,10 +184,10 @@ const Products = () => {
                 <div className="bg-gray-100 p-6 rounded-full mb-4">
                   <Search className="h-10 w-10 text-gray-400" />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-700">Không tìm thấy sản phẩm</h3>
-                <p className="text-gray-500 mt-2">Vui lòng thử từ khóa hoặc danh mục khác.</p>
+                <h3 className="text-xl font-semibold text-gray-700">{t('no_products', 'Không tìm thấy sản phẩm')}</h3>
+                <p className="text-gray-500 mt-2">{t('no_products_desc', 'Vui lòng thử từ khóa hoặc danh mục khác.')}</p>
                 <Button variant="link" onClick={() => { setSearchTerm(""); setActiveCategory("all"); }} className="mt-4 text-primary">
-                  Xóa bộ lọc
+                  {t('clear_filter', 'Xóa bộ lọc')}
                 </Button>
               </motion.div>
             ) : (
@@ -215,14 +217,14 @@ const Products = () => {
 
                       {/* Overlays / Badges */}
                       <div className="absolute top-3 right-3 flex flex-col gap-2">
-                        {product.is_new && <Badge className="bg-green-500 hover:bg-green-600 shadow-sm backdrop-blur-sm">Mới</Badge>}
-                        {product.is_bestseller && <Badge className="bg-amber-500 hover:bg-amber-600 shadow-sm backdrop-blur-sm">Hot</Badge>}
+                        {product.is_new && <Badge className="bg-green-500 hover:bg-green-600 shadow-sm backdrop-blur-sm">{t('new_badge')}</Badge>}
+                        {product.is_bestseller && <Badge className="bg-amber-500 hover:bg-amber-600 shadow-sm backdrop-blur-sm">{t('hot_badge')}</Badge>}
                       </div>
 
                       {/* Quick Actions Overlay */}
                       <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">
                         <Button variant="secondary" size="sm" onClick={() => setSelectedProduct(product)} className="rounded-full shadow-lg translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                          Xem chi tiết
+                          {t('view_details')}
                         </Button>
                       </div>
                     </div>
@@ -244,7 +246,7 @@ const Products = () => {
 
                     <CardContent className="flex-grow pt-0">
                       <div className="mt-2 text-primary font-bold text-lg">
-                        {product.price || "Liên hệ"}
+                        {product.price || t('contact')}
                       </div>
                       <p className="text-sm text-gray-500 mt-2 line-clamp-2">
                         {product.description}
@@ -254,7 +256,7 @@ const Products = () => {
                     <CardFooter className="pt-0 pb-6 px-6">
                       <Button className="w-full rounded-lg font-medium shadow-md shadow-primary/20 hover:shadow-primary/40 transition-shadow" asChild>
                         <AppLink routeKey="CONTACT" query={{ product: product.id.toString() }}>
-                          Báo giá ngay
+                          {t('quote_now')}
                         </AppLink>
                       </Button>
                     </CardFooter>
@@ -300,7 +302,7 @@ const Products = () => {
                   <div>
                     <h4 className="text-lg font-semibold mb-4 text-primary flex items-center gap-2">
                       <span className="w-1 h-6 bg-primary rounded-full"></span>
-                      Tính năng nổi bật
+                      {t('features')}
                     </h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {selectedProduct.features.map((feature, idx) => (
@@ -317,7 +319,7 @@ const Products = () => {
                 <div>
                   <h4 className="text-lg font-semibold mb-4 text-primary flex items-center gap-2">
                     <span className="w-1 h-6 bg-primary rounded-full"></span>
-                    Thông số kỹ thuật
+                    {t('specs')}
                   </h4>
                   <div className="overflow-hidden rounded-xl border border-gray-200 shadow-sm">
                     <table className="min-w-full divide-y divide-gray-200">
@@ -336,11 +338,11 @@ const Products = () => {
 
               <div className="p-6 border-t bg-gray-50 flex justify-end gap-3 sticky bottom-0">
                 <Button variant="outline" onClick={() => setSelectedProduct(null)}>
-                  Đóng
+                  {t('collapse')}
                 </Button>
                 <Button asChild>
                   <AppLink routeKey="CONTACT" query={{ product: selectedProduct.id.toString() }}>
-                    Liên hệ báo giá
+                    {t('quote_now')}
                   </AppLink>
                 </Button>
               </div>
@@ -356,12 +358,12 @@ const Products = () => {
           <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-60 h-60 bg-white/10 rounded-full blur-3xl"></div>
 
           <div className="relative z-10 max-w-3xl mx-auto space-y-6">
-            <h2 className="text-3xl md:text-4xl font-bold">Bạn cần giải pháp thiết kế riêng?</h2>
+            <h2 className="text-3xl md:text-4xl font-bold">{t('cta_solution_title', 'Bạn cần giải pháp thiết kế riêng?')}</h2>
             <p className="text-blue-100 text-lg">
-              Đội ngũ kỹ sư của VVC sẵn sàng khảo sát và tư vấn giải pháp tối ưu nhất cho công trình của bạn.
+              {t('cta_solution_desc', 'Đội ngũ kỹ sư của VVC sẵn sàng khảo sát và tư vấn giải pháp tối ưu nhất cho công trình của bạn.')}
             </p>
             <Button size="lg" variant="secondary" className="font-bold px-8 shadow-xl hover:shadow-2xl transition-all hover:scale-105" asChild>
-              <AppLink routeKey="CONTACT">Liên hệ tư vấn ngay</AppLink>
+              <AppLink routeKey="CONTACT">{t('service_consulting')}</AppLink>
             </Button>
           </div>
         </div>

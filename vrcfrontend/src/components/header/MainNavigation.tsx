@@ -13,7 +13,7 @@ interface MainNavigationProps {
 const MainNavigation = ({ isMobile = false }: MainNavigationProps) => {
   const [navItems, setNavItems] = useState<NavigationItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const location = useLocation();
 
   useEffect(() => {
@@ -65,6 +65,30 @@ const MainNavigation = ({ isMobile = false }: MainNavigationProps) => {
   }, []);
 
   const getTranslatedLabel = (item: NavigationItem) => {
+    const currentLang = i18n.language || 'vi';
+    
+    // 1. If language is Vietnamese, priority 100% to the label from database (Admin)
+    // This ensures "HỆ THỐNG LẠNH" in Admin is "HỆ THỐNG LẠNH" on Frontend
+    if (currentLang.startsWith('vi') && item.label) {
+      return item.label;
+    }
+
+    // 2. Try translating the label directly for other languages (EN, etc.)
+    if (item.label) {
+      // Try direct label (case-sensitive)
+      const translated = t(item.label);
+      if (translated && translated !== item.label) {
+        return translated;
+      }
+      
+      // Try lowercase label (case-insensitive)
+      const lowerTranslated = t(item.label.toLowerCase());
+      if (lowerTranslated && lowerTranslated !== item.label.toLowerCase()) {
+        return lowerTranslated;
+      }
+    }
+
+    // 3. Map paths to keys (fallback for unknown labels or custom paths)
     const pathToKeyMap: Record<string, string> = {
       '/': 'home',
       '/about': 'about',
@@ -75,15 +99,54 @@ const MainNavigation = ({ isMobile = false }: MainNavigationProps) => {
       '/services': 'services',
       '/projects': 'projects',
       '/team': 'team',
+      '/recruitment': 'recruitment',
+      '/publications': 'publications',
+      '/technologies': 'technologies',
       '#': 'explore',
+      '/ho-so-nang-luc': 'capability_experience',
     };
 
+    // 4. Map common semantic labels to keys (backup fallback)
+    const labelToKeyMap: Record<string, string> = {
+      'trang chủ': 'home',
+      'về chúng tôi': 'about',
+      'giới thiệu': 'about',
+      'sản phẩm': 'products',
+      'tin tức': 'news',
+      'liên hệ': 'contact',
+      'dịch vụ': 'services',
+      'dự án': 'projects',
+      'nguồn lực': 'team',
+      'đội ngũ': 'team',
+      'tuyển dụng': 'recruitment',
+      'tài liệu': 'publications',
+      'ấn phẩm': 'publications',
+      'công nghệ': 'technologies',
+      'khám phá': 'explore',
+      'liên kết nhanh': 'quick_links',
+      'hệ thống lạnh': 'industry_refrigeration_title',
+      'hệ thống lạnh công nghiệp': 'industry_refrigeration_title',
+      'tổng thầu cơ điện': 'industry_me_title',
+      'cơ điện': 'M&E System',
+      'trung tâm dữ liệu': 'industry_dc_title',
+      'trung tâm dữ liệu & quản lý tập trung': 'industry_dc_title',
+      'vòng đời dịch vụ': 'industry_lifecycle_title',
+      'hồ sơ năng lực': 'capability_experience',
+    };
+
+    // Try path next
     if (item.path && pathToKeyMap[item.path]) {
-      const translated = t(pathToKeyMap[item.path]);
-      // If translation exists and is not equal to key, use it
-      if (translated && translated !== pathToKeyMap[item.path]) {
-        return translated;
-      }
+      const key = pathToKeyMap[item.path];
+      const translated = t(key);
+      if (translated && translated !== key) return translated;
+    }
+
+    // Try normalized label map last
+    const normalizedLabel = item.label?.toLowerCase().trim() || '';
+    if (normalizedLabel && labelToKeyMap[normalizedLabel]) {
+      const key = labelToKeyMap[normalizedLabel];
+      const translated = t(key);
+      if (translated && translated !== key) return translated;
     }
 
     return item.label;
@@ -152,7 +215,7 @@ const MainNavigation = ({ isMobile = false }: MainNavigationProps) => {
   }
 
   return (
-    <nav className="hidden md:flex items-center space-x-8">
+    <nav className="hidden lg:flex items-center justify-end flex-1 gap-x-4 xl:gap-x-8 px-4">
       {navItems.map((item) => (
         <div key={item.id} className="relative group">
           {item.children && item.children.length > 0 ? (

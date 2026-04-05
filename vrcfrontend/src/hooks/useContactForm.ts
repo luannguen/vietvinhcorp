@@ -2,10 +2,12 @@
 import React, { useState, useEffect } from "react";
 import { z } from "zod";
 import { useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { contactService, ContactDTO } from "@/services/contactService";
 import { useToast } from "@/components/ui/use-toast"; // Assuming toast exists or using local state/console
 
 export function useContactForm() {
+    const { t } = useTranslation();
     const [searchParams] = useSearchParams();
     const urlSubject = searchParams.get("subject");
     const productId = searchParams.get("product");
@@ -23,7 +25,7 @@ export function useContactForm() {
     // Determine default message
     let defaultMessage = "";
     if (productId) {
-        defaultMessage = `Tôi quan tâm đến sản phẩm có ID: ${productId}.\nVui lòng tư vấn thêm cho tôi.`;
+        defaultMessage = `${t('contact_product_interest', 'Tôi quan tâm đến sản phẩm có ID')}: ${productId}.\n${t('contact_please_advise', 'Vui lòng tư vấn thêm cho tôi.')}`;
     } else if (!isPredefinedSubject && urlSubject) {
         defaultMessage = urlSubject + "\n\n";
     }
@@ -70,11 +72,11 @@ export function useContactForm() {
 
     // Validation Schema
     const contactSchema = z.object({
-        name: z.string().min(2, "Họ tên phải có ít nhất 2 ký tự"),
-        email: z.string().email("Email không hợp lệ"),
-        phone: z.string().regex(/^[0-9+\-\s()]*$/, "Số điện thoại không hợp lệ").optional().or(z.literal("")),
+        name: z.string().min(2, t('val_name_min', "Họ tên phải có ít nhất 2 ký tự")),
+        email: z.string().email(t('val_email_invalid', "Email không hợp lệ")),
+        phone: z.string().regex(/^[0-9+\-\s()]*$/, t('val_phone_invalid', "Số điện thoại không hợp lệ")).optional().or(z.literal("")),
         subject: z.string(),
-        message: z.string().min(10, "Nội dung phải có ít nhất 10 ký tự"),
+        message: z.string().min(10, t('val_message_min', "Nội dung phải có ít nhất 10 ký tự")),
     });
 
     const submit = async (e: React.FormEvent) => {
@@ -95,8 +97,8 @@ export function useContactForm() {
         const now = Date.now();
         if (now - lastSubmitted < 30000) {
             toast({
-                title: "Thao tác quá nhanh",
-                description: "Vui lòng đợi 30 giây trước khi gửi lại.",
+                title: t('too_fast', "Thao tác quá nhanh"),
+                description: t('please_wait_30s', "Vui lòng đợi 30 giây trước khi gửi lại."),
                 variant: "destructive",
             });
             return;
@@ -119,8 +121,8 @@ export function useContactForm() {
 
             // Still show a toast for general feedback
             toast({
-                title: "Thông tin chưa chính xác",
-                description: "Vui lòng kiểm tra lại các trường báo đỏ.",
+                title: t('info_incorrect', "Thông tin chưa chính xác"),
+                description: t('check_red_fields', "Vui lòng kiểm tra lại các trường báo đỏ."),
                 variant: "destructive",
             });
             return;
@@ -143,18 +145,18 @@ export function useContactForm() {
                     message: "",
                 });
                 toast({
-                    title: "Thành công",
-                    description: "Cảm ơn bạn đã liên hệ. Chúng tôi sẽ phản hồi sớm nhất!",
+                    title: t('success', "Thành công"),
+                    description: t('sent_success_desc', "Cảm ơn bạn đã liên hệ. Chúng tôi sẽ phản hồi sớm nhất!"),
                     variant: "default",
                 });
             } else {
                 setSubmitStatus("error");
                 // Explicitly cast to failure type or any since we know it failed
                 const failure = result as any;
-                const errorMessage = failure.error?.message || "Gửi liên hệ thất bại (mã lỗi không xác định)";
+                const errorMessage = failure.error?.message || t('sent_fail_desc', "Gửi liên hệ thất bại (mã lỗi không xác định)");
 
                 toast({
-                    title: "Lỗi",
+                    title: t('error', "Lỗi"),
                     description: errorMessage,
                     variant: "destructive",
                 });
@@ -163,8 +165,8 @@ export function useContactForm() {
             console.error("Submission error:", error);
             setSubmitStatus("error");
             toast({
-                title: "Lỗi",
-                description: "Đã xảy ra lỗi khi gửi form. Vui lòng thử lại sau.",
+                title: t('error', "Lỗi"),
+                description: t('error_sending_form', "Đã xảy ra lỗi khi gửi form. Vui lòng thử lại sau."),
                 variant: "destructive",
             });
         } finally {

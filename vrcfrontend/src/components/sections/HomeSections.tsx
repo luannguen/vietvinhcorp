@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ArrowRight, Calendar, Tag, ExternalLink, Package, LayoutGrid, CheckCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { EditableElement } from '../admin/EditableElement';
 import { projectService } from '@/services/projectService';
 import { productService } from '@/services/productService';
@@ -12,10 +13,11 @@ import { newsAPI } from '@/components/data/services/newsService';
 import { NewsItem } from '@/components/data/models/news';
 
 export const NewsEventsBlock = ({
-  title = "Tin tức & Sự kiện",
-  subtitle = "Cập nhật những hoạt động mới nhất, công nghệ tiên tiến và thông tin ngành từ VietVinhCorp.",
+  title,
+  subtitle,
   sectionId
 }: any) => {
+  const { t, i18n } = useTranslation();
   const [newsList, setNewsList] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -48,16 +50,19 @@ export const NewsEventsBlock = ({
   const featuredNews = newsList[0];
   const otherNews = newsList.slice(1);
 
+  const displayTitle = title || t('home_news_title', "Tin tức & Sự kiện");
+  const displaySubtitle = subtitle || t('home_news_subtitle', "Cập nhật những hoạt động mới nhất, công nghệ tiên tiến và thông tin ngành từ VietVinhCorp.");
+
   return (
     <section className="py-20 bg-white">
       <div className="container-custom">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
           <div className="max-w-2xl">
-            <EditableElement tagName="h2" fieldKey="title" sectionId={sectionId} defaultContent={title} className="text-3xl md:text-4xl font-bold mb-4" />
-            <EditableElement tagName="p" fieldKey="subtitle" sectionId={sectionId} defaultContent={subtitle} className="text-lg text-muted-foreground" />
+            <EditableElement tagName="h2" fieldKey="title" sectionId={sectionId} defaultContent={displayTitle} className="text-3xl md:text-4xl font-bold mb-4" />
+            <EditableElement tagName="p" fieldKey="subtitle" sectionId={sectionId} defaultContent={displaySubtitle} className="text-lg text-muted-foreground" />
           </div>
           <Link to="/news" className="mt-6 md:mt-0 inline-flex items-center text-primary font-bold hover:gap-2 transition-all">
-            Xem tất cả bài viết <ArrowRight className="ml-2 w-5 h-5" />
+            {t('view_all_news_posts', 'Xem tất cả bài viết')} <ArrowRight className="ml-2 w-5 h-5" />
           </Link>
         </div>
 
@@ -76,7 +81,7 @@ export const NewsEventsBlock = ({
                     {featuredNews.category}
                   </span>
                   <span className="flex items-center gap-1">
-                    <Calendar className="w-4 h-4" /> {new Date(featuredNews.publishDate).toLocaleDateString('vi-VN')}
+                    <Calendar className="w-4 h-4" /> {new Date(featuredNews.publishDate).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'vi-VN')}
                   </span>
                 </div>
                 <h3 className="text-2xl md:text-3xl font-bold text-white mb-4 group-hover:text-secondary transition-colors">
@@ -101,7 +106,7 @@ export const NewsEventsBlock = ({
                   <h4 className="font-bold text-base line-clamp-2 group-hover:text-primary transition-colors leading-snug">
                     {news.title}
                   </h4>
-                  <div className="text-xs text-muted-foreground mt-2">{new Date(news.publishDate).toLocaleDateString('vi-VN')}</div>
+                  <div className="text-xs text-muted-foreground mt-2">{new Date(news.publishDate).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'vi-VN')}</div>
                 </div>
               </Link>
             ))}
@@ -114,10 +119,11 @@ export const NewsEventsBlock = ({
 
 // --- PROJECTS BLOCK ---
 export const ProjectsBlock = ({
-  title = "Dự Án Tiêu Biểu",
-  subtitle = "Những công trình thực tế khẳng định năng lực thi công và chất lượng giải pháp từ VietVinhCorp.",
+  title,
+  subtitle,
   sectionId
 }: any) => {
+  const { t } = useTranslation();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -132,12 +138,15 @@ export const ProjectsBlock = ({
     fetchProjects();
   }, []);
 
+  const displayTitle = title || t('home_projects_title', "Dự Án Tiêu Biểu");
+  const displaySubtitle = subtitle || t('home_projects_subtitle', "Những công trình thực tế khẳng định năng lực thi công và chất lượng giải pháp từ VietVinhCorp.");
+
   return (
     <section className="py-20 bg-slate-50">
       <div className="container-custom">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <EditableElement tagName="h2" fieldKey="title" sectionId={sectionId} defaultContent={title} className="text-3xl md:text-4xl font-bold mb-6" />
-          <EditableElement tagName="p" fieldKey="subtitle" sectionId={sectionId} defaultContent={subtitle} className="text-lg text-muted-foreground" />
+          <EditableElement tagName="h2" fieldKey="title" sectionId={sectionId} defaultContent={displayTitle} className="text-3xl md:text-4xl font-bold mb-6" />
+          <EditableElement tagName="p" fieldKey="subtitle" sectionId={sectionId} defaultContent={displaySubtitle} className="text-lg text-muted-foreground" />
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
@@ -155,11 +164,11 @@ export const ProjectsBlock = ({
                 />
                 <div className="absolute inset-0 flex flex-col justify-end p-6 translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                   <div className="text-secondary font-bold text-sm mb-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    {typeof project.category === 'object' ? (project.category as any).name : 'Dự án'}
+                    {typeof project.category === 'object' ? (project.category as any).name : t('project', 'Dự án')}
                   </div>
                   <h3 className="text-white text-xl font-bold mb-2">{project.name}</h3>
                   <div className="flex items-center text-white/80 text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-                    Chi tiết dự án <ArrowRight className="ml-2 w-4 h-4" />
+                    {t('project_details', 'Chi tiết dự án')} <ArrowRight className="ml-2 w-4 h-4" />
                   </div>
                 </div>
                 <div className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity">
@@ -171,7 +180,7 @@ export const ProjectsBlock = ({
         </div>
 
         <div className="mt-12 text-center">
-          <Link to="/projects" className="btn-primary">Tất cả dự án công trình</Link>
+          <Link to="/projects" className="btn-primary">{t('all_projects_works', 'Tất cả dự án công trình')}</Link>
         </div>
       </div>
     </section>
@@ -180,15 +189,20 @@ export const ProjectsBlock = ({
 
 // --- PRODUCTS BLOCK ---
 export const ProductsBlock = ({
-  title = "Sản Phẩm Phân Phối",
-  subtitle = "Chúng tôi là đối tác chiến lược của các hãng thiết bị điện lạnh hàng đầu thế giới, cung cấp hệ thống vật tư tiêu chuẩn quốc tế.",
+  title,
+  subtitle,
   sectionId
 }: any) => {
+  const { t } = useTranslation();
+  
+  const displayTitle = title || t('home_products_title_dist', "Sản Phẩm Phân Phối");
+  const displaySubtitle = subtitle || t('home_products_subtitle_dist', "Chúng tôi là đối tác chiến lược của các hãng thiết bị điện lạnh hàng đầu thế giới, cung cấp hệ thống vật tư tiêu chuẩn quốc tế.");
+
   const categories = [
-    { name: "Cụm Máy Chiller", icon: Package, desc: "Trane, Daikin, York - Hiệu suất cao, tiết kiệm điện" },
-    { name: "Kho Lạnh Công Nghiệp", icon: LayoutGrid, desc: "Panel cách nhiệt, cửa kho lạnh tiêu chuẩn ISO" },
-    { name: "Điều Hòa VRV / VRF", icon: Tag, desc: "Giải pháp đa kết nối cho tòa nhà và biệt thự" },
-    { name: "Vật Tư Phụ Trợ", icon: CheckCircle, desc: "Ống đồng, bảo ôn, gas lạnh chính hãng" }
+    { name: t('home_prod_cat1', "Cụm Máy Chiller"), icon: Package, desc: t('home_prod_cat1_desc', "Trane, Daikin, York - Hiệu suất cao, tiết kiệm điện") },
+    { name: t('home_prod_cat2', "Kho Lạnh Công Nghiệp"), icon: LayoutGrid, desc: t('home_prod_cat2_desc', "Panel cách nhiệt, cửa kho lạnh tiêu chuẩn ISO") },
+    { name: t('home_prod_cat3', "Điều Hòa VRV / VRF"), icon: Tag, desc: t('home_prod_cat3_desc', "Giải pháp đa kết nối cho tòa nhà và biệt thự") },
+    { name: t('home_prod_cat4', "Vật Tư Phụ Trợ"), icon: CheckCircle, desc: t('home_prod_cat4_desc', "Ống đồng, bảo ôn, gas lạnh chính hãng") }
   ];
 
   return (
@@ -196,10 +210,10 @@ export const ProductsBlock = ({
       <div className="container-custom">
         <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
           <div>
-            <EditableElement tagName="h2" fieldKey="title" sectionId={sectionId} defaultContent={title} className="text-3xl md:text-4xl font-bold mb-6" />
-            <EditableElement tagName="p" fieldKey="subtitle" sectionId={sectionId} defaultContent={subtitle} className="text-lg text-muted-foreground mb-8" />
+            <EditableElement tagName="h2" fieldKey="title" sectionId={sectionId} defaultContent={displayTitle} className="text-3xl md:text-4xl font-bold mb-6" />
+            <EditableElement tagName="p" fieldKey="subtitle" sectionId={sectionId} defaultContent={displaySubtitle} className="text-lg text-muted-foreground mb-8" />
             <Link to="/products" className="btn-outline inline-flex items-center">
-              Xem danh mục sản phẩm <ArrowRight className="ml-2 w-4 h-4" />
+              {t('view_product_catalog', 'Xem danh mục sản phẩm')} <ArrowRight className="ml-2 w-4 h-4" />
             </Link>
           </div>
           <div className="grid sm:grid-cols-2 gap-6">
@@ -218,11 +232,11 @@ export const ProductsBlock = ({
         <div className="bg-primary rounded-3xl p-8 md:p-12 text-white relative overflow-hidden">
           <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
             <div className="max-w-xl">
-              <h3 className="text-2xl md:text-3xl font-bold mb-4 text-white">Bạn cần báo giá thiết bị số lượng lớn?</h3>
-              <p className="text-white/70">Liên hệ ngay với bộ phận dự án để nhận chính sách giá ưu đãi và hỗ trợ kỹ thuật chuyên sâu từ các chuyên gia của VVC.</p>
+              <h3 className="text-2xl md:text-3xl font-bold mb-4 text-white">{t('bulk_quote_request', 'Bạn cần báo giá thiết bị số lượng lớn?')}</h3>
+              <p className="text-white/70">{t('bulk_quote_request_desc', 'Liên hệ ngay với bộ phận dự án để nhận chính sách giá ưu đãi và hỗ trợ kỹ thuật chuyên sâu từ các chuyên gia của VVC.')}</p>
             </div>
             <Link to="/contact" className="px-8 py-4 bg-secondary text-white font-bold rounded-xl hover:scale-105 transition-transform shadow-xl shrink-0">
-              Nhận báo giá ngay
+              {t('get_quote_now', 'Nhận báo giá ngay')}
             </Link>
           </div>
           <div className="absolute -top-24 -right-24 w-64 h-64 bg-white/5 rounded-full blur-3xl" />

@@ -1,33 +1,58 @@
 import React from 'react';
-import { FileText, Wrench, Activity, Cog, CheckCircle, Zap, Shield, Settings, Server, ArrowRight } from 'lucide-react';
+import { 
+  FileText as FileTextIcon, 
+  Wrench as WrenchIcon, 
+  Activity as ActivityIcon, 
+  Cog as CogIcon, 
+  CheckCircle as CheckCircleIcon, 
+  Zap as ZapIcon, 
+  Shield as ShieldIcon, 
+  Settings as SettingsIcon, 
+  Server as ServerIcon, 
+  ArrowRight as ArrowRightIcon 
+} from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { EditableElement } from '../admin/EditableElement';
 import ContactForm from '../ContactForm';
 
 // --- HỆ THỐNG LẠNH ---
 export const RefrigerationBlock = ({ 
-  title = "Hệ Thống Lạnh Công Nghiệp", 
-  description = "VVC cung cấp các giải pháp làm lạnh chuyên sâu, từ kho lạnh bảo quản đến hệ thống điều hòa trung tâm công suất lớn, đảm bảo hiệu suất tối ưu và tiết kiệm năng lượng.",
-  image = "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1200",
-  features = [
-    { title: "Kho lạnh công nghiệp", desc: "Bảo quản thực phẩm, dược phẩm tiêu chuẩn ISO" },
-    { title: "Hệ thống Chiller", desc: "Làm lạnh nước công suất lớn cho nhà máy, tòa nhà" },
-    { title: "Điều hòa VRV/VRF", desc: "Giải pháp đa kết nối hiện đại, tiết kiệm 40% điện năng" }
-  ],
+  title, 
+  description,
+  image,
+  features,
   sectionId 
 }: any) => {
+  const { t } = useTranslation();
+  
+  const defaultTitle = t('industry_refrigeration_title', "Hệ Thống Lạnh Công Nghiệp");
+  const defaultDesc = t('industry_refrigeration_desc', "VVC cung cấp các giải pháp làm lạnh chuyên sâu, từ kho lạnh bảo quản đến hệ thống điều hòa trung tâm công suất lớn, đảm bảo hiệu suất tối ưu và tiết kiệm năng lượng.");
+  const defaultImage = "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1200";
+  
+  const defaultFeatures = [
+    { title: t('industry_ref_f1_title', "Kho lạnh công nghiệp"), desc: t('industry_ref_f1_desc', "Bảo quản thực phẩm, dược phẩm tiêu chuẩn ISO") },
+    { title: t('industry_ref_f2_title', "Hệ thống Chiller"), desc: t('industry_ref_f2_desc', "Làm lạnh nước công suất lớn cho nhà máy, tòa nhà") },
+    { title: t('industry_ref_f3_title', "Điều hòa VRV/VRF"), desc: t('industry_ref_f3_desc', "Giải pháp đa kết nối hiện đại, tiết kiệm 40% điện năng") }
+  ];
+
+  const displayTitle = title || defaultTitle;
+  const displayDesc = description || defaultDesc;
+  const displayImage = image || defaultImage;
+  const displayFeatures = features || defaultFeatures;
+
   return (
     <section className="py-20 bg-white overflow-hidden">
       <div className="container-custom">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="order-2 lg:order-1">
-            <EditableElement tagName="h2" fieldKey="title" sectionId={sectionId} defaultContent={title} className="text-3xl md:text-4xl font-bold mb-6 text-primary" />
-            <EditableElement tagName="p" fieldKey="description" sectionId={sectionId} defaultContent={description} className="text-lg text-muted-foreground mb-8 leading-relaxed" />
+            <EditableElement tagName="h2" fieldKey="title" sectionId={sectionId} defaultContent={displayTitle} className="text-3xl md:text-4xl font-bold mb-6 text-primary" />
+            <EditableElement tagName="p" fieldKey="description" sectionId={sectionId} defaultContent={displayDesc} className="text-lg text-muted-foreground mb-8 leading-relaxed" />
             
             <div className="space-y-6">
-              {features.map((f: any, i: number) => (
+              {displayFeatures.map((f: any, i: number) => (
                 <div key={i} className="flex gap-4">
                   <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <CheckCircle className="text-primary w-6 h-6" />
+                    <CheckCircleIcon className="text-primary w-6 h-6" />
                   </div>
                   <div>
                     <h4 className="font-bold text-lg mb-1">{f.title}</h4>
@@ -39,15 +64,15 @@ export const RefrigerationBlock = ({
             
             <div className="mt-10">
               <a href="/products/industrial" className="btn-primary inline-flex items-center">
-                Tìm hiểu thêm <ArrowRight className="ml-2 w-4 h-4" />
+                {t('learn_more', 'Tìm hiểu thêm')} <ArrowRightIcon className="ml-2 w-4 h-4" />
               </a>
             </div>
           </div>
           <div className="order-1 lg:order-2 relative">
             <div className="absolute -inset-4 bg-primary/5 rounded-2xl transform rotate-3" />
             <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-              <EditableElement type="image" fieldKey="image" sectionId={sectionId} defaultContent={image}>
-                <img src={image} alt={title} className="w-full h-full object-cover min-h-[400px]" />
+              <EditableElement type="image" fieldKey="image" sectionId={sectionId} defaultContent={displayImage}>
+                <img src={displayImage} alt={displayTitle} className="w-full h-full object-cover min-h-[400px]" />
               </EditableElement>
             </div>
           </div>
@@ -59,24 +84,34 @@ export const RefrigerationBlock = ({
 
 // --- HỆ THỐNG CƠ ĐIỆN ---
 export const MEBlock = ({
-  title = "Tổng Thầu Cơ Điện (M&E)",
-  description = "Giải pháp cơ điện toàn diện cho các công trình dân dụng và công nghiệp, đáp ứng các tiêu chuẩn kỹ thuật khắt khe nhất của Việt Nam và Quốc tế.",
-  image = "https://images.unsplash.com/photo-1544724569-5f546fd6f2b5?auto=format&fit=crop&q=80&w=1200",
+  title,
+  description,
+  image,
   sectionId
 }: any) => {
+  const { t } = useTranslation();
+  
+  const defaultTitle = t('industry_me_title', "Tổng Thầu Cơ Điện (M&E)");
+  const defaultDesc = t('industry_me_desc', "Giải pháp cơ điện toàn diện cho các công trình dân dụng và công nghiệp, đáp ứng các tiêu chuẩn kỹ thuật khắt khe nhất của Việt Nam và Quốc tế.");
+  const defaultImage = "https://images.unsplash.com/photo-1544724569-5f546fd6f2b5?auto=format&fit=crop&q=80&w=1200";
+
   const categories = [
-    { icon: Zap, label: "Hệ thống điện", sub: "Trạm biến áp, chiếu sáng, tủ bảng điện" },
-    { icon: Cog, label: "Hệ thống HVAC", sub: "Thông gió, điều hòa không khí trung tâm" },
-    { icon: Shield, label: "Hệ thống PCCC", sub: "Báo cháy, chữa cháy tự động tiêu chuẩn" },
-    { icon: Settings, label: "Cấp thoát nước", sub: "Xử lý nước thải, cung cấp nước sạch" }
+    { icon: ZapIcon, label: t('industry_me_c1_title', "Hệ thống điện"), sub: t('industry_me_c1_desc', "Trạm biến áp, chiếu sáng, tủ bảng điện") },
+    { icon: CogIcon, label: t('industry_me_c2_title', "Hệ thống HVAC"), sub: t('industry_me_c2_desc', "Thông gió, điều hòa không khí trung tâm") },
+    { icon: ShieldIcon, label: t('industry_me_c3_title', "Hệ thống PCCC"), sub: t('industry_me_c3_desc', "Báo cháy, chữa cháy tự động tiêu chuẩn") },
+    { icon: SettingsIcon, label: t('industry_me_c4_title', "Cấp thoát nước"), sub: t('industry_me_c4_desc', "Xử lý nước thải, cung cấp nước sạch") }
   ];
+
+  const displayTitle = title || defaultTitle;
+  const displayDesc = description || defaultDesc;
+  const displayImage = image || defaultImage;
 
   return (
     <section className="py-20 bg-slate-50">
       <div className="container-custom">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <EditableElement tagName="h2" fieldKey="title" sectionId={sectionId} defaultContent={title} className="text-3xl md:text-4xl font-extrabold mb-6" />
-          <EditableElement tagName="p" fieldKey="description" sectionId={sectionId} defaultContent={description} className="text-lg text-muted-foreground" />
+          <EditableElement tagName="h2" fieldKey="title" sectionId={sectionId} defaultContent={displayTitle} className="text-3xl md:text-4xl font-extrabold mb-6" />
+          <EditableElement tagName="p" fieldKey="description" sectionId={sectionId} defaultContent={displayDesc} className="text-lg text-muted-foreground" />
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -92,12 +127,12 @@ export const MEBlock = ({
         </div>
 
         <div className="mt-16 relative rounded-2xl overflow-hidden aspect-[21/9]">
-           <EditableElement type="image" fieldKey="image" sectionId={sectionId} defaultContent={image}>
-             <img src={image} alt="M&E Infrastructure" className="w-full h-full object-cover" />
+           <EditableElement type="image" fieldKey="image" sectionId={sectionId} defaultContent={displayImage}>
+             <img src={displayImage} alt="M&E Infrastructure" className="w-full h-full object-cover" />
            </EditableElement>
            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-8 md:p-12">
              <div className="text-white">
-                <p className="text-xl md:text-2x font-medium">Đối tác tin cậy cho mọi công trình quy mô lớn</p>
+                <p className="text-xl md:text-2xl font-medium">{t('industry_me_banner_text', 'Đối tác tin cậy cho mọi công trình quy mô lớn')}</p>
              </div>
            </div>
         </div>
@@ -108,11 +143,21 @@ export const MEBlock = ({
 
 // --- TRUNG TÂM DỮ LIỆU & QUẢN LÝ ---
 export const DataCenterBlock = ({
-  title = "Trung Tâm Dữ Liệu & Quản Lý Tập Trung",
-  description = "Tư vấn và triển khai hạ tầng trung tâm dữ liệu tiêu chuẩn TIER III, kết hợp hệ thống giám sát và quản lý tòa nhà BMS hiện đại.",
-  image = "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&q=80&w=1200",
+  title,
+  description,
+  image,
   sectionId
 }: any) => {
+  const { t } = useTranslation();
+  
+  const defaultTitle = t('industry_dc_title', "Trung Tâm Dữ Liệu & Quản Lý Tập Trung");
+  const defaultDesc = t('industry_dc_desc', "Tư vấn và triển khai hạ tầng trung tâm dữ liệu tiêu chuẩn TIER III, kết hợp hệ thống giám sát và quản lý tòa nhà BMS hiện đại.");
+  const defaultImage = "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&q=80&w=1200";
+
+  const displayTitle = title || defaultTitle;
+  const displayDesc = description || defaultDesc;
+  const displayImage = image || defaultImage;
+
   return (
     <section className="py-24 bg-primary text-white relative overflow-hidden">
       <div className="absolute top-0 right-0 w-1/3 h-full opacity-10 pointer-events-none">
@@ -123,31 +168,31 @@ export const DataCenterBlock = ({
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <div>
             <div className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 text-white/90 text-xs font-bold tracking-widest uppercase mb-6 border border-white/20">
-              High-Tech Infrastructure
+              {t('high_tech_infrastructure', 'High-Tech Infrastructure')}
             </div>
-            <EditableElement tagName="h2" fieldKey="title" sectionId={sectionId} defaultContent={title} className="text-3xl md:text-5xl font-bold mb-8 leading-tight text-white" />
-            <EditableElement tagName="p" fieldKey="description" sectionId={sectionId} defaultContent={description} className="text-lg opacity-80 mb-10 leading-relaxed" />
+            <EditableElement tagName="h2" fieldKey="title" sectionId={sectionId} defaultContent={displayTitle} className="text-3xl md:text-5xl font-bold mb-8 leading-tight text-white" />
+            <EditableElement tagName="p" fieldKey="description" sectionId={sectionId} defaultContent={displayDesc} className="text-lg opacity-80 mb-10 leading-relaxed" />
             
             <div className="grid sm:grid-cols-2 gap-8">
               <div className="flex items-start gap-4">
-                <Server className="w-10 h-10 text-secondary flex-shrink-0" />
+                <ServerIcon className="w-10 h-10 text-secondary flex-shrink-0" />
                 <div>
-                  <h4 className="font-bold text-xl mb-2 text-white">Precision Cooling</h4>
-                  <p className="text-sm opacity-70">Làm mát chính xác, độ tin cậy 99.982% cho máy chủ.</p>
+                  <h4 className="font-bold text-xl mb-2 text-white">{t('precision_cooling', 'Precision Cooling')}</h4>
+                  <p className="text-sm opacity-70">{t('precision_cooling_desc', 'Làm mát chính xác, độ tin cậy 99.982% cho máy chủ.')}</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
-                <Activity className="w-10 h-10 text-secondary flex-shrink-0" />
+                <ActivityIcon className="w-10 h-10 text-secondary flex-shrink-0" />
                 <div>
-                  <h4 className="font-bold text-xl mb-2 text-white">Tối ưu PUE</h4>
-                  <p className="text-sm opacity-70">Giảm 30% năng lượng tiêu thụ với giải pháp quản lý thông minh.</p>
+                  <h4 className="font-bold text-xl mb-2 text-white">{t('optimize_pue', 'Tối ưu PUE')}</h4>
+                  <p className="text-sm opacity-70">{t('optimize_pue_desc', 'Giảm 30% năng lượng tiêu thụ với giải pháp quản lý thông minh.')}</p>
                 </div>
               </div>
             </div>
             
             <div className="mt-12">
               <a href="/projects/specialized" className="px-8 py-3 bg-secondary text-white font-bold rounded-lg hover:bg-secondary/90 transition-all inline-block shadow-lg">
-                Xem các dự án Data Center
+                {t('view_dc_projects', 'Xem các dự án Data Center')}
               </a>
             </div>
           </div>
@@ -155,8 +200,8 @@ export const DataCenterBlock = ({
           <div className="relative group">
             <div className="absolute inset-0 bg-secondary/20 rounded-2xl blur-3xl group-hover:bg-secondary/30 transition-all opacity-50" />
             <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl aspect-video">
-              <EditableElement type="image" fieldKey="image" sectionId={sectionId} defaultContent={image}>
-                <img src={image} alt="Data Center Visualization" className="w-full h-full object-cover" />
+              <EditableElement type="image" fieldKey="image" sectionId={sectionId} defaultContent={displayImage}>
+                <img src={displayImage} alt="Data Center Visualization" className="w-full h-full object-cover" />
               </EditableElement>
             </div>
           </div>
@@ -168,23 +213,31 @@ export const DataCenterBlock = ({
 
 // --- DỊCH VỤ (LIFECYCLE) ---
 export const ServiceLifecycleBlock = ({
-  title = "Vòng Đời Dịch Vụ Toàn Diện",
-  description = "Chúng tôi đồng hành cùng khách hàng từ khâu lên ý tưởng đến khi hệ thống đi vào vận hành ổn định và bảo trì lâu dài.",
+  title,
+  description,
   sectionId
 }: any) => {
+  const { t } = useTranslation();
+  
+  const defaultTitle = t('industry_lifecycle_title', "Vòng Đời Dịch Vụ Toàn Diện");
+  const defaultDesc = t('industry_lifecycle_desc', "Chúng tôi đồng hành cùng khách hàng từ khâu lên ý tưởng đến khi hệ thống đi vào vận hành ổn định và bảo trì lâu dài.");
+
   const steps = [
-    { icon: FileText, title: "Tư vấn & Thiết kế", desc: "Khảo sát và đề xuất giải pháp kỹ thuật tối ưu nhất." },
-    { icon: Wrench, title: "Thi công & Lắp đặt", desc: "Quy trình thực hiện chuyên nghiệp, đúng tiến độ cam kết." },
-    { icon: Activity, title: "Vận hành & Hỗ trợ", desc: "Đảm bảo hệ thống hoạt động ổn định và tin cậy 24/7." },
-    { icon: Cog, title: "Bảo trì & Sửa chữa", desc: "Dịch vụ sau bán hàng tận tâm, chuyên nghiệp, chính xác." }
+    { icon: FileTextIcon, title: t('lifecycle_s1_title', "Tư vấn & Thiết kế"), desc: t('lifecycle_s1_desc', "Khảo sát và đề xuất giải pháp kỹ thuật tối ưu nhất.") },
+    { icon: WrenchIcon, title: t('lifecycle_s2_title', "Thi công & Lắp đặt"), desc: t('lifecycle_s2_desc', "Quy trình thực hiện chuyên nghiệp, đúng tiến độ cam kết.") },
+    { icon: ActivityIcon, title: t('lifecycle_s3_title', "Vận hành & Hỗ trợ"), desc: t('lifecycle_s3_desc', "Đảm bảo hệ thống hoạt động ổn định và tin cậy 24/7.") },
+    { icon: CogIcon, title: t('lifecycle_s4_title', "Bảo trì & Sửa chữa"), desc: t('lifecycle_s4_desc', "Dịch vụ sau bán hàng tận tâm, chuyên nghiệp, chính xác.") }
   ];
+
+  const displayTitle = title || defaultTitle;
+  const displayDesc = description || defaultDesc;
 
   return (
     <section className="py-20 bg-white">
       <div className="container-custom">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <EditableElement tagName="h2" fieldKey="title" sectionId={sectionId} defaultContent={title} className="text-3xl md:text-4xl font-bold mb-6" />
-          <EditableElement tagName="p" fieldKey="description" sectionId={sectionId} defaultContent={description} className="text-lg text-muted-foreground" />
+          <EditableElement tagName="h2" fieldKey="title" sectionId={sectionId} defaultContent={displayTitle} className="text-3xl md:text-4xl font-bold mb-6" />
+          <EditableElement tagName="p" fieldKey="description" sectionId={sectionId} defaultContent={displayDesc} className="text-lg text-muted-foreground" />
         </div>
 
         <div className="relative">
@@ -205,7 +258,7 @@ export const ServiceLifecycleBlock = ({
         </div>
 
         <div className="mt-20 text-center">
-           <a href="/services" className="btn-outline">Khám phá chi tiết dịch vụ</a>
+           <a href="/services" className="btn-outline">{t('explore_service_details', 'Khám phá chi tiết dịch vụ')}</a>
         </div>
       </div>
     </section>

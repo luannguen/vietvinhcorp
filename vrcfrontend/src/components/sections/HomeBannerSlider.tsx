@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { bannerService, Banner } from '@/services/bannerService';
 import {
     Carousel,
@@ -18,6 +19,7 @@ interface HomeBannerSliderProps {
 }
 
 export const HomeBannerSlider = ({ sectionId }: HomeBannerSliderProps) => {
+    const { t } = useTranslation();
     const [banners, setBanners] = useState<Banner[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -61,17 +63,17 @@ export const HomeBannerSlider = ({ sectionId }: HomeBannerSliderProps) => {
                 <div className="container-custom relative z-10">
                     <div className="max-w-3xl">
                         <h1 className="text-4xl md:text-6xl font-extrabold mb-6 tracking-tight leading-tight">
-                            TỔNG CÔNG TY KỸ THUẬT LẠNH VIỆT NAM
+                            {t('fallback_banner_title', 'TỔNG CÔNG TY KỸ THUẬT LẠNH VIỆT NAM')}
                         </h1>
                         <p className="text-lg md:text-xl mb-8 opacity-90 max-w-2xl leading-relaxed">
-                            Chuyên gia hàng đầu trong lĩnh vực Hệ thống lạnh, Cơ điện và Hạ tầng Trung tâm dữ liệu.
+                            {t('fallback_banner_desc', 'Chuyên gia hàng đầu trong lĩnh vực Hệ thống lạnh, Cơ điện và Hạ tầng Trung tâm dữ liệu.')}
                         </p>
                         <div className="flex gap-4">
                             <Button size="lg" asChild>
-                                <Link to="/products">Khám phá sản phẩm</Link>
+                                <Link to="/products">{t('explore_products', 'Khám phá sản phẩm')}</Link>
                             </Button>
                             <Button size="lg" variant="outline" className="bg-white/10" asChild>
-                                <Link to="/contact">Liên hệ tư vấn</Link>
+                                <Link to="/contact">{t('contact_consultancy', 'Liên hệ tư vấn')}</Link>
                             </Button>
                         </div>
                     </div>
@@ -126,13 +128,13 @@ export const HomeBannerSlider = ({ sectionId }: HomeBannerSliderProps) => {
                                             {banner.link && (
                                                 <Button size="lg" className="rounded-full px-8 bg-secondary hover:bg-secondary/90 text-white shadow-xl group/btn transition-all active:scale-95" asChild>
                                                     <Link to={banner.link}>
-                                                        Xem chi tiết
+                                                        {t('view_details', 'Xem chi tiết')}
                                                         <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover/btn:translate-x-1" />
                                                     </Link>
                                                 </Button>
                                             )}
                                             <Button size="lg" variant="outline" className="rounded-full px-8 bg-white/5 backdrop-blur-md border-white/20 hover:bg-white/10 text-white active:scale-95" asChild>
-                                                <Link to="/contact">Nhận tư vấn</Link>
+                                                <Link to="/contact">{t('get_consultancy', 'Nhận tư vấn')}</Link>
                                             </Button>
                                         </div>
                                     </div>

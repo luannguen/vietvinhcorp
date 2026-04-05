@@ -3,12 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Project, Category } from "@/components/data/types";
 import { projectService } from "@/services/projectService";
 import { productService } from "@/services/productService";
 import AchievementsSection from "@/components/AchievementsSection";
 
 const Projects = () => {
+  const { t } = useTranslation();
   const [featuredProjects, setFeaturedProjects] = useState<Project[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -60,16 +62,16 @@ const Projects = () => {
       <section className="bg-primary/90 py-16 text-white">
         <div className="container-custom">
           <div className="max-w-3xl">
-            <h1 className="text-white mb-6">Dự án tiêu biểu</h1>
+            <h1 className="text-white mb-6">{t('featured_projects_title')}</h1>
             <p className="text-xl md:text-2xl mb-8">
-              Những công trình thực tế đã được VVC thiết kế, cung cấp thiết bị và thi công lắp đặt trên khắp cả nước.
+              {t('featured_projects_desc')}
             </p>
             <div className="flex flex-wrap gap-4">
               <Link to="/contact" className="btn-accent">
-                Đặt lịch tư vấn
+                {t('service_consulting')}
               </Link>
               <Link to="/services" className="btn-white">
-                Xem dịch vụ
+                {t('view_services', 'Xem dịch vụ')}
               </Link>
             </div>
           </div>
@@ -81,26 +83,26 @@ const Projects = () => {
         <div className="container-custom">
           <div className="grid md:grid-cols-2 gap-10 items-center">
             <div>
-              <h2 className="mb-6">Năng lực và kinh nghiệm</h2>
+              <h2 className="mb-6">{t('capability_experience', 'Năng lực và kinh nghiệm')}</h2>
               <p className="text-muted-foreground mb-6">
-                Với hơn 20 năm kinh nghiệm, VVC đã thực hiện hàng trăm dự án lớn nhỏ trong lĩnh vực điện lạnh công nghiệp và dân dụng. Chúng tôi tự hào là đối tác tin cậy của nhiều tập đoàn lớn và các đơn vị hàng đầu trong các ngành công nghiệp.
+                {t('projects_overview_desc', 'Với hơn 20 năm kinh nghiệm, VVC đã thực hiện hàng trăm dự án lớn nhỏ trong lĩnh vực điện lạnh công nghiệp và dân dụng. Chúng tôi tự hào là đối tác tin cậy của nhiều tập đoàn lớn và các đơn vị hàng đầu trong các ngành công nghiệp.')}
               </p>
               <ul className="space-y-3">
                 <li className="flex items-start">
                   <CheckCircle size={20} className="text-primary mr-3 mt-1" />
-                  <span>Hơn 500 dự án lớn nhỏ đã hoàn thành</span>
+                  <span>{t('completed_projects_stat', 'Hơn 500 dự án lớn nhỏ đã hoàn thành')}</span>
                 </li>
                 <li className="flex items-start">
                   <CheckCircle size={20} className="text-primary mr-3 mt-1" />
-                  <span>Đối tác của các tập đoàn và doanh nghiệp hàng đầu</span>
+                  <span>{t('trusted_partner_stat', 'Đối tác của các tập đoàn và doanh nghiệp hàng đầu')}</span>
                 </li>
                 <li className="flex items-start">
                   <CheckCircle size={20} className="text-primary mr-3 mt-1" />
-                  <span>Đội ngũ kỹ sư và chuyên viên giàu kinh nghiệm</span>
+                  <span>{t('expert_team_stat', 'Đội ngũ kỹ sư và chuyên viên giàu kinh nghiệm')}</span>
                 </li>
                 <li className="flex items-start">
                   <CheckCircle size={20} className="text-primary mr-3 mt-1" />
-                  <span>Cam kết chất lượng và tiến độ thi công</span>
+                  <span>{t('quality_commitment_stat', 'Cam kết chất lượng và tiến độ thi công')}</span>
                 </li>
               </ul>
             </div>
@@ -123,9 +125,9 @@ const Projects = () => {
       <section className="py-12 bg-muted">
         <div className="container-custom">
           <div className="text-center mb-10">
-            <h2 className="mb-4">Danh mục dự án</h2>
+            <h2 className="mb-4">{t('project_cat_title')}</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              VVC tự hào thực hiện các dự án đa dạng với quy mô khác nhau, từ hệ thống điều hòa không khí trung tâm cho tòa nhà thương mại đến các hệ thống làm lạnh công nghiệp phức tạp.
+              {t('project_cat_desc_list', 'VVC tự hào thực hiện các dự án đa dạng với quy mô khác nhau, từ hệ thống điều hòa không khí trung tâm cho tòa nhà thương mại đến các hệ thống làm lạnh công nghiệp phức tạp.')}
             </p>
           </div>
 
@@ -148,7 +150,7 @@ const Projects = () => {
                 </CardContent>
                 <CardFooter>
                   <Link to={`/projects/category/${category.slug || category.id}`} className="text-primary hover:text-accent flex items-center">
-                    Xem dự án
+                    {t('view_project')}
                     <ArrowUpRight size={16} className="ml-1" />
                   </Link>
                 </CardFooter>
@@ -158,7 +160,7 @@ const Projects = () => {
             {/* Fallback if no categories found */}
             {categories.length === 0 && !isLoading && (
               <div className="col-span-full text-center text-muted-foreground p-8">
-                Chưa có danh mục dự án nào.
+                {t('no_project_cats', 'Chưa có danh mục dự án nào.')}
               </div>
             )}
           </div>
@@ -168,7 +170,7 @@ const Projects = () => {
       {/* Featured Projects */}
       <section className="py-12 bg-white">
         <div className="container-custom">
-          <h2 className="mb-8">Dự án nổi bật</h2>
+          <h2 className="mb-8">{t('featured_projects_list', 'Dự án nổi bật')}</h2>
 
           {featuredProjects.length > 0 ? (
             <div className="space-y-8">
@@ -189,7 +191,7 @@ const Projects = () => {
                       <h3 className="text-xl font-semibold mb-2">{project.name}</h3>
                       {project.completion_date && (
                         <p className="text-sm text-muted-foreground mb-4">
-                          Hoàn thành: {new Date(project.completion_date).toLocaleDateString('vi-VN', { month: '2-digit', year: 'numeric' })}
+                          {t('completion_date', 'Hoàn thành')}: {new Date(project.completion_date).toLocaleDateString(t('date_locale', 'vi-VN'), { month: '2-digit', year: 'numeric' })}
                         </p>
                       )}
 
@@ -206,7 +208,7 @@ const Projects = () => {
                       </div>
 
                       <Link to={`/project-details/${project.id}`} className="text-primary hover:text-accent flex items-center">
-                        Chi tiết dự án
+                        {t('project_details', 'Chi tiết dự án')}
                         <ArrowRight size={16} className="ml-1" />
                       </Link>
                     </div>
@@ -216,13 +218,13 @@ const Projects = () => {
             </div>
           ) : (
             <div className="text-center p-8 bg-gray-50 rounded-lg">
-              <p className="text-muted-foreground">Chưa có dự án nổi bật nào.</p>
+              <p className="text-muted-foreground">{t('no_featured_projects', 'Chưa có dự án nổi bật nào.')}</p>
             </div>
           )}
 
           <div className="mt-10 text-center">
             <Button asChild variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white transition-colors">
-              <Link to="/contact">Liên hệ để được tư vấn thêm</Link>
+              <Link to="/contact">{t('contact_for_more', 'Liên hệ để được tư vấn thêm')}</Link>
             </Button>
           </div>
         </div>
@@ -242,10 +244,10 @@ const Projects = () => {
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
               <Link to="/contact" className="btn-primary">
-                Liên hệ tư vấn
+                {t('contact_now', 'Liên hệ ngay')}
               </Link>
               <Link to="/services" className="btn-outline">
-                Xem dịch vụ
+                {t('view_services', 'Xem dịch vụ')}
               </Link>
             </div>
           </div>

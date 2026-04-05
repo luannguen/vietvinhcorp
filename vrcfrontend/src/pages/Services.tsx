@@ -10,6 +10,7 @@ import { serviceService, Service, ServiceCategory } from "@/services/serviceServ
 import { pageService, StaticPage } from "@/services/pageService";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 
 // Map icon strings from DB to Lucide components
@@ -74,19 +75,21 @@ const Services = () => {
     }
   }
 
+  const { t } = useTranslation();
+
   const heroSection = contentData?.sections?.find((s: any) => s.type === "HeroBlock")?.data || {
-    title: "Dịch vụ chuyên nghiệp",
-    description: "Cung cấp đầy đủ các giải pháp dịch vụ kỹ thuật điện lạnh chất lượng cao từ tư vấn, lắp đặt đến bảo trì và sửa chữa."
+    title: t('service_professional_title'),
+    description: t('service_professional_desc')
   };
 
   const overviewSection = contentData?.sections?.find((s: any) => s.type === "ContentBlock")?.data || {
-    title: "Dịch vụ toàn diện",
-    content: "Với hơn 20 năm kinh nghiệm trong lĩnh vực điện lạnh công nghiệp và dân dụng, VVC đã trở thành đối tác tin cậy của hàng nghìn khách hàng trên cả nước. Chúng tôi tự hào cung cấp các dịch vụ kỹ thuật chất lượng cao với đội ngũ chuyên viên được đào tạo bài bản.",
+    title: t('service_overview'),
+    content: t('service_overview_content', "Với hơn 20 năm kinh nghiệm trong lĩnh vực điện lạnh công nghiệp và dân dụng, VVC đã trở thành đối tác tin cậy của hàng nghìn khách hàng trên cả nước. Chúng tôi tự hào cung cấp các dịch vụ kỹ thuật chất lượng cao với đội ngũ chuyên viên được đào tạo bài bản."),
     features: [
-      "Đội ngũ kỹ sư giàu kinh nghiệm, được chứng nhận chuyên môn",
-      "Phục vụ 24/7 với thời gian phản hồi nhanh chóng",
-      "Trang thiết bị hiện đại, công nghệ tiên tiến",
-      "Cam kết chất lượng và bảo hành dài hạn"
+      t('service_feature_1', "Đội ngũ kỹ sư giàu kinh nghiệm, được chứng nhận chuyên môn"),
+      t('service_feature_2', "Phục vụ 24/7 với thời gian phản hồi nhanh chóng"),
+      t('service_feature_3', "Trang thiết bị hiện đại, công nghệ tiên tiến"),
+      t('service_feature_4', "Cam kết chất lượng và bảo hành dài hạn")
     ]
   };
 
@@ -106,10 +109,10 @@ const Services = () => {
             </p>
             <div className="flex flex-wrap gap-4 animate-in slide-in-from-left duration-700 delay-200">
               <Link to={heroSection.primaryButtonLink || "/contact"} className="btn-accent">
-                {heroSection.primaryButtonLabel || "Liên hệ tư vấn"}
+                {heroSection.primaryButtonLabel || t('service_consulting')}
               </Link>
               <Link to={heroSection.secondaryButtonLink || "/service-support"} className="btn-white">
-                {heroSection.secondaryButtonLabel || "Hỗ trợ kỹ thuật"}
+                {heroSection.secondaryButtonLabel || t('technical_support')}
               </Link>
             </div>
           </div>
@@ -154,9 +157,9 @@ const Services = () => {
       <section className="py-20 bg-muted/30">
         <div className="container-custom">
           <div className="text-center mb-12">
-            <h2 className="mb-4 text-3xl md:text-4xl font-bold">Danh mục dịch vụ</h2>
+            <h2 className="mb-4 text-3xl md:text-4xl font-bold">{t('service_cat_title')}</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-              Chúng tôi cung cấp đầy đủ các dịch vụ điện lạnh công nghiệp và dân dụng, từ tư vấn thiết kế đến lắp đặt, bảo trì và sửa chữa.
+              {t('service_cat_desc', "Chúng tôi cung cấp đầy đủ các dịch vụ điện lạnh công nghiệp và dân dụng, từ tư vấn thiết kế đến lắp đặt, bảo trì và sửa chữa.")}
             </p>
           </div>
 
@@ -168,7 +171,7 @@ const Services = () => {
                     onClick={() => setSelectedCategoryId(null)}
                     className="rounded-full px-6"
                 >
-                    Tất cả
+                    {t('all')}
                 </Button>
                 {categories.map((cat) => (
                     <Button 
@@ -207,13 +210,13 @@ const Services = () => {
                     </CardContent>
                     <CardFooter className="pt-0 border-t border-gray-50 flex justify-between items-center bg-gray-50/30">
                         <span className="text-xs font-medium text-primary/60 uppercase tracking-wider">
-                            {service.service_categories?.name || "Dịch vụ"}
+                            {service.service_categories?.name || t('services')}
                         </span>
                       <Link
                         to={`/services/${service.slug}`}
                         className="text-primary font-semibold hover:text-accent flex items-center gap-1 group/link"
                       >
-                        Chi tiết
+                        {t('view_details')}
                         <ArrowRight size={16} className="transition-transform group-hover/link:translate-x-1" />
                       </Link>
                     </CardFooter>
@@ -223,8 +226,8 @@ const Services = () => {
             ) : (
               <div className="col-span-full text-center py-20 bg-white rounded-2xl shadow-inner border border-dashed">
                 <HelpCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-20" />
-                <p className="text-muted-foreground text-lg italic">Hiện chưa có dịch vụ nào trong danh mục này.</p>
-                <Button variant="link" onClick={() => setSelectedCategoryId(null)}>Xem tất cả dịch vụ</Button>
+                <p className="text-muted-foreground text-lg italic">{t('no_services', 'Hiện chưa có dịch vụ nào trong danh mục này.')}</p>
+                <Button variant="link" onClick={() => setSelectedCategoryId(null)}>{t('view_all_services', 'Xem tất cả dịch vụ')}</Button>
               </div>
             )}
           </div>
@@ -236,17 +239,17 @@ const Services = () => {
         <div className="absolute top-0 left-0 w-full h-full opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]" />
         <div className="container-custom relative z-10">
           <div className="text-center max-w-3xl mx-auto">
-            <Badge className="mb-6 bg-accent text-white border-none px-4 py-1">Tư vấn miễn phí</Badge>
-            <h2 className="mb-6 text-white text-3xl md:text-5xl font-bold">Bắt đầu với dịch vụ của chúng tôi</h2>
+            <Badge className="mb-6 bg-accent text-white border-none px-4 py-1">{t('free_consultation', 'Tư vấn miễn phí')}</Badge>
+            <h2 className="mb-6 text-white text-3xl md:text-5xl font-bold">{t('cta_services_title', 'Bắt đầu với dịch vụ của chúng tôi')}</h2>
             <p className="text-white/80 mb-10 text-lg md:text-xl">
-              Hãy liên hệ với chúng tôi ngay hôm nay để được tư vấn và báo giá các dịch vụ điện lạnh phù hợp với nhu cầu của bạn. Đội ngũ kỹ thuật của VVC luôn sẵn sàng hỗ trợ.
+              {t('cta_services_desc', 'Hãy liên hệ với chúng tôi ngay hôm nay để được tư vấn và báo giá các dịch vụ điện lạnh phù hợp với nhu cầu của bạn. Đội ngũ kỹ thuật của VVC luôn sẵn sàng hỗ trợ.')}
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
               <Link to="/contact" className="px-8 py-4 bg-accent hover:bg-accent/90 text-white rounded-lg font-bold transition-all shadow-lg hover:shadow-accent/40">
-                Liên hệ ngay
+                {t('contact_now', 'Liên hệ ngay')}
               </Link>
               <Link to="/service-support" className="px-8 py-4 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-lg font-bold transition-all backdrop-blur-sm">
-                Tìm hiểu thêm
+                {t('find_out_more')}
               </Link>
             </div>
           </div>
