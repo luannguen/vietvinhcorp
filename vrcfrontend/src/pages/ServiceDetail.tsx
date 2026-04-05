@@ -3,7 +3,8 @@ import { useParams, Link } from "react-router-dom";
 import { serviceService, Service } from "@/services/serviceService";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, CheckCircle, Clock, Calendar } from "lucide-react";
+import { ArrowLeft, CheckCircle, Clock, Calendar, ShieldCheck, HelpCircle } from "lucide-react";
+import ServiceInquiryForm from "@/components/ServiceInquiryForm";
 
 export default function ServiceDetail() {
     const { slug } = useParams<{ slug: string }>();
@@ -19,7 +20,7 @@ export default function ServiceDetail() {
             if (result.success) {
                 setService(result.data);
             } else {
-                setError(result.error.message || "Service not found");
+                setError((result as any).error?.message || "Service not found");
             }
             setLoading(false);
         };
@@ -123,14 +124,20 @@ export default function ServiceDetail() {
                         </div>
                     </div>
 
-                    <div className="bg-primary/5 p-6 rounded-xl border border-primary/10">
-                        <h3 className="text-lg font-semibold mb-2 text-primary">Cần tư vấn thêm?</h3>
-                        <p className="text-sm text-muted-foreground mb-4">Để lại thông tin, chúng tôi sẽ gọi lại ngay.</p>
-                        <Link to="/contact">
-                            <Button variant="outline" className="w-full border-primary/20 text-primary hover:bg-primary/10">
-                                Gửi yêu cầu
-                            </Button>
-                        </Link>
+                    <div className="bg-white p-6 rounded-xl shadow-md border border-primary/20 sticky top-24">
+                        <h3 className="text-xl font-bold mb-2 text-primary flex items-center gap-2">
+                            <HelpCircle className="h-5 w-5" />
+                            Đăng ký Tư vấn
+                        </h3>
+                        <p className="text-sm text-muted-foreground mb-6">Để lại thông tin, chúng tôi sẽ liên hệ trong vòng 30 phút.</p>
+                        <ServiceInquiryForm serviceId={service.id} />
+                        
+                        <div className="mt-8 pt-6 border-t border-gray-100">
+                             <div className="flex items-center gap-3 text-slate-600 mb-4 bg-slate-50 p-3 rounded-lg">
+                                <ShieldCheck className="text-green-600 h-5 w-5 shrink-0" />
+                                <span className="text-xs font-medium">Cam kết bảo mật thông tin khách hàng tuyệt đối.</span>
+                             </div>
+                        </div>
                     </div>
                 </aside>
             </div>

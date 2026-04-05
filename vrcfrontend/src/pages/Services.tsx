@@ -2,11 +2,15 @@ import { useEffect, useState } from "react";
 import {
   ArrowRight, CheckCircle, ArrowUpRight,
   FileCheck, Wrench, Cog, Shield, Clock,
-  HelpCircle, LucideIcon
+  HelpCircle, LucideIcon, Filter
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { serviceService, Service } from "@/services/serviceService";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { serviceService, Service, ServiceCategory } from "@/services/serviceService";
+import { pageService, StaticPage } from "@/services/pageService";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 // Map icon strings from DB to Lucide components
 const iconMap: Record<string, LucideIcon> = {
@@ -16,28 +20,39 @@ const iconMap: Record<string, LucideIcon> = {
   Shield,
   Clock,
   HelpCircle,
-  // Add defaults or fallbacks
   default: FileCheck
 };
 
 const Services = () => {
+  const [pageData, setPageData] = useState<StaticPage | null>(null);
+  const [categories, setCategories] = useState<ServiceCategory[]>([]);
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchServices = async () => {
+    const fetchData = async () => {
       try {
-        const result = await serviceService.getServices();
-        if (result.success && result.data) {
-          setServices(result.data);
-        }
+        setLoading(true);
+        
+        // Fetch Page Content, Categories and Services in parallel
+        const [pageRes, catRes, servicesRes] = await Promise.all([
+          pageService.getPageBySlug('services').catch(() => null),
+          serviceService.getCategories(),
+          serviceService.getServices()
+        ]);
+
+        if (pageRes) setPageData(pageRes);
+        if (catRes.success) setCategories(catRes.data || []);
+        if (servicesRes.success) setServices(servicesRes.data || []);
+
       } catch (error) {
-        console.error("Failed to fetch services", error);
+        console.error("Failed to fetch data", error);
       } finally {
         setLoading(false);
       }
     };
-    fetchServices();
+    fetchData();
   }, []);
 
   const getIcon = (iconName: string | undefined) => {
@@ -45,22 +60,56 @@ const Services = () => {
     return iconMap[iconName] || iconMap.default;
   };
 
+  const filteredServices = selectedCategoryId 
+    ? services.filter(s => s.category_id === selectedCategoryId)
+    : services;
+
+  // Parse page content JSON
+  let contentData: any = null;
+  if (pageData?.content) {
+    try {
+      contentData = typeof pageData.content === 'string' ? JSON.parse(pageData.content) : pageData.content;
+    } catch (e) {
+      console.error("Failed to parse page content", e);
+    }
+  }
+
+  const heroSection = contentData?.sections?.find((s: any) => s.type === "HeroBlock")?.data || {
+    title: "Dịch vụ chuyên nghiệp",
+    description: "Cung cấp đầy đủ các giải pháp dịch vụ kỹ thuật điện lạnh chất lượng cao từ tư vấn, lắp đặt đến bảo trì và sửa chữa."
+  };
+
+  const overviewSection = contentData?.sections?.find((s: any) => s.type === "ContentBlock")?.data || {
+    title: "Dịch vụ toàn diện",
+    content: "Với hơn 20 năm kinh nghiệm trong lĩnh vực điện lạnh công nghiệp và dân dụng, VVC đã trở thành đối tác tin cậy của hàng nghìn khách hàng trên cả nước. Chúng tôi tự hào cung cấp các dịch vụ kỹ thuật chất lượng cao với đội ngũ chuyên viên được đào tạo bài bản.",
+    features: [
+      "Đội ngũ kỹ sư giàu kinh nghiệm, được chứng nhận chuyên môn",
+      "Phục vụ 24/7 với thời gian phản hồi nhanh chóng",
+      "Trang thiết bị hiện đại, công nghệ tiên tiến",
+      "Cam kết chất lượng và bảo hành dài hạn"
+    ]
+  };
+
   return (
     <main className="flex-grow">
       {/* Hero Section */}
-      <section className="bg-primary/90 py-16 text-white">
-        <div className="container-custom">
+      <section className="bg-primary/90 py-16 text-white overflow-hidden relative">
+        <div className="absolute inset-0 opacity-10 pointer-events-none">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-accent rounded-full -mr-48 -mt-48 blur-3xl" />
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent rounded-full -ml-48 -mb-48 blur-3xl opacity-50" />
+        </div>
+        <div className="container-custom relative z-10">
           <div className="max-w-3xl">
-            <h1 className="text-white mb-6">Dịch vụ chuyên nghiệp</h1>
-            <p className="text-xl md:text-2xl mb-8">
-              Cung cấp đầy đủ các giải pháp dịch vụ kỹ thuật điện lạnh chất lượng cao từ tư vấn, lắp đặt đến bảo trì và sửa chữa.
+            <h1 className="text-white mb-6 animate-in slide-in-from-left duration-700">{heroSection.title}</h1>
+            <p className="text-xl md:text-2xl mb-8 opacity-90 animate-in slide-in-from-left duration-700 delay-100">
+              {heroSection.description}
             </p>
-            <div className="flex flex-wrap gap-4">
-              <Link to="/contact" className="btn-accent">
-                Liên hệ tư vấn
+            <div className="flex flex-wrap gap-4 animate-in slide-in-from-left duration-700 delay-200">
+              <Link to={heroSection.primaryButtonLink || "/contact"} className="btn-accent">
+                {heroSection.primaryButtonLabel || "Liên hệ tư vấn"}
               </Link>
-              <Link to="/service-support" className="btn-white">
-                Hỗ trợ kỹ thuật
+              <Link to={heroSection.secondaryButtonLink || "/service-support"} className="btn-white">
+                {heroSection.secondaryButtonLabel || "Hỗ trợ kỹ thuật"}
               </Link>
             </div>
           </div>
@@ -68,41 +117,32 @@ const Services = () => {
       </section>
 
       {/* Overview Section */}
-      <section className="py-12 bg-white">
+      <section className="py-20 bg-white">
         <div className="container-custom">
-          <div className="grid md:grid-cols-2 gap-10 items-center">
-            <div>
-              <h2 className="mb-6">Dịch vụ toàn diện</h2>
-              <p className="text-muted-foreground mb-6">
-                Với hơn 20 năm kinh nghiệm trong lĩnh vực điện lạnh công nghiệp và dân dụng, VVC đã trở thành đối tác tin cậy của hàng nghìn khách hàng trên cả nước. Chúng tôi tự hào cung cấp các dịch vụ kỹ thuật chất lượng cao với đội ngũ chuyên viên được đào tạo bài bản.
+          <div className="grid md:grid-cols-2 gap-16 items-center">
+            <div className="order-2 md:order-1">
+              <h2 className="mb-6 text-3xl md:text-4xl font-bold">{overviewSection.title}</h2>
+              <p className="text-muted-foreground mb-8 text-lg leading-relaxed">
+                {overviewSection.content}
               </p>
-              <ul className="space-y-3">
-                <li className="flex items-start">
-                  <CheckCircle size={20} className="text-primary mr-3 mt-1" />
-                  <span>Đội ngũ kỹ sư giàu kinh nghiệm, được chứng nhận chuyên môn</span>
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle size={20} className="text-primary mr-3 mt-1" />
-                  <span>Phục vụ 24/7 với thời gian phản hồi nhanh chóng</span>
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle size={20} className="text-primary mr-3 mt-1" />
-                  <span>Trang thiết bị hiện đại, công nghệ tiên tiến</span>
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle size={20} className="text-primary mr-3 mt-1" />
-                  <span>Cam kết chất lượng và bảo hành dài hạn</span>
-                </li>
+              <ul className="grid sm:grid-cols-2 gap-4">
+                {(overviewSection.features || []).map((feature: string, idx: number) => (
+                  <li key={idx} className="flex items-start bg-gray-50 p-3 rounded-lg border border-transparent hover:border-primary/20 transition-colors">
+                    <CheckCircle size={20} className="text-primary mr-3 mt-0.5 flex-shrink-0" />
+                    <span className="text-sm font-medium">{feature}</span>
+                  </li>
+                ))}
               </ul>
             </div>
-            <div>
+            <div className="order-1 md:order-2 relative">
+                <div className="absolute -top-4 -left-4 w-24 h-24 bg-accent/20 rounded-lg -z-10" />
+                <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-primary/10 rounded-lg -z-10" />
               <img
-                src="/assets/images/service-overview.jpg"
-                alt="Dịch vụ điện lạnh chuyên nghiệp"
-                className="rounded-lg shadow-lg"
+                src={overviewSection.image || "/assets/images/service-overview.jpg"}
+                alt={overviewSection.title}
+                className="rounded-xl shadow-2xl w-full object-cover aspect-[4/3]"
                 onError={(e) => {
                   e.currentTarget.src = "/placeholder.svg";
-                  e.currentTarget.alt = "Placeholder image";
                 }}
               />
             </div>
@@ -110,135 +150,102 @@ const Services = () => {
         </div>
       </section>
 
-      {/* Main Services Section */}
-      <section className="py-12 bg-muted">
+      {/* Main Services Section with Filtering */}
+      <section className="py-20 bg-muted/30">
         <div className="container-custom">
-          <div className="text-center mb-10">
-            <h2 className="mb-4">Danh mục dịch vụ</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="mb-4 text-3xl md:text-4xl font-bold">Danh mục dịch vụ</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
               Chúng tôi cung cấp đầy đủ các dịch vụ điện lạnh công nghiệp và dân dụng, từ tư vấn thiết kế đến lắp đặt, bảo trì và sửa chữa.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Category Filter */}
+          {categories.length > 0 && (
+            <div className="flex flex-wrap justify-center gap-3 mb-12">
+                <Button 
+                    variant={selectedCategoryId === null ? "default" : "outline"}
+                    onClick={() => setSelectedCategoryId(null)}
+                    className="rounded-full px-6"
+                >
+                    Tất cả
+                </Button>
+                {categories.map((cat) => (
+                    <Button 
+                        key={cat.id}
+                        variant={selectedCategoryId === cat.id ? "default" : "outline"}
+                        onClick={() => setSelectedCategoryId(cat.id)}
+                        className="rounded-full px-6"
+                    >
+                        {cat.name}
+                    </Button>
+                ))}
+            </div>
+          )}
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {loading ? (
-              // Loading skeletons
               Array(6).fill(0).map((_, i) => (
-                <Card key={i} className="animate-pulse">
-                  <CardHeader>
-                    <div className="w-12 h-12 bg-gray-200 rounded-lg mb-4"></div>
-                    <div className="h-6 bg-gray-200 rounded w-3/4 mb-2"></div>
-                    <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
-                    <div className="h-4 bg-gray-200 rounded w-2/3"></div>
-                  </CardContent>
-                </Card>
+                <div key={i} className="h-64 bg-white rounded-xl animate-pulse shadow-sm" />
               ))
-            ) : services.length > 0 ? (
-              services.map((service) => {
+            ) : filteredServices.length > 0 ? (
+              filteredServices.map((service, index) => {
                 const Icon = getIcon(service.icon);
                 return (
-                  <Card key={service.id} className="transition-all hover:shadow-md flex flex-col">
-                    <CardHeader>
-                      <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
-                        <Icon className="text-primary" />
+                  <Card key={service.id} className="group transition-all hover:shadow-xl hover:-translate-y-1 flex flex-col border-none shadow-sm overflow-hidden">
+                    <div className="h-2 w-0 bg-primary group-hover:w-full transition-all duration-300" />
+                    <CardHeader className="pb-4">
+                      <div className="bg-primary/5 w-14 h-14 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors duration-300">
+                        <Icon className="h-7 w-7" />
                       </div>
-                      <CardTitle>{service.title}</CardTitle>
-                      {/* Optional: if you had a subtitle, CardDescription goes here */}
+                      <CardTitle className="text-xl group-hover:text-primary transition-colors">{service.title}</CardTitle>
                     </CardHeader>
-                    <CardContent className="flex-grow">
-                      <p className="text-muted-foreground line-clamp-3">
+                    <CardContent className="flex-grow pt-0">
+                      <p className="text-muted-foreground leading-relaxed">
                         {service.description || "Xem chi tiết để biết thêm thông tin."}
                       </p>
                     </CardContent>
-                    <CardFooter>
+                    <CardFooter className="pt-0 border-t border-gray-50 flex justify-between items-center bg-gray-50/30">
+                        <span className="text-xs font-medium text-primary/60 uppercase tracking-wider">
+                            {service.service_categories?.name || "Dịch vụ"}
+                        </span>
                       <Link
                         to={`/services/${service.slug}`}
-                        className="text-primary hover:text-accent flex items-center"
+                        className="text-primary font-semibold hover:text-accent flex items-center gap-1 group/link"
                       >
                         Chi tiết
-                        <ArrowUpRight size={16} className="ml-1" />
+                        <ArrowRight size={16} className="transition-transform group-hover/link:translate-x-1" />
                       </Link>
                     </CardFooter>
                   </Card>
                 );
               })
             ) : (
-              <div className="col-span-full text-center py-10">
-                <p className="text-muted-foreground">Hiện chưa có dịch vụ nào.</p>
+              <div className="col-span-full text-center py-20 bg-white rounded-2xl shadow-inner border border-dashed">
+                <HelpCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-20" />
+                <p className="text-muted-foreground text-lg italic">Hiện chưa có dịch vụ nào trong danh mục này.</p>
+                <Button variant="link" onClick={() => setSelectedCategoryId(null)}>Xem tất cả dịch vụ</Button>
               </div>
             )}
           </div>
         </div>
       </section>
 
-      {/* Client Types Section */}
-      <section className="py-12 bg-white">
-        <div className="container-custom">
-          <h2 className="mb-8">Đối tượng phục vụ</h2>
-          <div className="grid md:grid-cols-2 gap-10">
-            <div className="rounded-lg border border-muted p-6">
-              <h3 className="text-xl font-semibold mb-4">Khách hàng công nghiệp</h3>
-              <ul className="space-y-3">
-                <li className="flex items-start">
-                  <CheckCircle size={16} className="text-primary mr-3 mt-1" />
-                  <span>Nhà máy sản xuất và xưởng công nghiệp</span>
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle size={16} className="text-primary mr-3 mt-1" />
-                  <span>Kho lạnh và hệ thống bảo quản</span>
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle size={16} className="text-primary mr-3 mt-1" />
-                  <span>Nhà máy chế biến thực phẩm</span>
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle size={16} className="text-primary mr-3 mt-1" />
-                  <span>Hệ thống điều hòa trung tâm công suất lớn</span>
-                </li>
-              </ul>
-            </div>
-
-            <div className="rounded-lg border border-muted p-6">
-              <h3 className="text-xl font-semibold mb-4">Khách hàng thương mại</h3>
-              <ul className="space-y-3">
-                <li className="flex items-start">
-                  <CheckCircle size={16} className="text-primary mr-3 mt-1" />
-                  <span>Cao ốc văn phòng và trung tâm thương mại</span>
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle size={16} className="text-primary mr-3 mt-1" />
-                  <span>Khách sạn, nhà hàng và khu nghỉ dưỡng</span>
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle size={16} className="text-primary mr-3 mt-1" />
-                  <span>Bệnh viện và các cơ sở y tế</span>
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle size={16} className="text-primary mr-3 mt-1" />
-                  <span>Siêu thị và cửa hàng bán lẻ</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* CTA Section */}
-      <section className="py-12 bg-accent/10">
-        <div className="container-custom">
+      <section className="py-24 bg-primary text-white relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-full opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]" />
+        <div className="container-custom relative z-10">
           <div className="text-center max-w-3xl mx-auto">
-            <h2 className="mb-6">Bắt đầu với dịch vụ của chúng tôi</h2>
-            <p className="text-muted-foreground mb-8">
+            <Badge className="mb-6 bg-accent text-white border-none px-4 py-1">Tư vấn miễn phí</Badge>
+            <h2 className="mb-6 text-white text-3xl md:text-5xl font-bold">Bắt đầu với dịch vụ của chúng tôi</h2>
+            <p className="text-white/80 mb-10 text-lg md:text-xl">
               Hãy liên hệ với chúng tôi ngay hôm nay để được tư vấn và báo giá các dịch vụ điện lạnh phù hợp với nhu cầu của bạn. Đội ngũ kỹ thuật của VVC luôn sẵn sàng hỗ trợ.
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
-              <Link to="/contact" className="btn-primary">
+              <Link to="/contact" className="px-8 py-4 bg-accent hover:bg-accent/90 text-white rounded-lg font-bold transition-all shadow-lg hover:shadow-accent/40">
                 Liên hệ ngay
               </Link>
-              <Link to="/service-support" className="btn-outline">
+              <Link to="/service-support" className="px-8 py-4 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-lg font-bold transition-all backdrop-blur-sm">
                 Tìm hiểu thêm
               </Link>
             </div>

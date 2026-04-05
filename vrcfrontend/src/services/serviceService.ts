@@ -1,6 +1,14 @@
 import { supabase } from './supabase';
 import { Result, success, failure, ErrorCodes } from '../components/data/types';
 
+export interface ServiceCategory {
+    id: string;
+    name: string;
+    slug: string;
+    description: string;
+    display_order: number;
+}
+
 export interface Service {
     id: string;
     slug: string;
@@ -9,18 +17,50 @@ export interface Service {
     content: string;
     icon: string;
     image_url?: string;
+    category_id?: string;
+    is_active: boolean;
     created_at: string;
     updated_at: string;
+    service_categories?: ServiceCategory;
+}
+
+export interface CreateInquiryDTO {
+    service_id?: string;
+    name: string;
+    email: string;
+    phone?: string;
+    company?: string;
+    message?: string;
 }
 
 export const serviceService = {
-    async getServices(): Promise<Result<Service[]>> {
+    async getCategories(): Promise<Result<ServiceCategory[]>> {
         try {
             const { data, error } = await supabase
-                .from('services')
+                .from('service_categories')
                 .select('*')
                 .eq('is_active', true)
-                .order('created_at', { ascending: false });
+                .order('display_order', { ascending: true });
+
+            if (error) return failure(error.message, ErrorCodes.DB_ERROR, error);
+            return success(data || []);
+        } catch (err: any) {
+            return failure(err.message, ErrorCodes.UNKNOWN_ERROR, err);
+        }
+    },
+
+    async getServices(categoryId?: string): Promise<Result<Service[]>> {
+        try {
+            let query = supabase
+                .from('services')
+                .select('*, service_categories(*)')
+                .eq('is_active', true);
+            
+            if (categoryId) {
+                query = query.eq('category_id', categoryId);
+            }
+
+            const { data, error } = await query.order('created_at', { ascending: false });
 
             if (error) return failure(error.message, ErrorCodes.DB_ERROR, error);
             return success(data || []);
@@ -33,7 +73,7 @@ export const serviceService = {
         try {
             const { data, error } = await supabase
                 .from('services')
-                .select('*')
+                .select('*, service_categories(*)')
                 .eq('slug', slug)
                 .eq('is_active', true)
                 .single();
@@ -45,5 +85,19 @@ export const serviceService = {
         } catch (err: any) {
             return failure(err.message, ErrorCodes.UNKNOWN_ERROR, err);
         }
+    },
+
+    async submitInquiry(inquiry: CreateInquiryDTO): Promise<Result<void>> {
+        try {
+            const { error } = await supabase
+                .from('service_inquiries')
+                .insert([inquiry]);
+
+            if (error) return failure(error.message, ErrorCodes.DB_ERROR, error);
+            return success(undefined);
+        } catch (err: any) {
+            return failure(err.message, ErrorCodes.UNKNOWN_ERROR, err);
+        }
     }
 };
+

@@ -36,6 +36,9 @@ const menuGroups: MenuGroup[] = [
         label: 'content_management',
         permissions: ['content.view', 'content.create', 'content.edit', 'content.delete'],
         items: [
+            { icon: Briefcase, label: 'services', href: '/services' },
+            { icon: List, label: 'service_categories', href: '/services/categories' },
+            { icon: Mail, label: 'service_inquiries', href: '/services/inquiries' },
             { icon: FileText, label: 'news', href: '/news' },
             { icon: Package, label: 'products', href: '/products' },
             { icon: FolderOpen, label: 'categories', href: '/categories' },

@@ -59,7 +59,7 @@ export default function ServicesPage() {
   }, []);
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Bạn có chắc chắn muốn xóa dịch vụ này không?")) return;
+    if (!window.confirm("Bạn có chắc chắn muốn xóa dịch vụ này không?")) return;
 
     const result = await serviceService.deleteService(id);
     if (result.success) {

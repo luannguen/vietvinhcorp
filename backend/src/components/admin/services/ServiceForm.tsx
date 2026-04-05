@@ -17,7 +17,14 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
-import { serviceService, Service, CreateServiceDTO } from "@/services/serviceService";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import { serviceService, Service, CreateServiceDTO, ServiceCategory } from "@/services/serviceService";
 import { slugify } from "@/lib/utils";
 import { useTranslation } from 'react-i18next';
 
@@ -28,6 +35,7 @@ type ServiceFormValues = {
     content?: string;
     icon?: string;
     image_url?: string;
+    category_id?: string;
     is_active: boolean;
 };
 
@@ -41,6 +49,17 @@ export default function ServiceForm({ initialData, onSuccess, onCancel }: Servic
     const { toast } = useToast();
     const { t } = useTranslation();
     const [isLoading, setIsLoading] = useState(false);
+    const [categories, setCategories] = useState<ServiceCategory[]>([]);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            const result = await serviceService.getCategories();
+            if (result.success) {
+                setCategories(result.data || []);
+            }
+        };
+        fetchCategories();
+    }, []);
 
     const serviceSchema = useMemo(() => z.object({
         title: z.string().min(2, t('error_min_length', { count: 2 })),
@@ -49,6 +68,7 @@ export default function ServiceForm({ initialData, onSuccess, onCancel }: Servic
         content: z.string().optional(),
         icon: z.string().optional(),
         image_url: z.string().optional(),
+        category_id: z.string().optional(),
         is_active: z.boolean(),
     }), [t]);
 
@@ -61,6 +81,7 @@ export default function ServiceForm({ initialData, onSuccess, onCancel }: Servic
             content: "",
             icon: "",
             image_url: "",
+            category_id: "",
             is_active: true,
         },
     });
@@ -74,10 +95,12 @@ export default function ServiceForm({ initialData, onSuccess, onCancel }: Servic
                 content: initialData.content || "",
                 icon: initialData.icon || "",
                 image_url: initialData.image_url || "",
+                category_id: initialData.category_id || "",
                 is_active: initialData.is_active ?? true,
             });
         }
     }, [initialData, form]);
+
 
     // Auto-generate slug from title if slug is empty
     const title = form.watch("title");
@@ -142,6 +165,33 @@ export default function ServiceForm({ initialData, onSuccess, onCancel }: Servic
                                     <Input placeholder={t('slug_placeholder')} {...field} />
                                 </FormControl>
                                 <FormDescription>{t('slug_desc')}</FormDescription>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField
+                        control={form.control}
+                        name="category_id"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>{t('category') || 'Danh mục'}</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder={t('select_category') || "Chọn danh mục"} />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        {categories.map((category) => (
+                                            <SelectItem key={category.id} value={category.id}>
+                                                {category.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                                 <FormMessage />
                             </FormItem>
                         )}

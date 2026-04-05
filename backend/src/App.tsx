@@ -18,6 +18,8 @@ import MediaLibrary from './pages/admin/MediaLibrary';
 import BannersPage from './pages/admin/BannersPage';
 import PagesPage from './pages/admin/PagesPage';
 import ServicesPage from './pages/admin/ServicesPage';
+import ServiceCategoriesPage from './pages/admin/ServiceCategoriesPage';
+import ServiceInquiriesPage from './pages/admin/ServiceInquiriesPage';
 import ResourcesPage from './pages/admin/ResourcesPage'; // Added
 import AchievementsPage from './pages/admin/AchievementsPage';
 import FAQsPage from './pages/admin/FAQsPage';
@@ -56,6 +58,8 @@ function App() {
               <Route path="pages" element={<PagesPage />} />
               <Route path="pages/visual-edit/:slug" element={<VisualEditorPage />} />
               <Route path="services" element={<ServicesPage />} />
+              <Route path="services/categories" element={<ServiceCategoriesPage />} />
+              <Route path="services/inquiries" element={<ServiceInquiriesPage />} />
               <Route path="resources" element={<ResourcesPage />} />
               <Route path="achievements" element={<AchievementsPage />} />
               <Route path="faqs" element={<FAQsPage />} />
