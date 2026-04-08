@@ -14,7 +14,8 @@ import {
   LeadershipBlock, 
   AchievementsBlock,
   ProductionFacilitiesBlock,
-  QualityPrinciplesBlock
+  QualityPrinciplesBlock,
+  PartnersBlock
 } from './AboutBlocks';
 import { TeamHeroBlock, TeamGridBlock } from './TeamBlocks';
 import { RefrigerationBlock, MEBlock, DataCenterBlock, ServiceLifecycleBlock, ContactFormBlock } from './IndustryBlocks';
@@ -238,6 +239,14 @@ export const registerAllBlocks = () => {
     name: 'About: Lãnh đạo',
     component: LeadershipBlock,
     defaultProps: { title: 'Đội ngũ lãnh đạo' },
+    fields: [{ id: 'title', label: 'Tiêu đề', type: 'text' }]
+  });
+
+  registerBlock({
+    type: 'about_partners',
+    name: 'About: Đối tác & Khách hàng',
+    component: PartnersBlock,
+    defaultProps: { title: 'Đối tác & Khách hàng' },
     fields: [{ id: 'title', label: 'Tiêu đề', type: 'text' }]
   });
 
@@ -478,6 +487,7 @@ export {
   AchievementsBlock,
   ProductionFacilitiesBlock,
   QualityPrinciplesBlock,
+  PartnersBlock,
   TeamHeroBlock,
   TeamGridBlock,
   RefrigerationBlock,

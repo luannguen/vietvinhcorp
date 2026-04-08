@@ -23,6 +23,7 @@ import ServiceInquiriesPage from './pages/admin/ServiceInquiriesPage';
 import ResourcesPage from './pages/admin/ResourcesPage'; // Added
 import AchievementsPage from './pages/admin/AchievementsPage';
 import FAQsPage from './pages/admin/FAQsPage';
+import PartnersPage from './pages/admin/PartnersPage';
 import TeamPage from './pages/admin/TeamPage';
 import RecruitmentPage from './pages/admin/RecruitmentPage';
 import ApplicationsPage from './pages/admin/ApplicationsPage';
@@ -63,6 +64,7 @@ function App() {
               <Route path="resources" element={<ResourcesPage />} />
               <Route path="achievements" element={<AchievementsPage />} />
               <Route path="faqs" element={<FAQsPage />} />
+              <Route path="partners" element={<PartnersPage />} />
               <Route path="team" element={<TeamPage />} />
               <Route path="recruitment" element={<RecruitmentPage />} />
               <Route path="applications" element={<ApplicationsPage />} />

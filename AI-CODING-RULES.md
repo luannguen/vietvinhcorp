@@ -638,6 +638,6 @@ Khi tạo feature mới:
 ## 🗄️ 13. Quy Tắc Database & SQL
 
 ### 13.1.Vị Trí Lưu Trữ
-  - ** BẮT BUỘC **: Tất cả file SQL phải được lưu trong thư mục`F:\code duan\VRC-main\SQL`
+  - ** BẮT BUỘC **: Tất cả file SQL phải được lưu trong thư mục`F:\code duan\vietvinhcorp\SQL`
     - ❌ KHÔNG tạo file SQL rải rác trong `backend/src` hay các folder khác
       - ✅ Đặt tên file rõ ràng, có số thứ tự nếu cần(vd: `01_init.sql`, `02_update_users.sql`)

@@ -83,18 +83,21 @@ const SEOHelmet: React.FC<SEOHelmetProps> = ({ title, description, keywords, ima
     const siteTitle = settings['site_title'] || settings['company_name'] || 'Việt Vinh Corp - Tổng công ty kỹ thuật điện lạnh Việt Nam';
     const finalTitle = title ? `${title} | ${siteTitle}` : siteTitle;
     const finalDescription = description || settings['site_description'] || 'Giải pháp điện lạnh toàn diện cho mọi công trình. Uy tín, Chất lượng, Hiệu quả.';
-    const finalKeywords = keywords || settings['site_keywords'] || 'điện lạnh, vvc, hvac, mep';
+    const finalKeywords = keywords || settings['site_keywords'] || 'điện lạnh, viet vinh, vvc, hvac, mep';
     const finalImage = image || settings['og_image_url'] || '/lovable-uploads/0bd3c048-8e37-4775-a6bc-0b54ec07edbe.png';
+    const siteUrl = settings['site_url'] || 'http://vietvinhcorp.com/';
 
     return (
         <Helmet>
             <title>{finalTitle}</title>
             <meta name="description" content={finalDescription} />
             <meta name="keywords" content={finalKeywords} />
+            <link rel="canonical" href={siteUrl} />
 
             <meta property="og:title" content={finalTitle} />
             <meta property="og:description" content={finalDescription} />
             <meta property="og:image" content={finalImage} />
+            <meta property="og:url" content={siteUrl} />
             <meta property="og:type" content={settings['og_type'] || 'website'} />
             <meta property="og:site_name" content={settings['site_name'] || 'VVC'} />
 
@@ -102,6 +105,7 @@ const SEOHelmet: React.FC<SEOHelmetProps> = ({ title, description, keywords, ima
             <meta name="twitter:title" content={finalTitle} />
             <meta name="twitter:description" content={finalDescription} />
             <meta name="twitter:image" content={finalImage} />
+            <meta name="twitter:url" content={siteUrl} />
         </Helmet>
     );
 };

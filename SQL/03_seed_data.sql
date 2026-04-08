@@ -1,5 +1,5 @@
 -- 03_seed_data.sql
--- VRC Database Seed Data
+-- VVC Database Seed Data
 -- Generated: 2025-12-13
 -- Contains: Roles, Permissions, Initial Content
 
@@ -86,7 +86,8 @@ INSERT INTO public.site_settings (key, value, description) VALUES
 ('contact_email', 'info@vvc.com.vn', 'Email liên hệ'),
 ('contact_phone', '028 3833 3333', 'Hotline'),
 ('contact_address', '123 Nguyễn Văn Linh, Quận 7, TP. Hồ Chí Minh', 'Địa chỉ'),
-('copyright_text', '© 2025 VVC - Tổng công ty kỹ thuật điện lạnh Việt Nam. Tất cả quyền được bảo lưu.', 'Text bản quyền')
+('copyright_text', '© 2025 VVC - Tổng công ty kỹ thuật điện lạnh Việt Nam. Tất cả quyền được bảo lưu.', 'Text bản quyền'),
+('site_url', 'http://vietvinhcorp.com/', 'Tên miền website (Domain)')
 ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value;
 
 -- 2.3 Achievements
@@ -106,7 +107,7 @@ INSERT INTO public.faqs (question, answer, sort_order, category) VALUES
     'product'
 ),
 (
-    'Thời gian bảo hành cho các sản phẩm của VRC là bao lâu?',
+    'Thời gian bảo hành cho các sản phẩm của VVC là bao lâu?',
     'VVC cung cấp chế độ bảo hành 24 tháng cho tất cả các sản phẩm điều hòa dân dụng, 36 tháng đối với máy nén của hệ thống VRV/VRF, và 12 tháng đối với các thiết bị công nghiệp. Ngoài ra, chúng tôi có các gói bảo trì và gia hạn bảo hành để đảm bảo hệ thống của bạn luôn vận hành ổn định và hiệu quả trong suốt vòng đời sản phẩm.',
     2,
     'service'
@@ -249,3 +250,4 @@ BEGIN
         SELECT id INTO tools_id FROM public.resources WHERE slug = 'tools';
     END IF;
 END $$;
+

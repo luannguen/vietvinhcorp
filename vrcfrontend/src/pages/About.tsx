@@ -66,11 +66,7 @@ const AboutContent = () => {
       type: 'about_values',
       props: { title: t('core_values') }
     },
-    {
-      id: 'leadership',
-      type: 'about_leadership',
-      props: { title: t('leadership') }
-    }
+    { id: 'about-partners', type: 'about_partners', props: { title: t('partners_clients_title', 'Đối tác & Khách hàng') } }
   ];
 
   return (

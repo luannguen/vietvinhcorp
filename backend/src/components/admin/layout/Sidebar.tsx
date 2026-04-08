@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import {
     LayoutDashboard, Users, UserCog, Settings, LogOut, Package, Calendar, Briefcase,
     List, FileText, FolderOpen, Mail, Image, Layout, Book, PenTool, Trophy, HelpCircle,
-    ChevronDown, ChevronRight, Menu as MenuIcon, LucideIcon
+    ChevronDown, ChevronRight, Menu as MenuIcon, LucideIcon, Handshake
 } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useAuth } from '@/features/auth/useAuth';
@@ -49,6 +49,7 @@ const menuGroups: MenuGroup[] = [
             { icon: Calendar, label: 'events', href: '/events' },
             { icon: Mail, label: 'contacts', href: '/contacts' },
             { icon: Users, label: 'team', href: '/team' },
+            { icon: Handshake, label: 'partners', href: '/partners' },
             { icon: Briefcase, label: 'recruitment', href: '/recruitment' },
             { icon: Users, label: 'applications', href: '/applications' },
         ]
@@ -109,7 +110,7 @@ export function Sidebar() {
                     <div className="bg-primary/10 p-1.5 rounded-md">
                         <MenuIcon className="h-5 w-5 text-primary" />
                     </div>
-                    <h1 className="text-lg font-bold uppercase tracking-wider text-gray-900 dark:text-white">Admin VRC</h1>
+                    <h1 className="text-lg font-bold uppercase tracking-wider text-gray-900 dark:text-white">Admin VVC</h1>
                 </Link>
             </div>
 

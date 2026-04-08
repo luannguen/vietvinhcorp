@@ -1,6 +1,6 @@
-# VRC Project
+# VVC Project (Viet Vinh Corp)
 
-This repository contains the source code for the VRC project, structured as a monorepo.
+This repository contains the source code for the Viet Vinh Corp project, structured as a monorepo.
 
 ## Project Structure
 

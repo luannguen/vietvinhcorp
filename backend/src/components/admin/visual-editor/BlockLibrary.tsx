@@ -33,7 +33,7 @@ export const BLOCK_LIBRARY = [
         name: 'About: Hero',
         icon: 'Layout',
         category: 'About Us',
-        defaultProps: { title: 'Giới thiệu', description: 'Tổng công ty Kỹ thuật lạnh Việt Nam (VRC)...' },
+        defaultProps: { title: 'Giới thiệu', description: 'Tổng công ty Kỹ thuật lạnh Việt Nam (VVC)...' },
         fields: [
             { id: 'title', label: 'Tiêu đề', type: 'text' },
             { id: 'description', label: 'Mô tả', type: 'textarea' }

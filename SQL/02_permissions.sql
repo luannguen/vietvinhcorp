@@ -1,5 +1,5 @@
 -- 02_permissions.sql
--- VRC Database Permissions & RLS
+-- VVC Database Permissions & RLS
 -- Generated: 2025-12-13
 -- Contains: RLS Enabling, Policies, and GRANTS
 
@@ -86,3 +86,4 @@ CREATE POLICY "Admins manage static pages" ON static_pages FOR ALL USING (public
 GRANT USAGE ON SCHEMA public TO anon, authenticated;
 GRANT ALL ON ALL TABLES IN SCHEMA public TO anon, authenticated, service_role;
 GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO anon, authenticated, service_role;
+

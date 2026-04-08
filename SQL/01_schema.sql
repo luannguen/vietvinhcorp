@@ -1,5 +1,5 @@
 -- 01_schema.sql
--- VRC Database Schema Definitions
+-- VVC Database Schema Definitions
 -- Generated: 2025-12-13
 -- Contains: Extensions, Functions, Triggers, and Tables
 
@@ -274,3 +274,4 @@ CREATE TABLE IF NOT EXISTS public.team_members (
   updated_at timestamp with time zone null default now(),
   CONSTRAINT team_members_pkey PRIMARY KEY (id)
 );
+

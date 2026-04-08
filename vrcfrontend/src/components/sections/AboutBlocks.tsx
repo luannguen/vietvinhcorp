@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EditableElement } from '../admin/EditableElement';
+import { partnerService, Partner } from '@/services/partnerService';
 
 // --- About Hero Block ---
 interface AboutHeroBlockProps {
@@ -354,6 +355,71 @@ export const QualityPrinciplesBlock = ({
             </div>
           ))}
         </div>
+      </div>
+    </section>
+  );
+};
+// --- Partners Block ---
+export const PartnersBlock = ({ title, sectionId }: { title?: string; sectionId?: string }) => {
+  const { t } = useTranslation();
+  const [partners, setPartners] = useState<Partner[]>([]);
+  const [loading, setLoading] = useState(true);
+  const defaultTitle = t('partners_clients_title', "Đối tác & Khách hàng");
+
+  useEffect(() => {
+    const fetchPartners = async () => {
+      setLoading(true);
+      const result = await partnerService.getAll();
+      if (result.success) {
+        setPartners(result.data.filter(p => p.is_active));
+      }
+      setLoading(false);
+    };
+
+    fetchPartners();
+  }, []);
+
+  return (
+    <section className="py-12 md:py-20 bg-muted/30">
+      <div className="container-custom">
+        <EditableElement 
+          tagName="h2" 
+          fieldKey="title" 
+          sectionId={sectionId}
+          defaultContent={title || defaultTitle} 
+          className="text-2xl md:text-3xl font-bold text-primary mb-12 text-center" 
+        />
+        
+        {loading ? (
+          <div className="flex justify-center py-10">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 items-center">
+            {partners.length > 0 ? (
+              partners.map((partner) => (
+                <div key={partner.id} className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-center aspect-[3/2] group border border-transparent hover:border-primary/20">
+                  {partner.logo_url ? (
+                    <img 
+                      src={partner.logo_url} 
+                      alt={partner.name} 
+                      className="max-h-full max-w-full object-contain filter grayscale group-hover:grayscale-0 transition-all duration-500 opacity-70 group-hover:opacity-100"
+                    />
+                  ) : (
+                    <span className="text-gray-400 font-medium text-sm">{partner.name}</span>
+                  )}
+                </div>
+              ))
+            ) : (
+              // Empty state with some placeholder logos if no data yet
+              Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="bg-white/50 p-6 rounded-xl border border-dashed border-gray-200 flex items-center justify-center aspect-[3/2]">
+                  <div className="h-8 w-24 bg-gray-100 rounded animate-pulse"></div>
+                </div>
+              ))
+            )}
+          </div>
+        )}
       </div>
     </section>
   );

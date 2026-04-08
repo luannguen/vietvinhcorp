@@ -335,7 +335,7 @@ const SettingsPage: React.FC = () => {
                                     value={settings['company_name'] || ''}
                                     onChange={(e) => handleChange('company_name', e.target.value)}
                                     className="mt-1 shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                    placeholder="Tổng công ty Kỹ thuật lạnh Việt Nam (VRC)"
+                                    placeholder="Tổng công ty Kỹ thuật lạnh Việt Nam (VVC)"
                                 />
                             </div>
                             <div>
@@ -355,6 +355,16 @@ const SettingsPage: React.FC = () => {
                                     value={settings['site_title'] || ''}
                                     onChange={(e) => handleChange('site_title', e.target.value)}
                                     className="mt-1 shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Tên miền Website (Domain URL)</label>
+                                <input
+                                    type="text"
+                                    value={settings['site_url'] || ''}
+                                    onChange={(e) => handleChange('site_url', e.target.value)}
+                                    className="mt-1 shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                    placeholder="http://vietvinhcorp.com/"
                                 />
                             </div>
                             <div>
