@@ -2,13 +2,14 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { pageService, PageFormData } from '@/services/pageService';
+import { settingsService } from '@/services/settingsService';
 import { DropResult } from '@hello-pangea/dnd';
 export function useVisualEditor(iframeRef: React.RefObject<HTMLIFrameElement>) {
     const { slug: urlSlug } = useParams<{ slug: string }>();
     const navigate = useNavigate();
     
     const isNewPage = urlSlug === 'new-page';
-    const [loading, setLoading] = useState(!isNewPage);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [pageId, setPageId] = useState<string | null>(null);
     const [slug, setSlug] = useState<string>(isNewPage ? '' : (urlSlug || ''));
@@ -30,13 +31,7 @@ export function useVisualEditor(iframeRef: React.RefObject<HTMLIFrameElement>) {
 
     const [isSettingsOpen, setIsSettingsOpen] = useState(isNewPage);
 
-    // Determine iframe source
-    useEffect(() => {
-        const frontendUrl = import.meta.env.VITE_FRONTEND_URL || 'http://localhost:8080';
-        // For new pages, we use the home page as a canvas
-        const previewSlug = isNewPage ? '' : urlSlug;
-        setIframeSrc(`${frontendUrl}/${previewSlug}?edit_mode=true${isNewPage ? '&new=true' : ''}`);
-    }, [urlSlug, isNewPage]);
+
 
     // Send messages to iframe
     const sendToIframe = useCallback((type: string, payload: any) => {
@@ -53,14 +48,45 @@ export function useVisualEditor(iframeRef: React.RefObject<HTMLIFrameElement>) {
     // Fetch initial data
     useEffect(() => {
         const loadPage = async () => {
-            if (isNewPage) {
-                setLoading(false);
-                return;
-            }
-            
-            if (!urlSlug) return;
             setLoading(true);
             try {
+                let frontendUrl: string | undefined;
+
+                // Priority 1: Database settings (Admin UI managed)
+                const settingsResult = await settingsService.getSettings();
+                if (settingsResult.success && settingsResult.data) {
+                    const siteUrlSetting = settingsResult.data.find(s => s.key === 'site_url');
+                    if (siteUrlSetting && siteUrlSetting.value) {
+                        frontendUrl = siteUrlSetting.value.endsWith('/') 
+                            ? siteUrlSetting.value.slice(0, -1) 
+                            : siteUrlSetting.value;
+                    }
+                }
+
+                // Priority 2: Environment variable (Developer override)
+                if (!frontendUrl) {
+                    frontendUrl = import.meta.env.VITE_FRONTEND_URL;
+                    if (frontendUrl && frontendUrl.endsWith('/')) {
+                        frontendUrl = frontendUrl.slice(0, -1);
+                    }
+                }
+                
+                // Fallback: Default local port
+                if (!frontendUrl) frontendUrl = 'http://localhost:8080';
+                
+                const previewSlug = isNewPage ? '' : urlSlug;
+                setIframeSrc(`${frontendUrl}/${previewSlug}?edit_mode=true${isNewPage ? '&new=true' : ''}`);
+
+                if (isNewPage) {
+                    setLoading(false);
+                    return;
+                }
+                
+                if (!urlSlug) {
+                    setLoading(false);
+                    return;
+                }
+
                 const pages = await pageService.getPages();
                 const page = pages.find(p => p.slug === urlSlug);
                 
@@ -101,6 +127,13 @@ export function useVisualEditor(iframeRef: React.RefObject<HTMLIFrameElement>) {
 
         loadPage();
     }, [urlSlug, isNewPage]);
+
+    // Removal of the separate determineIframeSrc effect to avoid duplication
+    /* 
+    useEffect(() => {
+        ...
+    }, [urlSlug, isNewPage]); 
+    */
 
     const [imagePicker, setImagePicker] = useState<{ 
         isOpen: boolean; 
