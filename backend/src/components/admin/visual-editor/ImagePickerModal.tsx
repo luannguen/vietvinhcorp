@@ -82,7 +82,7 @@ export const ImagePickerModal: React.FC<ImagePickerModalProps> = ({
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="max-w-4xl max-h-[85vh] flex flex-col p-0 overflow-hidden ring-1 ring-slate-200 shadow-2xl z-[9999]">
+            <DialogContent className="max-w-4xl max-h-[85vh] flex flex-col p-0 overflow-hidden ring-1 ring-slate-200 shadow-2xl z-[11000]">
                 <DialogHeader className="p-6 pb-0">
                     <DialogTitle className="text-xl font-bold text-slate-800 flex items-center gap-2">
                         <ImageIcon className="h-5 w-5 text-primary" />

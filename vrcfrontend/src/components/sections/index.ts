@@ -11,7 +11,6 @@ import {
   HistoryBlock, 
   VisionMissionBlock, 
   CoreValuesBlock, 
-  LeadershipBlock, 
   AchievementsBlock,
   ProductionFacilitiesBlock,
   QualityPrinciplesBlock,
@@ -231,14 +230,6 @@ export const registerAllBlocks = () => {
     name: 'About: Giá trị cốt lõi',
     component: CoreValuesBlock,
     defaultProps: { title: 'Giá trị cốt lõi' },
-    fields: [{ id: 'title', label: 'Tiêu đề', type: 'text' }]
-  });
-
-  registerBlock({
-    type: 'about_leadership',
-    name: 'About: Lãnh đạo',
-    component: LeadershipBlock,
-    defaultProps: { title: 'Đội ngũ lãnh đạo' },
     fields: [{ id: 'title', label: 'Tiêu đề', type: 'text' }]
   });
 
@@ -483,7 +474,6 @@ export {
   HistoryBlock,
   VisionMissionBlock,
   CoreValuesBlock,
-  LeadershipBlock,
   AchievementsBlock,
   ProductionFacilitiesBlock,
   QualityPrinciplesBlock,
@@ -501,4 +491,3 @@ export {
   HomeBannerSlider,
   CapabilityProfileBlock
 };
-

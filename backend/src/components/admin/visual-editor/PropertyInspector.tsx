@@ -9,9 +9,11 @@ import {
     SelectTrigger, 
     SelectValue 
 } from "@/components/ui/select";
-import { Settings2, Zap, X } from 'lucide-react';
+import { Settings2, Zap, X, Info, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { BLOCK_LIBRARY } from './BlockLibrary';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useNavigate } from 'react-router-dom';
 
 interface PropertyInspectorProps {
     selectedSectionId: string | null;
@@ -28,6 +30,7 @@ export const PropertyInspector: React.FC<PropertyInspectorProps> = ({
     setSelectedSectionId,
     onPickImage
 }) => {
+    const navigate = useNavigate();
     const section = sections?.find(s => s.id === selectedSectionId);
     const blockDef = BLOCK_LIBRARY.find(b => b.type === section?.type);
 
@@ -157,6 +160,28 @@ export const PropertyInspector: React.FC<PropertyInspectorProps> = ({
                             <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg text-[10px] text-slate-400 font-medium">
                                 [Rich Text Editor - Ready for future binding]
                             </div>
+                        )}
+
+                        {field.type === 'info' && (
+                            <Alert className="bg-blue-50/50 border-blue-200 shadow-sm">
+                                <Info className="h-4 w-4 text-blue-500" />
+                                <AlertTitle className="text-[11px] font-bold text-blue-700 uppercase tracking-wider mb-1">
+                                    {field.label}
+                                </AlertTitle>
+                                <AlertDescription className="text-xs text-blue-600 leading-relaxed mb-3">
+                                    {field.description}
+                                </AlertDescription>
+                                {field.action && (
+                                    <Button 
+                                        size="sm" 
+                                        className="w-full h-8 text-[10px] font-bold uppercase bg-blue-600 hover:bg-blue-700 shadow-sm"
+                                        onClick={() => field.action.url ? (field.action.url.startsWith('http') ? window.open(field.action.url, '_blank') : navigate(field.action.url)) : null}
+                                    >
+                                        <ExternalLink className="w-3 h-3 mr-1.5" />
+                                        {field.action.label}
+                                    </Button>
+                                )}
+                            </Alert>
                         )}
                     </div>
                 ))}

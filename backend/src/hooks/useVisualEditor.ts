@@ -336,6 +336,15 @@ export function useVisualEditor(iframeRef: React.RefObject<HTMLIFrameElement>) {
         }
     };
 
+    const refreshPreview = useCallback(() => {
+        const currentSrc = iframeSrc;
+        setIframeSrc('');
+        setTimeout(() => {
+            setIframeSrc(currentSrc);
+        }, 100);
+        console.log('[VisualEditor Parent] Refreshing preview iframe');
+    }, [iframeSrc]);
+
     return {
         loading,
         error,
@@ -360,6 +369,7 @@ export function useVisualEditor(iframeRef: React.RefObject<HTMLIFrameElement>) {
         pageMetadata,
         setPageMetadata,
         isSettingsOpen,
-        setIsSettingsOpen
+        setIsSettingsOpen,
+        refreshPreview
     };
 }

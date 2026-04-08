@@ -84,12 +84,24 @@ export const BLOCK_LIBRARY = [
         fields: [{ id: 'title', label: 'Tiêu đề', type: 'text' }]
     },
     {
-        type: 'about_leadership',
-        name: 'About: Lãnh đạo',
-        icon: 'Users',
+        type: 'about_partners',
+        name: 'About: Đối tác & Khách hàng',
+        icon: '🤝',
         category: 'About Us',
-        defaultProps: { title: 'Đội ngũ lãnh đạo' },
-        fields: [{ id: 'title', label: 'Tiêu đề', type: 'text' }]
+        defaultProps: { title: 'Đối tác & Khách hàng' },
+        fields: [
+            { id: 'title', label: 'Tiêu đề', type: 'text' },
+            { 
+                id: 'mgmt_info', 
+                label: 'Quản lý Logo', 
+                type: 'info',
+                description: 'Dữ liệu logo đối tác được lấy tự động từ danh sách quản lý tập trung. Bạn có thể thêm, sửa hoặc xóa logo tại trang Quản lý Đối tác.',
+                action: {
+                    label: 'Đi tới Quản lý Đối tác',
+                    url: '/admin/partners'
+                }
+            }
+        ]
     },
     { 
         type: 'rich_text', 

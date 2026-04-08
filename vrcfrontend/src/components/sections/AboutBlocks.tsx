@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EditableElement } from '../admin/EditableElement';
 import { partnerService, Partner } from '@/services/partnerService';
+import { useVisualEditor } from '../../context/VisualEditorContext';
+import { Edit, ImagePlus, Plus, Pencil, Trash2 } from 'lucide-react';
 
 // --- About Hero Block ---
 interface AboutHeroBlockProps {
@@ -339,7 +341,6 @@ export const QualityPrinciplesBlock = ({
     <section className="py-12 md:py-20 bg-slate-900 text-white overflow-hidden relative">
       <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full -mr-32 -mt-32 blur-3xl"></div>
       <div className="container-custom relative z-10">
-        <circle cx="12" cy="12" r="3"></circle>
         <EditableElement 
           tagName="h2" 
           fieldKey="title" 
@@ -359,25 +360,37 @@ export const QualityPrinciplesBlock = ({
     </section>
   );
 };
+
 // --- Partners Block ---
 export const PartnersBlock = ({ title, sectionId }: { title?: string; sectionId?: string }) => {
   const { t } = useTranslation();
+  const { editMode } = useVisualEditor();
   const [partners, setPartners] = useState<Partner[]>([]);
   const [loading, setLoading] = useState(true);
   const defaultTitle = t('partners_clients_title', "Đối tác & Khách hàng");
 
-  useEffect(() => {
-    const fetchPartners = async () => {
+    const fetchPartners = React.useCallback(async () => {
       setLoading(true);
       const result = await partnerService.getAll();
       if (result.success) {
         setPartners(result.data.filter(p => p.is_active));
       }
       setLoading(false);
-    };
+    }, []);
 
-    fetchPartners();
-  }, []);
+    useEffect(() => {
+        const handleMsg = (e: MessageEvent) => {
+            if (e.data?.type === 'VISUAL_EDIT_REFRESH_PARTNERS') {
+                fetchPartners();
+            }
+        };
+        window.addEventListener('message', handleMsg);
+        return () => window.removeEventListener('message', handleMsg);
+    }, [fetchPartners]);
+
+    useEffect(() => {
+        fetchPartners();
+    }, [fetchPartners]);
 
   return (
     <section className="py-12 md:py-20 bg-muted/30">
@@ -398,7 +411,7 @@ export const PartnersBlock = ({ title, sectionId }: { title?: string; sectionId?
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 items-center">
             {partners.length > 0 ? (
               partners.map((partner) => (
-                <div key={partner.id} className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-center aspect-[3/2] group border border-transparent hover:border-primary/20">
+                <div key={partner.id} className="relative bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-center aspect-[3/2] group border border-transparent hover:border-primary/20">
                   {partner.logo_url ? (
                     <img 
                       src={partner.logo_url} 
@@ -408,11 +421,52 @@ export const PartnersBlock = ({ title, sectionId }: { title?: string; sectionId?
                   ) : (
                     <span className="text-gray-400 font-medium text-sm">{partner.name}</span>
                   )}
+
+                  {/* Edit/Delete Overlay */}
+                  {editMode && (
+                    <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 rounded-xl z-20">
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          window.parent.postMessage({ type: 'VISUAL_EDIT_EDIT_PARTNER', partner }, '*');
+                        }}
+                        className="p-2 bg-white text-primary rounded-full shadow-lg hover:bg-primary hover:text-white transition-all transform scale-90 group-hover:scale-100"
+                        title="Sửa đối tác"
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </button>
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (confirm(`Bạn có chắc muốn xóa đối tác "${partner.name}"?`)) {
+                            window.parent.postMessage({ type: 'VISUAL_EDIT_DELETE_PARTNER', partnerId: partner.id }, '*');
+                          }
+                        }}
+                        className="p-2 bg-white text-red-500 rounded-full shadow-lg hover:bg-red-500 hover:text-white transition-all transform scale-90 group-hover:scale-100"
+                        title="Xóa đối tác"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
                 </div>
               ))
-            ) : (
-              // Empty state with some placeholder logos if no data yet
-              Array.from({ length: 6 }).map((_, i) => (
+            ) : null}
+
+            {editMode && (
+              <div 
+                onClick={() => window.parent.postMessage({ type: 'VISUAL_EDIT_QUICK_ADD_PARTNER' }, '*')}
+                className="bg-white/50 p-6 rounded-xl border-2 border-dashed border-primary/30 flex flex-col items-center justify-center aspect-[3/2] cursor-pointer hover:border-primary hover:bg-primary/5 transition-all group"
+              >
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all mb-2">
+                  <Plus className="w-6 h-6" />
+                </div>
+                <span className="text-[11px] font-bold text-primary uppercase tracking-wider">Thêm đối tác</span>
+              </div>
+            )}
+
+            {!editMode && partners.length === 0 && (
+               Array.from({ length: 6 }).map((_, i) => (
                 <div key={i} className="bg-white/50 p-6 rounded-xl border border-dashed border-gray-200 flex items-center justify-center aspect-[3/2]">
                   <div className="h-8 w-24 bg-gray-100 rounded animate-pulse"></div>
                 </div>

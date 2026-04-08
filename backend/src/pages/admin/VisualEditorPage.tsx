@@ -8,9 +8,12 @@ import { PreviewArea } from '@/components/admin/visual-editor/PreviewArea';
 import { PropertyInspector } from '@/components/admin/visual-editor/PropertyInspector';
 import { PageSettingsModal } from '@/components/admin/visual-editor/PageSettingsModal';
 import { ImagePickerModal } from '@/components/admin/visual-editor/ImagePickerModal';
+import { PartnerQuickFormModal } from '@/components/admin/visual-editor/PartnerQuickFormModal';
 import { Loader2, AlertCircle, Layout, List } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { partnerService } from '@/services/partnerService';
+import { toast } from 'sonner';
 import {
   ResizableHandle,
   ResizablePanel,
@@ -21,11 +24,26 @@ const VisualEditorPage: React.FC = () => {
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const [viewMode, setViewMode] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
     
+    const [partnerModal, setPartnerModal] = useState({
+        isOpen: false,
+        selectedLogo: null as string | null,
+        editingPartner: null as any | null
+    });
+    
     // Global message debugger
     React.useEffect(() => {
         const globalHandler = (e: MessageEvent) => {
             if (e.data?.type === 'VISUAL_EDIT_PICK_IMAGE') {
                 console.log('[VisualEditorPage] GLOBAL RECEIVE:', e.data);
+            }
+            if (e.data?.type === 'VISUAL_EDIT_QUICK_ADD_PARTNER') {
+                setPartnerModal({ isOpen: true, selectedLogo: null, editingPartner: null });
+            }
+            if (e.data?.type === 'VISUAL_EDIT_EDIT_PARTNER') {
+                setPartnerModal({ isOpen: true, selectedLogo: null, editingPartner: e.data.partner });
+            }
+            if (e.data?.type === 'VISUAL_EDIT_DELETE_PARTNER') {
+                handleDeletePartner(e.data.partnerId);
             }
         };
         window.addEventListener('message', globalHandler);
@@ -55,8 +73,37 @@ const VisualEditorPage: React.FC = () => {
         pageMetadata,
         setPageMetadata,
         isSettingsOpen,
-        setIsSettingsOpen
+        setIsSettingsOpen,
+        sendToIframe
     } = useVisualEditor(iframeRef);
+
+    const refreshPreview = React.useCallback(() => {
+        console.log('[VisualEditor Parent] Sending refresh signal to child');
+        sendToIframe('VISUAL_EDIT_REFRESH_PARTNERS', {});
+    }, [sendToIframe]);
+
+    const onPartnerLogoSelect = (url: string) => {
+        setPartnerModal(prev => ({ ...prev, selectedLogo: url }));
+    };
+
+    const handlePartnerSuccess = () => {
+        refreshPreview();
+        setPartnerModal({ isOpen: false, selectedLogo: null, editingPartner: null });
+    };
+
+    const handleDeletePartner = async (id: string) => {
+        try {
+            const result = await partnerService.delete(id);
+            if (result.success) {
+                toast.success('Đã xóa đối tác');
+                refreshPreview();
+            } else {
+                toast.error('Không thể xóa đối tác');
+            }
+        } catch (error) {
+            toast.error('Lỗi khi xóa đối tác');
+        }
+    };
 
     if (loading) {
         return (
@@ -181,7 +228,20 @@ const VisualEditorPage: React.FC = () => {
             <ImagePickerModal 
                 isOpen={imagePicker.isOpen}
                 onClose={() => setImagePicker(prev => ({ ...prev, isOpen: false }))}
-                onSelect={handleImageSelect}
+                onSelect={partnerModal.isOpen ? onPartnerLogoSelect : handleImageSelect}
+            />
+
+            <PartnerQuickFormModal 
+                isOpen={partnerModal.isOpen}
+                onClose={() => setPartnerModal({ isOpen: false, selectedLogo: null, editingPartner: null })}
+                onSuccess={handlePartnerSuccess}
+                onPickImage={() => setImagePicker({
+                    isOpen: true,
+                    fieldId: 'quick_partner_logo',
+                    sectionId: null
+                })}
+                selectedImageUrl={partnerModal.selectedLogo}
+                editingPartner={partnerModal.editingPartner}
             />
         </div>
     );
