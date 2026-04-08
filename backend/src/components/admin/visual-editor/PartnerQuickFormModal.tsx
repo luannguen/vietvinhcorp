@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
     Dialog,
     DialogContent,
@@ -9,7 +9,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Globe, Image as ImageIcon, Loader2, Plus } from 'lucide-react';
+import { Globe, Image as ImageIcon, Loader2, Plus, Pencil } from 'lucide-react';
 import { partnerService } from '@/services/partnerService';
 import { toast } from 'sonner';
 
