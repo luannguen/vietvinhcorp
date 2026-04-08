@@ -82,7 +82,7 @@ export interface Product {
     description?: string;
     category_id?: string;
     category?: Category;
-    price?: number;
+    price?: number | null;
     is_new: boolean;
     is_bestseller: boolean;
     image_url?: string;

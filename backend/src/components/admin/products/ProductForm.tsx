@@ -19,7 +19,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData, categories, onSa
         name: '',
         slug: '',
         category_id: '',
-        price: 0,
+        price: null,
         image_url: '',
         description: '',
         is_new: false,
@@ -55,8 +55,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData, categories, onSa
         if (type === 'checkbox') {
             newValue = (e.target as HTMLInputElement).checked;
         } else if (name === 'price') {
-            // Basic number handling
-            newValue = value === '' ? 0 : parseFloat(value);
+            // Handle contact for price (null/empty)
+            newValue = value === '' ? null : parseFloat(value);
         }
 
         setFormData(prev => ({
@@ -183,15 +183,16 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData, categories, onSa
                                 </select>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700">{t('price')}</label>
+                                <label className="block text-sm font-medium text-gray-700">
+                                    {t('price')} <span className="text-gray-400 font-normal ml-1">({t('leave_empty_for_contact', 'Để trống để hiện "Giá liên hệ"')})</span>
+                                </label>
                                 <input
                                     type="number"
                                     name="price"
-                                    value={formData.price}
+                                    value={formData.price ?? ''}
                                     onChange={handleChange}
-                                    placeholder={t('price_placeholder')}
+                                    placeholder={t('price_placeholder', 'Ví dụ: 100000')}
                                     className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                                    required
                                 />
                             </div>
                         </div>
