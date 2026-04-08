@@ -60,6 +60,8 @@ const Footer = () => {
 
     // 1. If language is Vietnamese, priority 100% to the label from database (Admin)
     if (currentLang.startsWith('vi') && item.label) {
+      // Special override for "Về VVC" to "Về Việt Vinh" as requested
+      if (item.label.toLowerCase().trim() === 'về vvc') return 'Về Việt Vinh';
       return item.label;
     }
 
@@ -104,7 +106,8 @@ const Footer = () => {
     const labelToKeyMap: Record<string, string> = {
       'trang chủ': 'home',
       'về chúng tôi': 'about',
-      'về vvc': 'About VVC',
+      'về vvc': 'About Viet Vinh',
+      'về việt vinh': 'About Viet Vinh',
       'giới thiệu': 'about',
       'sản phẩm': 'products',
       'tin tức': 'news',
@@ -154,11 +157,11 @@ const Footer = () => {
     return item.label;
   };
 
-  const copyrightText = settings['copyright_text'] ? t(settings['copyright_text']) : t('copyright');
+  const copyrightText = settings['copyright_text'] || t('copyright');
   const contactEmail = settings['contact_email'] || 'info@VVC.com.vn';
   const contactAddress = settings['contact_address'] || '123 Nguyễn Văn Linh, Quận 7, TP. Hồ Chí Minh, Việt Nam';
   const siteDescription = settings['site_description'] || 'Cung cấp giải pháp điện lạnh toàn diện cho mọi doanh nghiệp và công trình.';
-  const siteLogo = settings['site_logo'] || '/lovable-uploads/0bd3c048-8e37-4775-a6bc-0b54ec07edbe.png';
+  const siteLogo = settings['footer_logo'] || settings['site_logo'] || '/lovable-uploads/0bd3c048-8e37-4775-a6bc-0b54ec07edbe.png';
 
   if (loading) return <footer className="bg-primary text-white py-12"><div className="flex justify-center"><Loader2 className="animate-spin" /></div></footer>;
 

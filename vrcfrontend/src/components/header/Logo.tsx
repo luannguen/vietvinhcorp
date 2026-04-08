@@ -6,8 +6,27 @@ interface LogoProps {
 }
 
 const Logo = ({ isScrolled = false }: LogoProps) => {
-  const { settings } = useSettings();
-  const logoSrc = settings['site_logo'] || '/assets/svg/logo.svg';
+  const { settings, loading } = useSettings();
+  
+  if (loading) {
+    return (
+      <div className={`flex items-center flex-shrink-0 animate-pulse bg-gray-100 rounded-md ${
+        isScrolled ? 'h-[40px] w-[120px]' : 'h-[50px] w-[150px] md:h-[80px] md:w-[200px]'
+      }`}>
+      </div>
+    );
+  }
+
+  const logoSrc = settings['site_logo'];
+  
+  // If no logo in settings, and not loading, we can show a text logo or the default
+  if (!logoSrc) {
+    return (
+      <Link to="/" className="flex items-center gap-2 flex-shrink-0 relative z-10 transition-transform active:scale-95">
+        <span className="text-xl md:text-2xl font-bold text-primary">VIET VINH</span>
+      </Link>
+    );
+  }
 
   return (
     <Link to="/" className="flex items-center gap-2 flex-shrink-0 relative z-10 transition-transform active:scale-95">

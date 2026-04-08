@@ -80,7 +80,7 @@ const SEOHelmet: React.FC<SEOHelmetProps> = ({ title, description, keywords, ima
 
     if (!mounted) return null;
 
-    const siteTitle = settings['site_title'] || 'VVC - Tổng công ty kỹ thuật điện lạnh Việt Nam';
+    const siteTitle = settings['site_title'] || settings['company_name'] || 'Việt Vinh Corp - Tổng công ty kỹ thuật điện lạnh Việt Nam';
     const finalTitle = title ? `${title} | ${siteTitle}` : siteTitle;
     const finalDescription = description || settings['site_description'] || 'Giải pháp điện lạnh toàn diện cho mọi công trình. Uy tín, Chất lượng, Hiệu quả.';
     const finalKeywords = keywords || settings['site_keywords'] || 'điện lạnh, vvc, hvac, mep';

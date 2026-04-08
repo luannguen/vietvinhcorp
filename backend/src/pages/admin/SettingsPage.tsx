@@ -8,9 +8,11 @@ import { toast } from 'react-hot-toast';
 const SettingsPage: React.FC = () => {
     const { t } = useTranslation();
     const [settings, setSettings] = useState<Record<string, string>>({});
+    const [originalSettings, setOriginalSettings] = useState<Record<string, string>>({});
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [uploadingLogo, setUploadingLogo] = useState(false);
+    const [uploadingFooterLogo, setUploadingFooterLogo] = useState(false);
     const [uploadingFavicon, setUploadingFavicon] = useState(false);
     const [uploadingOgImage, setUploadingOgImage] = useState(false);
 
@@ -24,6 +26,7 @@ const SettingsPage: React.FC = () => {
         if (result.success && result.data) {
             const settingMap = result.data.reduce((acc, curr) => ({ ...acc, [curr.key]: curr.value }), {} as Record<string, string>);
             setSettings(settingMap);
+            setOriginalSettings(settingMap);
         } else {
             toast.error(t('load_settings_fail'));
         }
@@ -76,11 +79,14 @@ const SettingsPage: React.FC = () => {
         const result = await settingsService.updateSettings(updates);
         if (result.success) {
             toast.success(t('settings_saved'));
+            setOriginalSettings({ ...settings });
         } else {
             toast.error(t('save_settings_fail'));
         }
         setSaving(false);
     };
+
+    const hasChanges = JSON.stringify(settings) !== JSON.stringify(originalSettings);
 
     if (loading) return <div className="flex justify-center p-8"><Loader2 className="animate-spin" /></div>;
 
@@ -91,8 +97,10 @@ const SettingsPage: React.FC = () => {
                 <div className="flex space-x-3">
                     <button
                         onClick={handleSave}
-                        disabled={saving}
-                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+                        disabled={saving || !hasChanges}
+                        className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white ${
+                            !hasChanges ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'
+                        } transition-colors disabled:opacity-50`}
                     >
                         {saving ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Save className="h-4 w-4 mr-2" />}
                         {t('save_changes')}
@@ -155,6 +163,59 @@ const SettingsPage: React.FC = () => {
                                 </div>
                             </div>
                         </div>
+
+                        {/* Footer Logo */}
+                        <div className="flex flex-col sm:flex-row items-start space-y-4 sm:space-y-0 sm:space-x-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                            <div className="flex-shrink-0">
+                                {settings['footer_logo'] ? (
+                                    <div className="relative group">
+                                        <img
+                                            src={settings['footer_logo']}
+                                            alt="Footer Logo"
+                                            className="h-24 w-auto object-contain bg-primary border rounded-md p-2"
+                                        />
+                                        <button
+                                            onClick={() => handleRemoveImage('footer_logo')}
+                                            className="absolute -top-2 -right-2 bg-red-100 text-red-600 rounded-full p-1 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity"
+                                            title="Xóa Logo Footer"
+                                        >
+                                            <X className="h-4 w-4" />
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="h-24 w-24 border-2 border-dashed border-gray-300 rounded-md flex items-center justify-center bg-gray-50/50">
+                                        <ImageIcon className="h-8 w-8 text-gray-400" />
+                                    </div>
+                                )}
+                            </div>
+                            <div className="flex-1 space-y-1">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    {t('footer_logo_label')}
+                                </label>
+                                <p className="text-sm text-gray-500">
+                                    Sử dụng cho phần dưới trang. Nếu để trống sẽ sử dụng Logo Header.
+                                </p>
+                                <div className="mt-2">
+                                    <label htmlFor="footer-logo-upload" className="cursor-pointer inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                        {uploadingFooterLogo ? (
+                                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                        ) : (
+                                            <Upload className="h-4 w-4 mr-2" />
+                                        )}
+                                        {uploadingFooterLogo ? t('uploading') : t('change_logo')}
+                                    </label>
+                                    <input
+                                        id="footer-logo-upload"
+                                        type="file"
+                                        className="hidden"
+                                        accept="image/*"
+                                        onChange={(e) => handleImageUpload(e, 'footer_logo', setUploadingFooterLogo)}
+                                        disabled={uploadingFooterLogo}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
 
                         {/* Favicon */}
                         <div className="flex flex-col sm:flex-row items-start space-y-4 sm:space-y-0 sm:space-x-6 pt-6 border-t border-gray-200 dark:border-gray-700">
@@ -313,6 +374,16 @@ const SettingsPage: React.FC = () => {
                                     onChange={(e) => handleChange('site_keywords', e.target.value)}
                                     className="mt-1 shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                                     placeholder="ví dụ: điện lạnh, máy lạnh, thi công..."
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">{t('copyright_text_label')}</label>
+                                <textarea
+                                    rows={2}
+                                    value={settings['copyright_text'] || ''}
+                                    onChange={(e) => handleChange('copyright_text', e.target.value)}
+                                    className="mt-1 shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                    placeholder={t('copyright_text_placeholder')}
                                 />
                             </div>
                         </div>

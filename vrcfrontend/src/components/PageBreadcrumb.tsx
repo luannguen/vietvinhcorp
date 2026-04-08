@@ -48,10 +48,8 @@ const ROUTE_LABELS: Record<string, string> = {
 const PageBreadcrumb = () => {
   const location = useLocation();
 
-  // Don't show breadcrumb on homepage
-  if (location.pathname === '/') {
-    return null;
-  }
+  // Breadcrumb is disabled globally as per user request
+  return null;
 
   const pathSegments = location.pathname.split('/').filter(Boolean);
 
