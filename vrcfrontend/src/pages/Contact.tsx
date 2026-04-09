@@ -5,9 +5,7 @@ import { Loader2 } from "lucide-react";
 
 const Contact = () => {
   const { t } = useTranslation();
-  const { settings, loading } = useSettings();
-
-  if (loading) return <div className="flex justify-center p-12"><Loader2 className="animate-spin text-primary" /></div>;
+  const { settings } = useSettings();
 
   const companyName = settings['company_name'] || 'Tổng công ty Kỹ thuật lạnh Việt Nam (VVC)';
   const slogan = settings['company_slogan'] || 'Tiên phong trong lĩnh vực kỹ thuật lạnh tại Việt Nam';
