@@ -12,6 +12,7 @@ interface EditorToolbarProps {
     setIsSettingsOpen: (open: boolean) => void;
     isSaving: boolean;
     hasPendingChanges: boolean;
+    frontendUrl?: string;
 }
 
 export const EditorToolbar: React.FC<EditorToolbarProps> = ({
@@ -22,10 +23,12 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
     handleSave,
     setIsSettingsOpen,
     isSaving,
-    hasPendingChanges
+    hasPendingChanges,
+    frontendUrl
 }) => {
     const navigate = useNavigate();
-    const frontendUrl = import.meta.env.VITE_FRONTEND_URL || 'http://localhost:8081';
+    // frontendUrl is now passed as a prop, but we keep a local fallback just in case
+    const effectiveFrontendUrl = frontendUrl || import.meta.env.VITE_FRONTEND_URL || 'http://localhost:8081';
     const displaySlug = isNewPage ? 'Trang mới' : slug;
 
     return (
@@ -81,7 +84,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
 
                 {!isNewPage && (
                     <Button variant="ghost" size="sm" asChild className="rounded-full">
-                        <a href={`${frontendUrl}/${['about-us', 'news', 'products', 'team'].includes(slug) ? slug : slug}`} target="_blank" rel="noreferrer">
+                        <a href={`${effectiveFrontendUrl}/${['about-us', 'news', 'products', 'team'].includes(slug) ? slug : slug}`} target="_blank" rel="noreferrer">
                             <ExternalLink className="h-4 w-4 mr-2" />
                             Xem
                         </a>

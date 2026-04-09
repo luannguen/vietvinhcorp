@@ -74,7 +74,8 @@ const VisualEditorPage: React.FC = () => {
         setPageMetadata,
         isSettingsOpen,
         setIsSettingsOpen,
-        sendToIframe
+        sendToIframe,
+        frontendUrl
     } = useVisualEditor(iframeRef);
 
     const refreshPreview = React.useCallback(() => {
@@ -144,6 +145,7 @@ const VisualEditorPage: React.FC = () => {
                     setIsSettingsOpen={setIsSettingsOpen}
                     isSaving={isSaving}
                     hasPendingChanges={hasPendingChanges}
+                    frontendUrl={frontendUrl}
                 />
             </header>
 

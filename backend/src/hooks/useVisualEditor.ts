@@ -19,6 +19,7 @@ export function useVisualEditor(iframeRef: React.RefObject<HTMLIFrameElement>) {
     const [selectedSectionId, setSelectedSectionId] = useState<string | null>(null);
     const [isDragging, setIsDragging] = useState(false);
     const [iframeSrc, setIframeSrc] = useState<string>('');
+    const [frontendUrl, setFrontendUrl] = useState<string>('');
 
     // Page metadata for new pages or updating existing ones
     const [pageMetadata, setPageMetadata] = useState<Partial<PageFormData>>({
@@ -74,6 +75,7 @@ export function useVisualEditor(iframeRef: React.RefObject<HTMLIFrameElement>) {
                 // Fallback: Default local port
                 if (!frontendUrl) frontendUrl = 'http://localhost:8080';
                 
+                setFrontendUrl(frontendUrl);
                 const previewSlug = isNewPage ? '' : urlSlug;
                 setIframeSrc(`${frontendUrl}/${previewSlug}?edit_mode=true${isNewPage ? '&new=true' : ''}`);
 
@@ -370,6 +372,7 @@ export function useVisualEditor(iframeRef: React.RefObject<HTMLIFrameElement>) {
         setPageMetadata,
         isSettingsOpen,
         setIsSettingsOpen,
-        refreshPreview
+        refreshPreview,
+        frontendUrl
     };
 }
