@@ -9,7 +9,11 @@ import {
   Shield as ShieldIcon, 
   Settings as SettingsIcon, 
   Server as ServerIcon, 
-  ArrowRight as ArrowRightIcon 
+  ArrowRight as ArrowRightIcon,
+  ThermometerSnowflake,
+  Wind,
+  IceCream,
+  CircleCheckBig
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { EditableElement } from '../admin/EditableElement';
@@ -48,18 +52,21 @@ export const RefrigerationBlock = ({
             <EditableElement tagName="h2" fieldKey="title" sectionId={sectionId} defaultContent={displayTitle} className="text-3xl md:text-4xl font-bold mb-6 text-primary" />
             <EditableElement tagName="p" fieldKey="description" sectionId={sectionId} defaultContent={displayDesc} className="text-lg text-muted-foreground mb-8 leading-relaxed" />
             
-            <div className="space-y-6">
-              {displayFeatures.map((f: any, i: number) => (
-                <div key={i} className="flex gap-4">
-                  <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <CheckCircleIcon className="text-primary w-6 h-6" />
+            <div className="grid sm:grid-cols-1 gap-8">
+              {displayFeatures.map((f: any, i: number) => {
+                const Icon = i === 0 ? ThermometerSnowflake : i === 1 ? Wind : CircleCheckBig;
+                return (
+                  <div key={i} className="flex gap-6 group items-start">
+                    <div className="flex-shrink-0 w-16 h-16 rounded-2xl bg-primary/5 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-sm border border-primary/10">
+                      <Icon className="text-primary w-8 h-8 group-hover:text-white group-hover:scale-110 transition-transform" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-xl mb-2 group-hover:text-primary transition-colors">{f.title}</h4>
+                      <p className="text-muted-foreground leading-relaxed">{f.desc}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="font-bold text-lg mb-1">{f.title}</h4>
-                    <p className="text-muted-foreground">{f.desc}</p>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
             
             <div className="mt-10">
@@ -116,12 +123,13 @@ export const MEBlock = ({
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {categories.map((cat, i) => (
-            <div key={i} className="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-all border border-slate-100 group">
-              <div className="w-14 h-14 bg-primary text-white rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <cat.icon className="w-8 h-8" />
+            <div key={i} className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border border-slate-100 group relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-full -mr-12 -mt-12 group-hover:bg-primary/10 transition-colors" />
+              <div className="w-20 h-20 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-8 group-hover:bg-primary group-hover:text-white transition-all duration-500 shadow-inner">
+                <cat.icon className="w-10 h-10 group-hover:scale-110 transition-transform" />
               </div>
-              <h3 className="text-xl font-bold mb-3">{cat.label}</h3>
-              <p className="text-muted-foreground text-sm">{cat.sub}</p>
+              <h3 className="text-xl font-extrabold mb-4 group-hover:text-primary transition-colors">{cat.label}</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">{cat.sub}</p>
             </div>
           ))}
         </div>
@@ -173,19 +181,23 @@ export const DataCenterBlock = ({
             <EditableElement tagName="h2" fieldKey="title" sectionId={sectionId} defaultContent={displayTitle} className="text-3xl md:text-5xl font-bold mb-8 leading-tight text-white" />
             <EditableElement tagName="p" fieldKey="description" sectionId={sectionId} defaultContent={displayDesc} className="text-lg opacity-80 mb-10 leading-relaxed" />
             
-            <div className="grid sm:grid-cols-2 gap-8">
-              <div className="flex items-start gap-4">
-                <ServerIcon className="w-10 h-10 text-secondary flex-shrink-0" />
+            <div className="grid sm:grid-cols-2 gap-10">
+              <div className="flex items-start gap-6 group">
+                <div className="w-20 h-20 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-secondary group-hover:border-secondary transition-all duration-500 shadow-[0_0_20px_rgba(255,255,255,0.05)] group-hover:shadow-[0_0_30px_rgba(var(--secondary),0.4)]">
+                  <ServerIcon className="w-10 h-10 text-secondary group-hover:text-white transition-colors" />
+                </div>
                 <div>
-                  <h4 className="font-bold text-xl mb-2 text-white">{t('precision_cooling', 'Precision Cooling')}</h4>
-                  <p className="text-sm opacity-70">{t('precision_cooling_desc', 'Làm mát chính xác, độ tin cậy 99.982% cho máy chủ.')}</p>
+                  <h4 className="font-bold text-xl mb-3 text-white group-hover:text-secondary transition-colors">{t('precision_cooling', 'Precision Cooling')}</h4>
+                  <p className="text-sm opacity-70 leading-relaxed">{t('precision_cooling_desc', 'Làm mát chính xác, độ tin cậy 99.982% cho máy chủ.')}</p>
                 </div>
               </div>
-              <div className="flex items-start gap-4">
-                <ActivityIcon className="w-10 h-10 text-secondary flex-shrink-0" />
+              <div className="flex items-start gap-6 group">
+                <div className="w-20 h-20 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-secondary group-hover:border-secondary transition-all duration-500 shadow-[0_0_20px_rgba(255,255,255,0.05)] group-hover:shadow-[0_0_30px_rgba(var(--secondary),0.4)]">
+                  <ActivityIcon className="w-10 h-10 text-secondary group-hover:text-white transition-colors" />
+                </div>
                 <div>
-                  <h4 className="font-bold text-xl mb-2 text-white">{t('optimize_pue', 'Tối ưu PUE')}</h4>
-                  <p className="text-sm opacity-70">{t('optimize_pue_desc', 'Giảm 30% năng lượng tiêu thụ với giải pháp quản lý thông minh.')}</p>
+                  <h4 className="font-bold text-xl mb-3 text-white group-hover:text-secondary transition-colors">{t('optimize_pue', 'Tối ưu PUE')}</h4>
+                  <p className="text-sm opacity-70 leading-relaxed">{t('optimize_pue_desc', 'Giảm 30% năng lượng tiêu thụ với giải pháp quản lý thông minh.')}</p>
                 </div>
               </div>
             </div>
