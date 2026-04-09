@@ -17,7 +17,15 @@ import {
   PartnersBlock
 } from './AboutBlocks';
 import { TeamHeroBlock, TeamGridBlock } from './TeamBlocks';
-import { RefrigerationBlock, MEBlock, DataCenterBlock, ServiceLifecycleBlock, ContactFormBlock } from './IndustryBlocks';
+import { 
+  RefrigerationBlock, 
+  MEBlock, 
+  DataCenterBlock, 
+  ServiceLifecycleBlock, 
+  ColdStorageCatalogBlock,
+  IndustrialExpertiseBlock,
+  ContactFormBlock 
+} from './IndustryBlocks';
 import { NewsEventsBlock, ProjectsBlock, ProductsBlock } from './HomeSections';
 import { HomeBannerSlider } from './HomeBannerSlider';
 import { CapabilityProfileBlock } from './CapabilityProfileBlock';
@@ -319,6 +327,22 @@ export const registerAllBlocks = () => {
   });
 
   registerBlock({
+    type: 'cold_storage_catalog',
+    name: 'Industry: Phân loại kho lạnh',
+    component: ColdStorageCatalogBlock,
+    defaultProps: {},
+    fields: []
+  });
+
+  registerBlock({
+    type: 'industrial_expertise',
+    name: 'Industry: Chuyên gia công nghiệp',
+    component: IndustrialExpertiseBlock,
+    defaultProps: {},
+    fields: []
+  });
+
+  registerBlock({
     type: 'me_systems',
     name: 'Industry: Cơ điện (M&E)',
     component: MEBlock,
@@ -482,12 +506,14 @@ export {
   TeamGridBlock,
   RefrigerationBlock,
   MEBlock,
-  DataCenterBlock,
+  DataCenterBlock, 
   ServiceLifecycleBlock,
-  NewsEventsBlock,
-  ProjectsBlock,
-  ProductsBlock,
-  ContactFormBlock,
-  HomeBannerSlider,
+  ColdStorageCatalogBlock,
+  IndustrialExpertiseBlock,
+  NewsEventsBlock, 
+  ProjectsBlock, 
+  ProductsBlock, 
+  ContactFormBlock, 
+  HomeBannerSlider, 
   CapabilityProfileBlock
 };

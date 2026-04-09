@@ -13,7 +13,15 @@ import {
   ThermometerSnowflake,
   Wind,
   IceCream,
-  CircleCheckBig
+  CircleCheckBig,
+  BatteryCharging,
+  Cpu,
+  Droplets,
+  Zap,
+  Leaf,
+  Layers,
+  Flame,
+  Snowflake
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { EditableElement } from '../admin/EditableElement';
@@ -29,14 +37,14 @@ export const RefrigerationBlock = ({
 }: any) => {
   const { t } = useTranslation();
   
-  const defaultTitle = t('industry_refrigeration_title', "Hệ Thống Lạnh Công Nghiệp");
-  const defaultDesc = t('industry_refrigeration_desc', "VVC cung cấp các giải pháp làm lạnh chuyên sâu, từ kho lạnh bảo quản đến hệ thống điều hòa trung tâm công suất lớn, đảm bảo hiệu suất tối ưu và tiết kiệm năng lượng.");
+  const defaultTitle = t('industry_refrigeration_hero_title', "Công Nghệ Làm Lạnh");
+  const defaultDesc = t('industry_refrigeration_hero_desc', "Cách thế giới tiêu dùng thực phẩm đã thay đổi toàn diện sau khi Jacob Perkins cấp bằng sáng chế cho chiếc tủ lạnh đầu tiên vào năm 1834. Việc bảo quản thực phẩm trong điều kiện lành mạnh lâu hơn đã trở nên khả thi.");
   const defaultImage = "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1200";
   
   const defaultFeatures = [
-    { title: t('industry_ref_f1_title', "Kho lạnh công nghiệp"), desc: t('industry_ref_f1_desc', "Bảo quản thực phẩm, dược phẩm tiêu chuẩn ISO") },
-    { title: t('industry_ref_f2_title', "Hệ thống Chiller"), desc: t('industry_ref_f2_desc', "Làm lạnh nước công suất lớn cho nhà máy, tòa nhà") },
-    { title: t('industry_ref_f3_title', "Điều hòa VRV/VRF"), desc: t('industry_ref_f3_desc', "Giải pháp đa kết nối hiện đại, tiết kiệm 40% điện năng") }
+    { title: t('industry_ref_factor_1_title', "Chất lượng thiết bị"), desc: t('industry_ref_factor_1_desc', "Chất lượng của các thiết bị làm lạnh là nền tảng cho hiệu suất vận hành lâu dài.") },
+    { title: t('industry_ref_factor_2_title', "Cấu hình chính xác"), desc: t('industry_ref_factor_2_desc', "Tối ưu hóa dựa trên đặc tính sản phẩm và điều kiện khí hậu thực tế.") },
+    { title: t('industry_ref_factor_4_title', "Thuật toán thông minh"), desc: t('industry_ref_factor_4_desc', "Giảm tiêu thụ năng lượng thông qua bộ điều khiển thông minh AI.") }
   ];
 
   const displayTitle = title || defaultTitle;
@@ -81,6 +89,149 @@ export const RefrigerationBlock = ({
               <EditableElement type="image" fieldKey="image" sectionId={sectionId} defaultContent={displayImage}>
                 <img src={displayImage} alt={displayTitle} className="w-full h-full object-cover min-h-[400px]" />
               </EditableElement>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// --- PHÂN LOẠI KHO LẠNH ---
+export const ColdStorageCatalogBlock = ({ sectionId }: any) => {
+  const { t } = useTranslation();
+  
+  const types = [
+    { id: 1, icon: ThermometerSnowflake, color: "blue" },
+    { id: 2, icon: Snowflake, color: "cyan" },
+    { id: 3, icon: Droplets, color: "indigo" },
+    { id: 4, icon: Zap, color: "sky" },
+    { id: 5, icon: Layers, color: "violet" },
+    { id: 6, icon: Flame, color: "orange" }
+  ];
+
+  return (
+    <section className="py-24 bg-slate-50 relative overflow-hidden">
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+      <div className="container-custom relative z-10">
+        <div className="text-center max-w-3xl mx-auto mb-20">
+          <h2 className="text-3xl md:text-5xl font-extrabold mb-6 tracking-tight">
+            {t('cold_storage_types_title', 'Phân Loại Kho Lạnh')}
+          </h2>
+          <p className="text-lg text-muted-foreground font-medium">
+            {t('cold_storage_types_subtitle', 'Phân loại dựa trên sản phẩm lưu trữ và mục đích sử dụng')}
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {types.map((type) => (
+            <div key={type.id} className="group bg-white p-8 rounded-3xl shadow-sm border border-slate-100 hover:shadow-2xl hover:border-primary/20 transition-all duration-500 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-[60px] opacity-20 group-hover:opacity-100 group-hover:bg-primary/5 transition-all" />
+              <div className="relative z-10">
+                <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-8 group-hover:bg-primary group-hover:scale-110 transition-all duration-500 shadow-inner">
+                  <type.icon className="w-8 h-8 text-primary group-hover:text-white" />
+                </div>
+                <h3 className="text-2xl font-bold mb-3 group-hover:text-primary transition-colors">
+                  {t(`cs_type_${type.id}_name`)}
+                </h3>
+                <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-slate-100 text-primary font-bold text-sm mb-4 border border-slate-200">
+                  <ActivityIcon className="w-4 h-4 mr-2" />
+                  {t(`cs_type_${type.id}_range`)}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// --- SỰ KHÁC BIỆT VIETVINH & MÔI CHẤT LẠNH ---
+export const IndustrialExpertiseBlock = ({ sectionId }: any) => {
+  const { t } = useTranslation();
+
+  return (
+    <section className="py-24 bg-white">
+      <div className="container-custom">
+        <div className="grid lg:grid-cols-2 gap-20 items-center">
+          <div className="relative">
+            <div className="absolute -top-10 -left-10 w-40 h-40 bg-primary/5 rounded-full blur-3xl" />
+            <div className="relative z-10">
+              <h2 className="text-3xl md:text-4xl font-extrabold mb-8 text-slate-900 leading-tight">
+                {t('vietvinh_difference_title', 'Sự Khác Biệt Của VIETVINH')}
+              </h2>
+              <p className="text-lg text-muted-foreground mb-12 leading-relaxed">
+                {t('vietvinh_difference_desc', 'Với nhận thức kho lạnh là những anh hùng thầm lặng của ngành thực phẩm, VIETVINH nỗ lực bảo quản thực phẩm theo cách tốt nhất thông qua kỹ thuật tập trung R&D.')}
+              </p>
+              
+              <div className="space-y-8">
+                <div className="flex gap-6">
+                  <div className="flex-shrink-0 w-14 h-14 rounded-2xl bg-green-50 flex items-center justify-center border border-green-100 shadow-sm">
+                    <BatteryCharging className="text-green-600 w-7 h-7" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-lg mb-1">71% Energy Savings</h4>
+                    <p className="text-muted-foreground text-sm">{t('industry_ref_factor_4_desc', 'Thuật toán thông minh giúp tối ưu điện năng tối đa.')}</p>
+                  </div>
+                </div>
+                <div className="flex gap-6">
+                  <div className="flex-shrink-0 w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center border border-blue-100 shadow-sm">
+                    <Cpu className="text-blue-600 w-7 h-7" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-lg mb-1">R&D Focused Engineering</h4>
+                    <p className="text-muted-foreground text-sm">Design tailored to each specific product and climate conditions.</p>
+                  </div>
+                </div>
+                <div className="flex gap-6">
+                  <div className="flex-shrink-0 w-14 h-14 rounded-2xl bg-amber-50 flex items-center justify-center border border-amber-100 shadow-sm">
+                    <Leaf className="text-amber-600 w-7 h-7" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-lg mb-1">Eco-friendly Energy</h4>
+                    <p className="text-muted-foreground text-sm">Solar and wind integration for A+++ energy efficient systems.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-slate-900 rounded-[40px] p-10 md:p-16 text-white relative overflow-hidden shadow-2xl">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-[100px]" />
+            <div className="relative z-10">
+              <h3 className="text-2xl md:text-3xl font-bold mb-10 flex items-center">
+                <Droplets className="mr-4 text-primary w-8 h-8" />
+                {t('refrigerants_title', 'Môi Chất Lạnh')}
+              </h3>
+              
+              <div className="space-y-12">
+                <div className="group">
+                  <h4 className="text-xl font-bold mb-4 text-primary flex items-center">
+                    <span className="w-8 h-px bg-primary/40 mr-4 group-hover:w-12 transition-all" />
+                    {t('refrigerants_natural_title', 'Môi chất tự nhiên')}
+                  </h4>
+                  <p className="text-slate-400 leading-relaxed font-medium">
+                    {t('refrigerant_natural_desc', 'Ammonia, CO2, Glycol, Propane. Thân thiện với môi trường, chi phí vận hành thấp.')}
+                  </p>
+                </div>
+                
+                <div className="group">
+                  <h4 className="text-xl font-bold mb-4 text-primary flex items-center">
+                    <span className="w-8 h-px bg-primary/40 mr-4 group-hover:w-12 transition-all" />
+                    {t('refrigerants_freon_title', 'Hệ thống Freon')}
+                  </h4>
+                  <p className="text-slate-400 leading-relaxed font-medium">
+                    {t('refrigerant_freon_desc', 'Chi phí đầu tư thấp, phù hợp với mọi tonnage và lĩnh vực.')}
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-12 p-6 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm">
+                <p className="text-sm italic text-slate-300">
+                  "* {t('industry_ref_distinction_desc', 'Mỗi sản phẩm đều cần yêu cầu làm lạnh đặc thù để duy trì độ tươi ngon.')}"
+                </p>
+              </div>
             </div>
           </div>
         </div>
