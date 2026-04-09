@@ -15,7 +15,7 @@ interface StaticPageProps {
 const StaticPage: React.FC<StaticPageProps> = ({ slug: propSlug }) => {
     const { slug: paramSlug } = useParams<{ slug: string }>();
     const [searchParams] = useSearchParams();
-    const { i18n } = useTranslation();
+    const { t, i18n } = useTranslation();
     const slug = propSlug || paramSlug;
     const isEditMode = searchParams.get('edit_mode') === 'true';
 
@@ -23,25 +23,6 @@ const StaticPage: React.FC<StaticPageProps> = ({ slug: propSlug }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [editableData, setEditableData] = useState<any>(null);
-
-    // Specialized layouts for core pages to ensure branding & technical consistency
-    const CORE_PAGE_LAYOUTS: Record<string, any[]> = {
-        'he-thong-lanh': [
-            { id: 'refrig_hero', type: 'refrigeration', props: {} },
-            { id: 'refrig_catalog', type: 'cold_storage_catalog', props: {} },
-            { id: 'refrig_expertise', type: 'industrial_expertise', props: {} },
-            { id: 'refrig_contact', type: 'contact_form', props: {} }
-        ],
-        'he-thong-co-dien': [
-            { id: 'me_hero', type: 'me_systems', props: {} },
-            { id: 'me_lifecycle', type: 'service_lifecycle', props: {} },
-            { id: 'me_contact', type: 'contact_form', props: {} }
-        ],
-        'he-thong-dc-management': [
-            { id: 'dc_hero', type: 'data_center', props: {} },
-            { id: 'dc_contact', type: 'contact_form', props: {} }
-        ]
-    };
 
     // Initial fetch
     useEffect(() => {
@@ -112,16 +93,15 @@ const StaticPage: React.FC<StaticPageProps> = ({ slug: propSlug }) => {
     const displayTitle = isDefaultLang ? page.title : (page[`title_${currentLang}`] || page.title);
     const displayExcerpt = isDefaultLang ? page.excerpt : (page[`excerpt_${currentLang}`] || page.excerpt);
 
-    // Render Visual Editor mode if enabled and we have sections
-    const hasOverride = slug && CORE_PAGE_LAYOUTS[slug];
-    const displaySections = hasOverride ? CORE_PAGE_LAYOUTS[slug] : (editableData?.sections || []);
+    // Render sections from database content
+    const displaySections = editableData?.sections || [];
 
     if (isEditMode || (displaySections && displaySections.length > 0)) {
         return (
             <VisualEditorProvider slug={slug || ''}>
                 <main className="flex-grow">
                     {isEditMode ? (
-                        <VisualPageRenderer customSections={hasOverride ? displaySections : undefined} />
+                        <VisualPageRenderer />
                     ) : (
                         <VisualSectionRenderer 
                             sections={displaySections} 

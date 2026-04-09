@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { 
   FileText as FileTextIcon, 
   Wrench as WrenchIcon, 
@@ -10,6 +11,8 @@ import {
   Settings as SettingsIcon, 
   Server as ServerIcon, 
   ArrowRight as ArrowRightIcon,
+  ShieldCheck as ShieldCheckIcon,
+  Check as CheckIcon,
   ThermometerSnowflake,
   Wind,
   IceCream,
@@ -25,6 +28,7 @@ import {
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { EditableElement } from '../admin/EditableElement';
+import { useVisualEditor } from '../../context/VisualEditorContext';
 import ContactForm from '../ContactForm';
 
 // --- HỆ THỐNG LẠNH ---
@@ -300,6 +304,152 @@ export const MEBlock = ({
   );
 };
 
+// --- CÔNG NGHỆ BẢO QUẢN CHUYÊN SÂU (CA, IQF, ...) ---
+export const AdvancedTechShowcaseBlock = ({ 
+  title,
+  subtitle,
+  badge,
+  items,
+  sectionId 
+}: any) => {
+  const { t } = useTranslation();
+
+  const defaultTechnologies = [
+    {
+      title: t('tech_ca_title', 'Công nghệ Bảo quản CA'),
+      desc: t('tech_ca_desc', 'Kiểm soát khí quyển (Controlled Atmosphere) cho phép lưu trữ trái cây tươi ngon trên 12 tháng.'),
+      icon: Layers,
+      link: "/cong-nghe-bao-quan-ca"
+    },
+    {
+      title: t('tech_iqf_title', 'Cấp đông nhanh IQF'),
+      desc: t('iqf_desc', 'Công nghệ cấp đông từng cá thể giúp giữ nguyên cấu trúc tế bào và dinh dưỡng.'),
+      icon: Snowflake,
+      link: "/cap-dong-nhanh-iqf"
+    },
+    {
+      title: t('tech_banana_ripening', 'Phòng chín chuối tiêu chuẩn'),
+      desc: t('tech_banana_desc', 'Hệ thống điều khiển quy trình chín nhân tạo khoa học, đảm bảo chất lượng đồng đều.'),
+      icon: Leaf,
+      link: "/phong-chin-chuoi-tieu-chuan"
+    },
+    {
+      title: t('tech_blast_freezer', 'Hầm đông gió (Blast Freezer)'),
+      desc: t('tech_blast_desc', 'Hạ nhiệt độ tâm sản phẩm xuống -35°C cực nhanh, ngăn chặn tinh thể đá lớn.'),
+      icon: ThermometerSnowflake,
+      link: "/ham-dong-gio-cong-suat-lon"
+    }
+  ];
+
+  const displayTitle = title || t('advanced_preservation_tech', 'Công Nghệ Bảo Quản & Cấp Đông Chuyên Sâu');
+  const displaySubtitle = subtitle || t('advanced_tech_subtitle', 'VIETVINH tiên phong ứng dụng các giải pháp bảo quản tiên tiến nhất thế giới cho chuỗi cung ứng thực phẩm.');
+  const displayBadge = badge || t('specialized_solutions', 'Specialized Solutions');
+  const displayItems = items || defaultTechnologies;
+
+  const { updateSectionProps } = useVisualEditor() as any || {};
+
+  const handleUpdateItem = (index: number, key: string, value: string) => {
+    if (!sectionId || !updateSectionProps) return;
+    const newItems = [...displayItems];
+    newItems[index] = { ...newItems[index], [key]: value };
+    updateSectionProps(sectionId, { items: newItems });
+  };
+
+  return (
+    <section className="py-24 bg-slate-950 text-white overflow-hidden relative">
+      {/* Background Decorative Elements */}
+      <div className="absolute top-0 left-0 w-full h-full opacity-20 pointer-events-none">
+        <div className="absolute -top-24 -left-24 w-96 h-96 bg-blue-600 rounded-full blur-[120px]" />
+        <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-cyan-600 rounded-full blur-[120px]" />
+      </div>
+
+      <div className="container-custom relative z-10">
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-bold uppercase tracking-wider mb-6">
+            <EditableElement tagName="span" fieldKey="badge" sectionId={sectionId} defaultContent={displayBadge} />
+          </div>
+          <EditableElement 
+            tagName="h2" 
+            fieldKey="title" 
+            sectionId={sectionId} 
+            defaultContent={displayTitle} 
+            className="text-3xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white via-white to-blue-400" 
+          />
+          <EditableElement 
+            tagName="p" 
+            fieldKey="subtitle" 
+            sectionId={sectionId} 
+            defaultContent={displaySubtitle} 
+            className="text-lg text-slate-400" 
+          />
+        </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {displayItems.map((tech: any, i: number) => {
+            const Icon = tech.icon || Layers;
+            return (
+              <Link 
+                key={i} 
+                to={tech.link || "#"}
+                className="group p-8 rounded-3xl bg-slate-900/50 border border-white/5 hover:border-blue-500/30 transition-all duration-500 backdrop-blur-sm relative overflow-hidden block"
+              >
+                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-3xl group-hover:bg-blue-500/10 transition-colors" />
+                
+                <div className="w-14 h-14 rounded-2xl mb-6 flex items-center justify-center bg-blue-500/10 text-blue-400 group-hover:scale-110 transition-transform duration-500 shadow-inner border border-white/5">
+                  {typeof Icon === 'string' ? <img src={Icon} className="w-8 h-8" /> : <Icon className="w-8 h-8" />}
+                </div>
+                
+                <EditableElement 
+                  tagName="h3" 
+                  fieldKey={`items.${i}.title`} 
+                  sectionId={sectionId} 
+                  defaultContent={tech.title} 
+                  className="text-xl font-bold mb-4 text-white group-hover:text-blue-400 transition-colors block"
+                  onUpdate={(val: string) => handleUpdateItem(i, 'title', val)}
+                />
+                <EditableElement 
+                  tagName="p" 
+                  fieldKey={`items.${i}.desc`} 
+                  sectionId={sectionId} 
+                  defaultContent={tech.desc} 
+                  className="text-slate-400 text-sm leading-relaxed group-hover:text-slate-300 transition-colors block"
+                  onUpdate={(val: string) => handleUpdateItem(i, 'desc', val)}
+                />
+                
+                <div className="mt-8 flex items-center text-blue-400 text-xs font-bold uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0 duration-300">
+                  {t('details', 'Chi tiết')} <ArrowRightIcon className="ml-2 w-3 h-3" />
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+
+        {/* Technical Specs Summary Footer */}
+        <div className="mt-20 pt-12 border-t border-white/5">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div>
+              <div className="text-3xl font-bold text-white mb-2">A+++</div>
+              <div className="text-xs text-slate-500 uppercase tracking-widest">{t('eff_standard', 'Hiệu suất năng lượng')}</div>
+            </div>
+            <div>
+              <div className="text-3xl font-bold text-white mb-2">71%</div>
+              <div className="text-xs text-slate-500 uppercase tracking-widest">{t('max_saving', 'Tiết kiệm tối đa')}</div>
+            </div>
+            <div>
+              <div className="text-3xl font-bold text-white mb-2">24/7</div>
+              <div className="text-xs text-slate-500 uppercase tracking-widest">{t('monitoring', 'Giám sát thông minh')}</div>
+            </div>
+            <div>
+              <div className="text-3xl font-bold text-white mb-2">12M+</div>
+              <div className="text-xs text-slate-500 uppercase tracking-widest">{t('perservation_time', 'Thời gian bảo quản')}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 // --- TRUNG TÂM DỮ LIỆU & QUẢN LÝ ---
 export const DataCenterBlock = ({
   title,
@@ -422,6 +572,167 @@ export const ServiceLifecycleBlock = ({
 
         <div className="mt-20 text-center">
            <a href="/services" className="btn-outline">{t('explore_service_details', 'Khám phá chi tiết dịch vụ')}</a>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// --- TECHNICAL DETAIL BLOCK ---
+export const TechnicalDetailBlock = ({ 
+  title,
+  description,
+  features,
+  image,
+  accent = 'blue',
+  techType = 'ca',
+  sectionId 
+}: any) => {
+  const { t } = useTranslation();
+  const { updateSectionProps } = useVisualEditor() as any || {};
+
+  const techConfigs: Record<string, any> = {
+    ca: {
+      title: t('tech_detail_ca_title'),
+      description: t('tech_detail_ca_desc'),
+      features: [
+        t('tech_detail_ca_feature1'),
+        t('tech_detail_ca_feature2'),
+        t('tech_detail_ca_feature3'),
+        t('tech_detail_ca_feature4')
+      ],
+      icon: ShieldCheckIcon,
+      accent: 'blue'
+    },
+    iqf: {
+      title: t('tech_detail_iqf_title'),
+      description: t('tech_detail_iqf_desc'),
+      features: [
+        t('tech_detail_iqf_feature1'),
+        t('tech_detail_iqf_feature2'),
+        t('tech_detail_iqf_feature3'),
+        t('tech_detail_iqf_feature4')
+      ],
+      icon: ZapIcon,
+      accent: 'cyan'
+    },
+    ripening: {
+      title: t('tech_detail_ripening_title'),
+      description: t('tech_detail_ripening_desc'),
+      features: [
+        t('tech_detail_ripening_feature1'),
+        t('tech_detail_ripening_feature2'),
+        t('tech_detail_ripening_feature3'),
+        t('tech_detail_ripening_feature4')
+      ],
+      icon: CogIcon,
+      accent: 'amber'
+    },
+    blast: {
+      title: t('tech_detail_blast_title'),
+      description: t('tech_detail_blast_desc'),
+      features: [
+        t('tech_detail_blast_feature1'),
+        t('tech_detail_blast_feature2'),
+        t('tech_detail_blast_feature3'),
+        t('tech_detail_blast_feature4')
+      ],
+      icon: ActivityIcon,
+      accent: 'indigo'
+    }
+  };
+
+  const config = techConfigs[techType] || techConfigs.ca;
+  
+  const displayTitle = title || config.title;
+  const displayDescription = description || config.description;
+  const displayFeatures = features || config.features;
+  const displayAccent = accent || config.accent;
+  const displayImage = image || `https://images.unsplash.com/photo-1558444430-32f9109ef810?auto=format&fit=crop&q=80&w=1200&sig=${techType}`;
+  const Icon = config.icon;
+
+  const handleUpdateFeature = (index: number, value: string) => {
+    if (!sectionId || !updateSectionProps) return;
+    const newFeatures = [...displayFeatures];
+    newFeatures[index] = value;
+    updateSectionProps(sectionId, { features: newFeatures });
+  };
+
+  return (
+    <section className="py-24 bg-slate-50 overflow-hidden">
+      <div className="container-custom">
+        <div className="grid lg:grid-cols-2 gap-20 items-center">
+          <div className="animate-in fade-in slide-in-from-left duration-700">
+            <div className={`w-20 h-20 rounded-3xl bg-${displayAccent}-500/10 flex items-center justify-center mb-10 border border-${displayAccent}-500/20 shadow-lg shadow-${displayAccent}-500/5`}>
+              <Icon className={`w-10 h-10 text-${displayAccent}-600`} />
+            </div>
+            
+            <EditableElement 
+              tagName="h1" 
+              fieldKey="title" 
+              sectionId={sectionId} 
+              defaultContent={displayTitle} 
+              className="text-4xl md:text-6xl font-extrabold mb-8 text-primary leading-tight block" 
+            />
+            
+            <div className="space-y-6 text-lg text-slate-600 leading-relaxed mb-12">
+              <EditableElement 
+                tagName="p" 
+                fieldKey="description" 
+                sectionId={sectionId} 
+                defaultContent={displayDescription} 
+                className="block"
+              />
+            </div>
+
+            <div className="grid sm:grid-cols-2 gap-6">
+              {displayFeatures.map((feature: string, idx: number) => (
+                <div key={idx} className="flex gap-4 p-5 rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-md transition-all group">
+                  <div className={`mt-1 shrink-0 w-6 h-6 rounded-full bg-${displayAccent}-100 flex items-center justify-center group-hover:bg-${displayAccent}-500 group-hover:text-white transition-colors`}>
+                    <CheckIcon className="w-4 h-4" />
+                  </div>
+                  <EditableElement 
+                    tagName="span" 
+                    fieldKey={`features.${idx}`} 
+                    sectionId={sectionId} 
+                    defaultContent={feature} 
+                    className="text-slate-700 font-medium leading-tight block"
+                    onUpdate={(val: string) => handleUpdateFeature(idx, val)}
+                  />
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-12 flex flex-wrap gap-6">
+              <a href="/contact" className="px-10 py-4 bg-primary text-white font-bold rounded-2xl hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 flex items-center gap-3 group">
+                {t('quote_now', 'Nhận báo giá kỹ thuật')}
+                <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </a>
+              <button onClick={() => window.history.back()} className="px-10 py-4 bg-white text-primary font-bold rounded-2xl border border-slate-200 hover:bg-slate-50 transition-all">
+                {t('back', 'Quay lại')}
+              </button>
+            </div>
+          </div>
+
+          <div className="relative animate-in fade-in slide-in-from-right duration-1000">
+            <div className={`absolute -top-20 -right-20 w-80 h-80 bg-${displayAccent}-500/10 rounded-full blur-3xl pointer-events-none`} />
+            <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+            
+            <div className="relative rounded-[2.5rem] overflow-hidden shadow-2xl border-4 border-white aspect-[4/5] lg:aspect-square">
+               <EditableElement type="image" fieldKey="image" sectionId={sectionId} defaultContent={displayImage}>
+                 <img 
+                   src={displayImage} 
+                   alt={displayTitle}
+                   className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-[3s]" 
+                 />
+               </EditableElement>
+               <div className="absolute inset-0 bg-gradient-to-t from-primary/60 to-transparent pointer-events-none" />
+               <div className="absolute bottom-10 left-10 p-8 rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 text-white max-w-[80%]">
+                 <p className="text-3xl font-bold mb-2">VIETVINH R&D</p>
+                 <p className="text-sm opacity-80 uppercase tracking-widest leading-loose">Pioneering in {techType.toUpperCase()} technology solutions for Southeast Asia market.</p>
+               </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

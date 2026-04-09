@@ -24,6 +24,8 @@ import {
   ServiceLifecycleBlock, 
   ColdStorageCatalogBlock,
   IndustrialExpertiseBlock,
+  AdvancedTechShowcaseBlock,
+  TechnicalDetailBlock,
   ContactFormBlock 
 } from './IndustryBlocks';
 import { NewsEventsBlock, ProjectsBlock, ProductsBlock } from './HomeSections';
@@ -383,6 +385,50 @@ export const registerAllBlocks = () => {
     fields: [
       { id: 'title', label: 'Tiêu đề', type: 'text' },
       { id: 'description', label: 'Mô tả', type: 'textarea' }
+    ]
+  });
+
+  registerBlock({
+    type: 'advanced_tech_showcase',
+    component: AdvancedTechShowcaseBlock,
+    name: 'Advanced tech showcase',
+    defaultProps: {
+      title: 'Công Nghệ Bảo Quản & Cấp Đông Chuyên Sâu',
+      subtitle: 'VIETVINH tiên phong ứng dụng các giải pháp bảo quản tiên tiến nhất thế giới.',
+      badge: 'Specialized Solutions'
+    },
+    fields: [
+      { id: 'title', label: 'Tiêu đề', type: 'text' },
+      { id: 'subtitle', label: 'Mô tả phụ', type: 'textarea' },
+      { id: 'badge', label: 'Badge/Nhãn', type: 'text' }
+    ]
+  });
+
+  registerBlock({
+    type: 'technical_detail',
+    component: TechnicalDetailBlock,
+    name: 'Technical detail page',
+    defaultProps: {
+      techType: 'ca',
+      accent: 'blue'
+    },
+    fields: [
+      { id: 'title', label: 'Tiêu đề trang', type: 'text' },
+      { id: 'description', label: 'Mô tả chi tiết', type: 'textarea' },
+      { id: 'image', label: 'Hình ảnh chính', type: 'image' },
+      { id: 'accent', label: 'Màu nhấn', type: 'select', options: [
+        { label: 'Xanh dương', value: 'blue' },
+        { label: 'Xanh lục', value: 'green' },
+        { label: 'Xanh ngọc', value: 'cyan' },
+        { label: 'Vàng hổ phách', value: 'amber' },
+        { label: 'Tím Indigo', value: 'indigo' }
+      ]},
+      { id: 'techType', label: 'Loại công nghệ (Fallback)', type: 'select', options: [
+        { label: 'CA (Khí quyển)', value: 'ca' },
+        { label: 'IQF (Cấp đông nhanh)', value: 'iqf' },
+        { label: 'Chín chuối', value: 'ripening' },
+        { label: 'Hầm đông gió', value: 'blast' }
+      ]}
     ]
   });
 
