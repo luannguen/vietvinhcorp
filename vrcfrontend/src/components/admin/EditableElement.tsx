@@ -150,12 +150,18 @@ export const EditableElement = ({
 
   if (!editMode) {
     if (type === 'image') {
-      return React.Children.map(children, child => {
+      const imgContent = React.Children.map(children, child => {
         if (React.isValidElement(child) && child.type === 'img') {
           return React.cloneElement(child as React.ReactElement<any>, { src: currentContent });
         }
         return child;
-      }) || <img src={currentContent} className={className} alt="" />;
+      }) || <img src={currentContent} className="w-full h-full object-cover" alt="" />;
+      
+      return (
+        <Tag className={className}>
+          {imgContent}
+        </Tag>
+      );
     }
     if (type === 'rich-text') {
       return (

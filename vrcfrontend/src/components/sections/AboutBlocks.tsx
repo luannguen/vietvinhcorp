@@ -267,53 +267,53 @@ export const ProductionFacilitiesBlock = ({
   const defaultDescription = t('facilities_desc', "VVC đầu tư mạnh mẽ vào hệ thống nhà xưởng hiện đại, kho bãi quy mô lớn và trung tâm điều chuyển hàng hóa tại các địa bàn trọng điểm.");
 
   return (
-    <section className="py-12 md:py-16 bg-white">
+    <section className="py-12 md:py-20 bg-white relative overflow-hidden">
       <div className="container-custom">
-        <div className="text-center max-w-3xl mx-auto mb-12">
+        <div className="text-center max-w-3xl mx-auto mb-16">
           <EditableElement 
             tagName="h2" 
             fieldKey="title" 
             sectionId={sectionId}
             defaultContent={title || defaultTitle} 
-            className="text-2xl md:text-4xl font-bold text-primary mb-4" 
+            className="text-3xl md:text-4xl font-bold text-primary mb-6" 
           />
           <EditableElement 
             tagName="p" 
             fieldKey="description" 
             sectionId={sectionId}
             defaultContent={description || defaultDescription} 
-            className="text-lg text-muted-foreground" 
+            className="text-lg text-muted-foreground leading-relaxed" 
           />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <div className="flex flex-col space-y-6">
             <EditableElement
               type="image"
               fieldKey="image1"
               sectionId={sectionId}
               defaultContent={image1}
-              className="rounded-xl shadow-lg overflow-hidden h-[300px]"
+              className="rounded-2xl shadow-xl overflow-hidden h-[300px] md:h-[350px]"
             >
-              <img alt="Facility 1" src={image1} className="w-full h-full object-cover" />
+              <img alt="Facility 1" src={image1} className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
             </EditableElement>
-            <div className="bg-primary/5 p-6 rounded-xl border border-primary/10">
-              <h3 className="font-bold text-lg mb-2 text-primary">{t('storage_capacity', 'Năng lực lưu kho')}</h3>
-              <p className="text-sm">{t('storage_desc', 'Hệ thống kho bảo quản gas lạnh và vật tư thiết bị đạt chuẩn quốc tế, đảm bảo nguồn cung liên tục cho các dự án lớn.')}</p>
+            <div className="bg-primary/5 p-8 rounded-2xl border border-primary/10 shadow-sm flex-grow">
+              <h3 className="font-bold text-xl mb-3 text-primary">{t('storage_capacity', 'Năng lực lưu kho')}</h3>
+              <p className="text-muted-foreground leading-relaxed">{t('storage_desc', 'Hệ thống kho bảo quản gas lạnh và vật tư thiết bị đạt chuẩn quốc tế, đảm bảo nguồn cung liên tục cho các dự án lớn.')}</p>
             </div>
           </div>
-          <div className="flex flex-col">
-            <div className="bg-primary/5 p-6 rounded-xl border border-primary/10 mb-4 order-2 md:order-1">
-              <h3 className="font-bold text-lg mb-2 text-primary">{t('technical_center', 'Trung tâm kỹ thuật')}</h3>
-              <p className="text-sm">{t('tech_center_desc', 'Sở hữu phòng LAB và xưởng lắp ráp với máy móc CNC hiện đại, cho phép sản xuất các cấu kiện cơ khí lạnh chính xác cao.')}</p>
+          <div className="flex flex-col space-y-6">
+            <div className="bg-primary/5 p-8 rounded-2xl border border-primary/10 shadow-sm flex-grow order-2 md:order-1">
+              <h3 className="font-bold text-xl mb-3 text-primary">{t('technical_center', 'Trung tâm kỹ thuật')}</h3>
+              <p className="text-muted-foreground leading-relaxed">{t('tech_center_desc', 'Sở hữu phòng LAB và xưởng lắp ráp với máy móc CNC hiện đại, cho phép sản xuất các cấu kiện cơ khí lạnh chính xác cao.')}</p>
             </div>
             <EditableElement
               type="image"
               fieldKey="image2"
               sectionId={sectionId}
               defaultContent={image2}
-              className="rounded-xl shadow-lg overflow-hidden h-[300px] order-1 md:order-2"
+              className="rounded-2xl shadow-xl overflow-hidden h-[300px] md:h-[350px] order-1 md:order-2"
             >
-              <img alt="Facility 2" src={image2} className="w-full h-full object-cover" />
+              <img alt="Facility 2" src={image2} className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
             </EditableElement>
           </div>
         </div>
