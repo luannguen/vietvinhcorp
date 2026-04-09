@@ -257,10 +257,12 @@ export const MEBlock = ({
   title,
   description,
   image,
-  cat1_label, cat1_sub,
-  cat2_label, cat2_sub,
-  cat3_label, cat3_sub,
-  cat4_label, cat4_sub,
+  cat1_label, cat1_sub, cat1_link,
+  cat2_label, cat2_sub, cat2_link,
+  cat3_label, cat3_sub, cat3_link,
+  cat4_label, cat4_sub, cat4_link,
+  cat5_label, cat5_sub, cat5_link,
+  cat6_label, cat6_sub, cat6_link,
   sectionId
 }: any) => {
   const { t } = useTranslation();
@@ -270,43 +272,62 @@ export const MEBlock = ({
   const displayImage = image || "https://images.unsplash.com/photo-1544724569-5f546fd6f2b5?auto=format&fit=crop&q=80&w=1200";
 
   const categories = [
-    { icon: ZapIcon, label: cat1_label || t('industry_me_c1_title'), sub: cat1_sub || t('industry_me_c1_desc') },
-    { icon: CogIcon, label: cat2_label || t('industry_me_c2_title'), sub: cat2_sub || t('industry_me_c2_desc') },
-    { icon: ShieldIcon, label: cat3_label || t('industry_me_c3_title'), sub: cat3_sub || t('industry_me_c3_desc') },
-    { icon: SettingsIcon, label: cat4_label || t('industry_me_c4_title'), sub: cat4_sub || t('industry_me_c4_desc') }
+    { icon: ZapIcon, label: cat1_label || t('industry_me_c1_title'), sub: cat1_sub || t('industry_me_c1_desc'), link: cat1_link || "/he-thong-dien" },
+    { icon: Wind, label: cat2_label || t('industry_me_c2_title'), sub: cat2_sub || t('industry_me_c2_desc'), link: cat2_link || "/he-thong-hvac" },
+    { icon: Droplets, label: cat3_label || t('industry_me_c3_title'), sub: cat3_sub || t('industry_me_c3_desc'), link: cat3_link || "/he-thong-ong-cong-nghe" },
+    { icon: Flame, label: cat4_label || t('industry_me_c4_title'), sub: cat4_sub || t('industry_me_c4_desc'), link: cat4_link || "/phong-chay-chua-chay" },
+    { icon: ShieldCheckIcon, label: cat5_label || t('industry_me_c5_title'), sub: cat5_sub || t('industry_me_c5_desc'), link: cat5_link || "/phong-sach" },
+    { icon: Cpu, label: cat6_label || t('industry_me_c6_title'), sub: cat6_sub || t('industry_me_c6_desc'), link: cat6_link || "/he-thong-bms" }
   ];
 
   return (
-    <section className="py-20 bg-slate-50">
-      <div className="container-custom">
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <EditableElement tagName="h2" fieldKey="title" sectionId={sectionId} defaultContent={displayTitle} className="text-3xl md:text-4xl font-extrabold mb-6 block" />
-          <EditableElement tagName="p" fieldKey="description" sectionId={sectionId} defaultContent={displayDesc} className="text-lg text-muted-foreground block" />
+    <section className="py-24 bg-slate-50 relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-primary/5 rounded-full blur-[120px] -mr-20 -mt-20 pointer-events-none" />
+      <div className="container-custom relative z-10">
+        <div className="text-center max-w-3xl mx-auto mb-20 animate-in fade-in slide-in-from-bottom duration-700">
+          <EditableElement tagName="h2" fieldKey="title" sectionId={sectionId} defaultContent={displayTitle} className="text-4xl md:text-5xl font-black mb-8 text-primary block tracking-tight" />
+          <EditableElement tagName="p" fieldKey="description" sectionId={sectionId} defaultContent={displayDesc} className="text-xl text-slate-600 leading-relaxed block" />
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {categories.map((cat, i) => {
             const prefix = `cat${i+1}`;
-            return (
-              <div key={i} className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border border-slate-100 group relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-full -mr-12 -mt-12 group-hover:bg-primary/10 transition-colors" />
-                <div className="w-20 h-20 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-8 group-hover:bg-primary group-hover:text-white transition-all duration-500 shadow-inner">
+            const CardContent = (
+              <div className="h-full bg-white p-10 rounded-[2.5rem] shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-slate-100 group relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-[80px] -mr-16 -mt-16 group-hover:bg-primary/10 transition-all duration-500" />
+                <div className="w-20 h-20 bg-primary/10 text-primary rounded-3xl flex items-center justify-center mb-10 group-hover:bg-primary group-hover:text-white transition-all duration-500 shadow-inner group-hover:rotate-6">
                   <cat.icon className="w-10 h-10 group-hover:scale-110 transition-transform" />
                 </div>
-                <EditableElement tagName="h3" fieldKey={`${prefix}_label`} sectionId={sectionId} defaultContent={cat.label} className="text-xl font-extrabold mb-4 group-hover:text-primary transition-colors block" />
-                <EditableElement tagName="p" fieldKey={`${prefix}_sub`} sectionId={sectionId} defaultContent={cat.sub} className="text-muted-foreground text-sm leading-relaxed block" />
+                <EditableElement tagName="h3" fieldKey={`${prefix}_label`} sectionId={sectionId} defaultContent={cat.label} className="text-2xl font-bold mb-5 text-slate-900 group-hover:text-primary transition-colors block" />
+                <EditableElement tagName="p" fieldKey={`${prefix}_sub`} sectionId={sectionId} defaultContent={cat.sub} className="text-slate-500 leading-relaxed mb-8 block text-sm" />
+                <div className="flex items-center text-primary font-bold text-sm uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all transform translate-x-[-10px] group-hover:translate-x-0">
+                  {t('view_detail', 'Xem chi tiết')} <ArrowRightIcon className="ml-2 w-4 h-4" />
+                </div>
+              </div>
+            );
+
+            return (
+              <div key={i} className="h-full">
+                {cat.link ? (
+                  <Link to={cat.link} className="block h-full no-underline">
+                    {CardContent}
+                  </Link>
+                ) : CardContent}
               </div>
             );
           })}
         </div>
 
-        <div className="mt-16 relative rounded-2xl overflow-hidden aspect-[21/9]">
+        <div className="mt-24 relative rounded-[3rem] overflow-hidden aspect-[21/9] shadow-2xl group border-8 border-white">
            <EditableElement type="image" fieldKey="image" sectionId={sectionId} defaultContent={displayImage}>
-             <img src={displayImage} alt="M&E Infrastructure" className="w-full h-full object-cover" />
+             <img src={displayImage} alt="M&E Infrastructure" className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-[5s]" />
            </EditableElement>
-           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-8 md:p-12">
-             <div className="text-white">
-                <p className="text-xl md:text-2xl font-medium">{t('industry_me_banner_text', 'Đối tác tin cậy cho mọi công trình quy mô lớn')}</p>
+           <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent flex items-end p-12 md:p-20">
+             <div className="max-w-2xl text-white">
+                <h4 className="text-3xl md:text-5xl font-black mb-6 leading-tight animate-in fade-in slide-in-from-left duration-1000">
+                  {t('industry_me_banner_text', 'Giải Pháp Kỹ Thuật Đỉnh Cao Cho Mọi Quy Mô')}
+                </h4>
+                <p className="text-lg opacity-90 font-medium">{t('industry_me_banner_sub', 'VietVinhCorp cam kết tiến độ, chất lượng và an toàn tuyệt đối cho mọi hạng mục cơ điện.')}</p>
              </div>
            </div>
         </div>
