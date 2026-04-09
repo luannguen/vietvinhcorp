@@ -157,8 +157,13 @@ export const EditableElement = ({
         return child;
       }) || <img src={currentContent} className="w-full h-full object-cover" alt="" />;
       
+      // If no className is provided, avoid extra wrapper which might break some layouts (like RefrigerationBlock)
+      if (!className) {
+        return imgContent;
+      }
+
       return (
-        <Tag className={className}>
+        <Tag className={`relative w-full h-full ${className}`}>
           {imgContent}
         </Tag>
       );
