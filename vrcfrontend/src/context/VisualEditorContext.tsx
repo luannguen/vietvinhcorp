@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { supabase } from '../supabase';
 import { registerAllBlocks } from '../components/sections';
 import { getBlock } from '../components/admin/builder/SectionRegistry';
+import i18n from '../i18n';
 
 interface VisualEditorContextType {
   editMode: boolean;
@@ -227,6 +228,12 @@ export const VisualEditorProvider = ({ children, slug }: VisualEditorProviderPro
           break;
         case 'VISUAL_EDIT_SELECT_SECTION':
           setSelectedSectionId(sectionId);
+          break;
+        case 'VISUAL_EDIT_CHANGE_LANGUAGE':
+          if (event.data.lng) {
+            console.log('[VisualEditorContext] Changing language to:', event.data.lng);
+            i18n.changeLanguage(event.data.lng);
+          }
           break;
       }
     };

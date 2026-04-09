@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { pageService, StaticPage as IStaticPage } from '@/services/pageService';
 import { Loader2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import NotFound from './NotFound';
 import { VisualSectionRenderer } from '@/components/visual-editor/VisualSectionRenderer';
 import { VisualEditorProvider } from '@/context/VisualEditorContext';
@@ -14,10 +15,11 @@ interface StaticPageProps {
 const StaticPage: React.FC<StaticPageProps> = ({ slug: propSlug }) => {
     const { slug: paramSlug } = useParams<{ slug: string }>();
     const [searchParams] = useSearchParams();
+    const { i18n } = useTranslation();
     const slug = propSlug || paramSlug;
     const isEditMode = searchParams.get('edit_mode') === 'true';
 
-    const [page, setPage] = useState<IStaticPage | null>(null);
+    const [page, setPage] = useState<any | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [editableData, setEditableData] = useState<any>(null);
@@ -71,8 +73,6 @@ const StaticPage: React.FC<StaticPageProps> = ({ slug: propSlug }) => {
         }
     }, [loading, window.location.hash]);
 
-    // Fetching and error handling logic remains above
-
     if (loading) {
         return (
             <div className="flex justify-center items-center min-h-[50vh]">
@@ -84,6 +84,14 @@ const StaticPage: React.FC<StaticPageProps> = ({ slug: propSlug }) => {
     if (error || !page) {
         return <NotFound />;
     }
+
+    // Locale-aware title and excerpt
+    const currentLang = i18n.language || 'vi';
+    const isDefaultLang = currentLang === 'vi';
+    
+    // Support title_en, title_de, etc. If not found, fallback to default title
+    const displayTitle = isDefaultLang ? page.title : (page[`title_${currentLang}`] || page.title);
+    const displayExcerpt = isDefaultLang ? page.excerpt : (page[`excerpt_${currentLang}`] || page.excerpt);
 
     // Render Visual Editor mode if enabled and we have sections
     if (isEditMode || (editableData && editableData.sections)) {
@@ -108,10 +116,10 @@ const StaticPage: React.FC<StaticPageProps> = ({ slug: propSlug }) => {
             {/* Standard static HTML fallback */}
             <div className="bg-gradient-to-b from-primary/10 to-transparent py-12 md:py-20">
                 <div className="container-custom">
-                    <h1 className="text-3xl md:text-5xl font-bold text-primary mb-6">{page.title}</h1>
-                    {page.excerpt && (
+                    <h1 className="text-3xl md:text-5xl font-bold text-primary mb-6">{displayTitle}</h1>
+                    {displayExcerpt && (
                         <p className="text-lg text-muted-foreground max-w-3xl">
-                            {page.excerpt}
+                            {displayExcerpt}
                         </p>
                     )}
                 </div>

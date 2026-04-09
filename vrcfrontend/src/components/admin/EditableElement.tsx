@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { useVisualEditor } from '../../context/VisualEditorContext';
+import { useTranslation } from 'react-i18next';
 
 interface EditableElementProps {
   fieldKey: string;
@@ -32,6 +33,13 @@ export const EditableElement = ({
     slug 
   } = useVisualEditor();
   
+  const { i18n } = useTranslation();
+  const currentLang = i18n.language || 'vi';
+  const isDefaultLang = currentLang === 'vi';
+  
+  // Logic mapping: title -> title_en, title_de, etc.
+  const effectiveFieldKey = isDefaultLang ? fieldKey : `${fieldKey}_${currentLang}`;
+
   const [requesting, setRequesting] = React.useState(false);
   const contentRef = useRef<HTMLElement>(null);
 
@@ -41,15 +49,30 @@ export const EditableElement = ({
   // Default tagName based on type if not provided
   const Tag = (tagName || (type === 'image' ? 'div' : 'span')) as any;
 
-  // Find current content: try section props first, then global contentData, then defaultContent
-  let currentContent = contentData[fieldKey] !== undefined ? contentData[fieldKey] : defaultContent;
+  // Find current content: try localized field first, then base field, then defaultContent
+  let currentContent = defaultContent;
   
-  if (effectiveSectionId && contentData.sections) {
-    const section = contentData.sections.find((s: any) => s.id === effectiveSectionId);
-    if (section && section.props && section.props[fieldKey] !== undefined) {
-      currentContent = section.props[fieldKey];
+  // Helper to get value from props or global data
+  const getValue = (key: string) => {
+    // Try section props first
+    if (effectiveSectionId && contentData.sections) {
+      const section = contentData.sections.find((s: any) => s.id === effectiveSectionId);
+      if (section && section.props && section.props[key] !== undefined) {
+        return section.props[key];
+      }
     }
-  }
+    // Then global contentData
+    if (contentData[key] !== undefined) {
+      return contentData[key];
+    }
+    return undefined;
+  };
+
+  const localizedValue = getValue(effectiveFieldKey);
+  const baseValue = getValue(fieldKey);
+  
+  // Logic: localized > base > default
+  currentContent = (localizedValue !== undefined && localizedValue !== "") ? localizedValue : (baseValue !== undefined ? baseValue : defaultContent);
 
   // Handle data updates
   const handleContentUpdate = (value: string) => {
@@ -59,9 +82,9 @@ export const EditableElement = ({
     }
 
     if (effectiveSectionId) {
-      updateSectionProps(effectiveSectionId, { [fieldKey]: value });
+      updateSectionProps(effectiveSectionId, { [effectiveFieldKey]: value });
     } else {
-      updateField(fieldKey, value);
+      updateField(effectiveFieldKey, value);
     }
   };
 
