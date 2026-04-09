@@ -69,10 +69,11 @@ export const HeroBlock = ({
               <div className="inline-flex items-center">
                 <EditableElement 
                   tagName="a" 
+                  href={buttonLink}
                   fieldKey="buttonText" 
                   sectionId={sectionId} 
                   defaultContent={buttonText}
-                  className="px-6 py-3 rounded-lg bg-secondary text-white font-bold hover:bg-secondary/90 transition-all shadow-lg hover:shadow-xl active:scale-95"
+                  className="px-6 py-3 rounded-lg bg-secondary text-white font-bold hover:bg-secondary/90 transition-all shadow-lg hover:shadow-xl active:scale-95 cursor-pointer"
                 />
               </div>
             )}
@@ -80,10 +81,11 @@ export const HeroBlock = ({
               <div className="inline-flex items-center">
                 <EditableElement 
                   tagName="a" 
+                  href={button2Link}
                   fieldKey="button2Text" 
                   sectionId={sectionId} 
                   defaultContent={button2Text}
-                  className="px-6 py-3 rounded-lg bg-white/10 text-white font-bold hover:bg-white/20 transition-all border border-white/20 active:scale-95"
+                  className="px-6 py-3 rounded-lg bg-white/10 text-white font-bold hover:bg-white/20 transition-all border border-white/20 active:scale-95 cursor-pointer"
                 />
               </div>
             )}

@@ -11,6 +11,8 @@ interface EditableElementProps {
   sectionId?: string; // Explicit section ID prop
   children?: React.ReactNode;
   onUpdate?: (value: string) => void; // Optional custom update handler
+  href?: string; // Tích hợp link
+  target?: string;
 }
 
 export const EditableElement = ({
@@ -22,6 +24,8 @@ export const EditableElement = ({
   sectionId: explicitSectionId,
   children,
   onUpdate,
+  href,
+  target,
 }: EditableElementProps) => {
   const { 
     editMode, 
@@ -175,6 +179,9 @@ export const EditableElement = ({
           dangerouslySetInnerHTML={{ __html: currentContent }} 
         />
       );
+    }
+    if (tagName === 'a') {
+      return <Tag href={href} target={target} className={className}>{currentContent}</Tag>;
     }
     return <Tag className={className}>{currentContent}</Tag>;
   }
