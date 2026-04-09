@@ -24,6 +24,25 @@ const StaticPage: React.FC<StaticPageProps> = ({ slug: propSlug }) => {
     const [error, setError] = useState(false);
     const [editableData, setEditableData] = useState<any>(null);
 
+    // Specialized layouts for core pages to ensure branding & technical consistency
+    const CORE_PAGE_LAYOUTS: Record<string, any[]> = {
+        'he-thong-lanh': [
+            { id: 'refrig_hero', type: 'refrigeration', props: {} },
+            { id: 'refrig_catalog', type: 'cold_storage_catalog', props: {} },
+            { id: 'refrig_expertise', type: 'industrial_expertise', props: {} },
+            { id: 'refrig_contact', type: 'contact_form', props: {} }
+        ],
+        'he-thong-co-dien': [
+            { id: 'me_hero', type: 'me_systems', props: {} },
+            { id: 'me_lifecycle', type: 'service_lifecycle', props: {} },
+            { id: 'me_contact', type: 'contact_form', props: {} }
+        ],
+        'he-thong-dc-management': [
+            { id: 'dc_hero', type: 'data_center', props: {} },
+            { id: 'dc_contact', type: 'contact_form', props: {} }
+        ]
+    };
+
     // Initial fetch
     useEffect(() => {
         const fetchPage = async () => {
@@ -94,15 +113,18 @@ const StaticPage: React.FC<StaticPageProps> = ({ slug: propSlug }) => {
     const displayExcerpt = isDefaultLang ? page.excerpt : (page[`excerpt_${currentLang}`] || page.excerpt);
 
     // Render Visual Editor mode if enabled and we have sections
-    if (isEditMode || (editableData && editableData.sections)) {
+    const hasOverride = slug && CORE_PAGE_LAYOUTS[slug];
+    const displaySections = hasOverride ? CORE_PAGE_LAYOUTS[slug] : (editableData?.sections || []);
+
+    if (isEditMode || (displaySections && displaySections.length > 0)) {
         return (
             <VisualEditorProvider slug={slug || ''}>
                 <main className="flex-grow">
                     {isEditMode ? (
-                        <VisualPageRenderer />
+                        <VisualPageRenderer customSections={hasOverride ? displaySections : undefined} />
                     ) : (
                         <VisualSectionRenderer 
-                            sections={editableData?.sections || []} 
+                            sections={displaySections} 
                             isEditMode={false} 
                         />
                     )}
