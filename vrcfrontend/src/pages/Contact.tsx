@@ -4,16 +4,23 @@ import { useSettings } from "@/hooks/useSettings";
 import { Loader2 } from "lucide-react";
 
 const Contact = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { settings } = useSettings();
+  const currentLang = i18n.language || 'vi';
+  const isDefaultLang = currentLang === 'vi';
 
-  const companyName = settings['company_name'] || 'Tổng công ty Kỹ thuật lạnh Việt Nam (VVC)';
-  const slogan = settings['company_slogan'] || 'Tiên phong trong lĩnh vực kỹ thuật lạnh tại Việt Nam';
-  const address = settings['contact_address'] || '123 Nguyễn Văn Linh, Quận 7, TP. Hồ Chí Minh';
-  const phone = settings['contact_phone'] || '+84 (28) 1234 5678';
-  const email = settings['contact_email'] || 'info@VVCorp.vn';
-  const hotline = settings['contact_hotline'] || '1800 1234';
-  const workingHours = settings['contact_working_hours'] || '8:00 - 17:30, Thứ 2 - Thứ 6';
+  const getSetting = (key: string, defaultVal: string) => {
+    const langKey = isDefaultLang ? key : `${key}_${currentLang}`;
+    return settings[langKey] || settings[key] || defaultVal;
+  };
+
+  const companyName = getSetting('company_name', 'Tổng công ty Kỹ thuật lạnh Việt Nam (VVC)');
+  const slogan = getSetting('company_slogan', 'Tiên phong trong lĩnh vực kỹ thuật lạnh tại Việt Nam');
+  const address = getSetting('contact_address', '123 Nguyễn Văn Linh, Quận 7, TP. Hồ Chí Minh');
+  const phone = getSetting('contact_phone', '+84 (28) 1234 5678');
+  const email = getSetting('contact_email', 'info@VVCorp.vn');
+  const hotline = getSetting('contact_hotline', '1800 1234');
+  const workingHours = getSetting('contact_working_hours', '8:00 - 17:30, Thứ 2 - Thứ 6');
   const mapEmbedUrl = settings['map_embed_url'] || "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.5177580567146!2d106.69916857465953!3d10.771594089387617!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f4b3330bcc7%3A0x4db964d76bf6e18e!2zVHLGsOG7nW5nIMSQ4bqhaSBI4buNYyBCw6FjaCBLaG9hIC0gxJDhuqFpIEjhu41jIFF14buRYyBHaWEgVFAuSENN!5e0!3m2!1svi!2s!4v1712459678422!5m2!1svi!2s";
 
   const socials = [

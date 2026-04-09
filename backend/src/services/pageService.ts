@@ -16,11 +16,20 @@ export interface StaticPage {
 export type PageFormData = Omit<StaticPage, 'id' | 'created_at' | 'updated_at'>;
 
 export const pageService = {
-    async getPages() {
-        const { data, error } = await supabase
+    async getPages({ search, is_active }: { search?: string; is_active?: boolean } = {}) {
+        let query = supabase
             .from('static_pages')
-            .select('*')
-            .order('title');
+            .select('*');
+
+        if (is_active !== undefined) {
+             query = query.eq('is_active', is_active);
+        }
+
+        if (search) {
+             query = query.or(`title.ilike.%${search}%,content.ilike.%${search}%,excerpt.ilike.%${search}%`);
+        }
+
+        const { data, error } = await query.order('title');
 
         if (error) throw error;
         return data as StaticPage[];
