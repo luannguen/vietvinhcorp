@@ -104,6 +104,7 @@ const MainNavigation = ({ isMobile = false, onItemClick }: MainNavigationProps) 
       '/publications': 'publications',
       '/technologies': 'technologies',
       '#': 'explore',
+      '/he-thong-tich-hop': 'integrated_systems',
       '/ho-so-nang-luc': 'capability_experience',
     };
 
@@ -131,7 +132,7 @@ const MainNavigation = ({ isMobile = false, onItemClick }: MainNavigationProps) 
       'cơ điện': 'industry_me_title',
       'trung tâm dữ liệu': 'industry_dc_title',
       'trung tâm dữ liệu & quản lý tập trung': 'industry_dc_title',
-      'hệ thống tích hợp': 'explore',
+      'hệ thống tích hợp': 'integrated_systems',
       'vòng đời dịch vụ': 'industry_lifecycle_title',
       'hồ sơ năng lực': 'capability_experience',
     };

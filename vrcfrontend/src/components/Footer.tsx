@@ -94,11 +94,7 @@ const Footer = () => {
       '/recruitment': 'recruitment',
       '/publications': 'publications',
       '/technologies': 'technologies',
-      '#': 'explore',
-      '/legal/privacy': 'privacy_policy',
-      '/legal/terms': 'terms_of_use',
-      '/legal/cookies': 'cookie_policy',
-      '/legal/sitemap': 'sitemap',
+      '/he-thong-tich-hop': 'integrated_systems',
       '/ho-so-nang-luc': 'capability_experience',
     };
 
@@ -127,9 +123,8 @@ const Footer = () => {
       'hệ thống lạnh công nghiệp': 'industry_refrigeration_title',
       'tổng thầu cơ điện': 'industry_me_title',
       'cơ điện': 'industry_me_title',
-      'trung tâm dữ liệu': 'industry_dc_title',
       'trung tâm dữ liệu & quản lý tập trung': 'industry_dc_title',
-      'hệ thống tích hợp': 'explore',
+      'hệ thống tích hợp': 'integrated_systems',
       'vòng đời dịch vụ': 'industry_lifecycle_title',
       'hồ sơ năng lực': 'capability_experience',
       'chính sách bảo mật': 'privacy_policy',
@@ -168,8 +163,8 @@ const Footer = () => {
 
   const copyrightText = getLocalizedSetting('copyright_text') || t('copyright');
   const contactEmail = settings['contact_email'] || 'info@VVC.com.vn';
-  const contactAddress = getLocalizedSetting('contact_address') || '123 Nguyễn Văn Linh, Quận 7, TP. Hồ Chí Minh, Việt Nam';
-  const siteDescription = getLocalizedSetting('site_description') || 'Cung cấp giải pháp điện lạnh toàn diện cho mọi doanh nghiệp và công trình.';
+  const contactAddress = getLocalizedSetting('contact_address') || t('contact_address_fallback');
+  const siteDescription = getLocalizedSetting('site_description') || t('site_description_fallback');
   const siteLogo = settings['footer_logo'] || settings['site_logo'] || '/lovable-uploads/0bd3c048-8e37-4775-a6bc-0b54ec07edbe.png';
 
   if (loading) return <footer className="bg-primary text-white py-12"><div className="flex justify-center"><Loader2 className="animate-spin" /></div></footer>;
@@ -228,7 +223,7 @@ const Footer = () => {
                         </Link>
                       ) : (
                         <a href={child.path} className="text-gray-300 hover:text-white transition-colors footer-link" target="_blank" rel="noopener noreferrer">
-                          {child.label}
+                          {getTranslatedLabel(child)}
                         </a>
                       )}
                     </li>

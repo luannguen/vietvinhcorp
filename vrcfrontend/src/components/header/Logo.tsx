@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useSettings } from '@/hooks/useSettings';
+import { useTranslation } from 'react-i18next';
 
 interface LogoProps {
   isScrolled?: boolean;
@@ -7,6 +8,7 @@ interface LogoProps {
 
 const Logo = ({ isScrolled = false }: LogoProps) => {
   const { settings, loading } = useSettings();
+  const { t } = useTranslation();
   
   if (loading) {
     return (
@@ -32,7 +34,7 @@ const Logo = ({ isScrolled = false }: LogoProps) => {
     <Link to="/" className="flex items-center gap-2 flex-shrink-0 relative z-10 transition-transform active:scale-95">
       <img
         src={logoSrc}
-        alt="Việt Vinh  - Tổng công ty Kỹ thuật lạnh Việt Nam"
+        alt={t('logo_alt_text')}
         className={`object-contain transition-all duration-500 ease-in-out ${
           isScrolled 
             ? 'h-[40px] md:h-[60px]' 
