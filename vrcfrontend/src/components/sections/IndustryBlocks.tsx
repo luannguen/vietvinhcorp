@@ -36,45 +36,55 @@ export const RefrigerationBlock = ({
   title, 
   description,
   image,
-  features,
+  feature1_title,
+  feature1_desc,
+  feature2_title,
+  feature2_desc,
+  feature3_title,
+  feature3_desc,
   sectionId 
 }: any) => {
   const { t } = useTranslation();
   
-  const defaultTitle = t('industry_refrigeration_hero_title', "Công Nghệ Làm Lạnh");
-  const defaultDesc = t('industry_refrigeration_hero_desc', "Cách thế giới tiêu dùng thực phẩm đã thay đổi toàn diện sau khi Jacob Perkins cấp bằng sáng chế cho chiếc tủ lạnh đầu tiên vào năm 1834. Việc bảo quản thực phẩm trong điều kiện lành mạnh lâu hơn đã trở nên khả thi.");
-  const defaultImage = "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1200";
+  const displayTitle = title || t('industry_refrigeration_hero_title', "Công Nghệ Làm Lạnh");
+  const displayDesc = description || t('industry_refrigeration_hero_desc', "Bảo quản thực phẩm trong điều kiện lành mạnh lâu hơn.");
+  const displayImage = image || "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1200";
   
-  const defaultFeatures = [
-    { title: t('industry_ref_factor_1_title', "Chất lượng thiết bị"), desc: t('industry_ref_factor_1_desc', "Chất lượng của các thiết bị làm lạnh là nền tảng cho hiệu suất vận hành lâu dài.") },
-    { title: t('industry_ref_factor_2_title', "Cấu hình chính xác"), desc: t('industry_ref_factor_2_desc', "Tối ưu hóa dựa trên đặc tính sản phẩm và điều kiện khí hậu thực tế.") },
-    { title: t('industry_ref_factor_4_title', "Thuật toán thông minh"), desc: t('industry_ref_factor_4_desc', "Giảm tiêu thụ năng lượng thông qua bộ điều khiển thông minh AI.") }
+  const features = [
+    { 
+      title: feature1_title || t('industry_ref_factor_1_title', "Chất lượng thiết bị"), 
+      desc: feature1_desc || t('industry_ref_factor_1_desc', "Chất lượng của các thiết bị làm lạnh là nền tảng cho hiệu suất vận hành lâu dài.") 
+    },
+    { 
+      title: feature2_title || t('industry_ref_factor_2_title', "Cấu hình chính xác"), 
+      desc: feature2_desc || t('industry_ref_factor_2_desc', "Tối ưu hóa dựa trên đặc tính sản phẩm và điều kiện khí hậu thực tế.") 
+    },
+    { 
+      title: feature3_title || t('industry_ref_factor_4_title', "Thuật toán thông minh"), 
+      desc: feature3_desc || t('industry_ref_factor_4_desc', "Giảm tiêu thụ năng lượng thông qua bộ điều khiển thông minh AI.") 
+    }
   ];
-
-  const displayTitle = title || defaultTitle;
-  const displayDesc = description || defaultDesc;
-  const displayImage = image || defaultImage;
-  const displayFeatures = features || defaultFeatures;
 
   return (
     <section className="py-20 bg-white overflow-hidden">
       <div className="container-custom">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="order-2 lg:order-1">
-            <EditableElement tagName="h2" fieldKey="title" sectionId={sectionId} defaultContent={displayTitle} className="text-3xl md:text-4xl font-bold mb-6 text-primary" />
-            <EditableElement tagName="p" fieldKey="description" sectionId={sectionId} defaultContent={displayDesc} className="text-lg text-muted-foreground mb-8 leading-relaxed" />
+            <EditableElement tagName="h2" fieldKey="title" sectionId={sectionId} defaultContent={displayTitle} className="text-3xl md:text-4xl font-bold mb-6 text-primary block" />
+            <EditableElement tagName="p" fieldKey="description" sectionId={sectionId} defaultContent={displayDesc} className="text-lg text-muted-foreground mb-8 leading-relaxed block" />
             
             <div className="grid sm:grid-cols-1 gap-8">
-              {displayFeatures.map((f: any, i: number) => {
+              {features.map((f: any, i: number) => {
                 const Icon = i === 0 ? ThermometerSnowflake : i === 1 ? Wind : CircleCheckBig;
+                const fieldPrefix = `feature${i+1}`;
                 return (
                   <div key={i} className="flex gap-6 group items-start">
                     <div className="flex-shrink-0 w-16 h-16 rounded-2xl bg-primary/5 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-sm border border-primary/10">
                       <Icon className="text-primary w-8 h-8 group-hover:text-white group-hover:scale-110 transition-transform" />
                     </div>
-                    <div>
-                      <h4 className="font-bold text-xl mb-2 group-hover:text-primary transition-colors">{f.title}</h4>
-                      <p className="text-muted-foreground leading-relaxed">{f.desc}</p>
+                    <div className="flex-grow">
+                      <EditableElement tagName="h4" fieldKey={`${fieldPrefix}_title`} sectionId={sectionId} defaultContent={f.title} className="font-bold text-xl mb-2 group-hover:text-primary transition-colors block" />
+                      <EditableElement tagName="p" fieldKey={`${fieldPrefix}_desc`} sectionId={sectionId} defaultContent={f.desc} className="text-muted-foreground leading-relaxed block" />
                     </div>
                   </div>
                 );
@@ -102,16 +112,29 @@ export const RefrigerationBlock = ({
 };
 
 // --- PHÂN LOẠI KHO LẠNH ---
-export const ColdStorageCatalogBlock = ({ sectionId }: any) => {
+export const ColdStorageCatalogBlock = ({ 
+  title, 
+  subtitle,
+  item1_name, item1_range,
+  item2_name, item2_range,
+  item3_name, item3_range,
+  item4_name, item4_range,
+  item5_name, item5_range,
+  item6_name, item6_range,
+  sectionId 
+}: any) => {
   const { t } = useTranslation();
   
-  const types = [
-    { id: 1, icon: ThermometerSnowflake, color: "blue" },
-    { id: 2, icon: Snowflake, color: "cyan" },
-    { id: 3, icon: Droplets, color: "indigo" },
-    { id: 4, icon: Zap, color: "sky" },
-    { id: 5, icon: Layers, color: "violet" },
-    { id: 6, icon: Flame, color: "orange" }
+  const displayTitle = title || t('cold_storage_types_title', 'Phân Loại Kho Lạnh');
+  const displaySubtitle = subtitle || t('cold_storage_types_subtitle', 'Phân loại dựa trên sản phẩm lưu trữ và mục đích sử dụng');
+
+  const items = [
+    { name: item1_name || t('cs_type_1_name'), range: item1_range || t('cs_type_1_range'), icon: ThermometerSnowflake },
+    { name: item2_name || t('cs_type_2_name'), range: item2_range || t('cs_type_2_range'), icon: Snowflake },
+    { name: item3_name || t('cs_type_3_name'), range: item3_range || t('cs_type_3_range'), icon: Droplets },
+    { name: item4_name || t('cs_type_4_name'), range: item4_range || t('cs_type_4_range'), icon: Zap },
+    { name: item5_name || t('cs_type_5_name'), range: item5_range || t('cs_type_5_range'), icon: Layers },
+    { name: item6_name || t('cs_type_6_name'), range: item6_range || t('cs_type_6_range'), icon: Flame }
   ];
 
   return (
@@ -119,32 +142,29 @@ export const ColdStorageCatalogBlock = ({ sectionId }: any) => {
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
       <div className="container-custom relative z-10">
         <div className="text-center max-w-3xl mx-auto mb-20">
-          <h2 className="text-3xl md:text-5xl font-extrabold mb-6 tracking-tight">
-            {t('cold_storage_types_title', 'Phân Loại Kho Lạnh')}
-          </h2>
-          <p className="text-lg text-muted-foreground font-medium">
-            {t('cold_storage_types_subtitle', 'Phân loại dựa trên sản phẩm lưu trữ và mục đích sử dụng')}
-          </p>
+          <EditableElement tagName="h2" fieldKey="title" sectionId={sectionId} defaultContent={displayTitle} className="text-3xl md:text-5xl font-extrabold mb-6 tracking-tight block" />
+          <EditableElement tagName="p" fieldKey="subtitle" sectionId={sectionId} defaultContent={displaySubtitle} className="text-lg text-muted-foreground font-medium block" />
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {types.map((type) => (
-            <div key={type.id} className="group bg-white p-8 rounded-3xl shadow-sm border border-slate-100 hover:shadow-2xl hover:border-primary/20 transition-all duration-500 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-[60px] opacity-20 group-hover:opacity-100 group-hover:bg-primary/5 transition-all" />
-              <div className="relative z-10">
-                <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-8 group-hover:bg-primary group-hover:scale-110 transition-all duration-500 shadow-inner">
-                  <type.icon className="w-8 h-8 text-primary group-hover:text-white" />
-                </div>
-                <h3 className="text-2xl font-bold mb-3 group-hover:text-primary transition-colors">
-                  {t(`cs_type_${type.id}_name`)}
-                </h3>
-                <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-slate-100 text-primary font-bold text-sm mb-4 border border-slate-200">
-                  <ActivityIcon className="w-4 h-4 mr-2" />
-                  {t(`cs_type_${type.id}_range`)}
+          {items.map((item, idx) => {
+            const fieldPrefix = `item${idx+1}`;
+            return (
+              <div key={idx} className="group bg-white p-8 rounded-3xl shadow-sm border border-slate-100 hover:shadow-2xl hover:border-primary/20 transition-all duration-500 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-[60px] opacity-20 group-hover:opacity-100 group-hover:bg-primary/5 transition-all" />
+                <div className="relative z-10">
+                  <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-8 group-hover:bg-primary group-hover:scale-110 transition-all duration-500 shadow-inner">
+                    <item.icon className="w-8 h-8 text-primary group-hover:text-white" />
+                  </div>
+                  <EditableElement tagName="h3" fieldKey={`${fieldPrefix}_name`} sectionId={sectionId} defaultContent={item.name} className="text-2xl font-bold mb-3 group-hover:text-primary transition-colors block" />
+                  <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-slate-100 text-primary font-bold text-sm mb-4 border border-slate-200">
+                    <ActivityIcon className="w-4 h-4 mr-2" />
+                    <EditableElement tagName="span" fieldKey={`${fieldPrefix}_range`} sectionId={sectionId} defaultContent={item.range} />
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
@@ -152,52 +172,56 @@ export const ColdStorageCatalogBlock = ({ sectionId }: any) => {
 };
 
 // --- SỰ KHÁC BIỆT VIETVINH & MÔI CHẤT LẠNH ---
-export const IndustrialExpertiseBlock = ({ sectionId }: any) => {
+export const IndustrialExpertiseBlock = ({ 
+  diff_title, diff_desc,
+  diff_feat1_title, diff_feat1_desc,
+  diff_feat2_title, diff_feat2_desc,
+  diff_feat3_title, diff_feat3_desc,
+  refrig_title,
+  refrig1_title, refrig1_desc,
+  refrig2_title, refrig2_desc,
+  sectionId 
+}: any) => {
   const { t } = useTranslation();
+
+  const displayDiffTitle = diff_title || t('vietvinh_difference_title', 'Sự Khác Biệt Của VIETVINH');
+  const displayDiffDesc = diff_desc || t('vietvinh_difference_desc', 'Kỹ thuật tập trung R&D bảo quản thực phẩm tốt nhất.');
+  const displayRefrigTitle = refrig_title || t('refrigerants_title', 'Môi Chất Lạnh');
+
+  const diffFeatures = [
+    { title: diff_feat1_title || "71% Energy Savings", desc: diff_feat1_desc || t('industry_ref_factor_4_desc'), icon: BatteryCharging, color: 'green' },
+    { title: diff_feat2_title || "R&D Focused Engineering", desc: diff_feat2_desc || "Design tailored to product and climate.", icon: Cpu, color: 'blue' },
+    { title: diff_feat3_title || "Eco-friendly Energy", desc: diff_feat3_desc || "Solar and wind integration.", icon: Leaf, color: 'amber' }
+  ];
+
+  const refrigTypes = [
+    { title: refrig1_title || t('refrigerants_natural_title'), desc: refrig1_desc || t('refrigerant_natural_desc') },
+    { title: refrig2_title || t('refrigerants_freon_title'), desc: refrig2_desc || t('refrigerant_freon_desc') }
+  ];
 
   return (
     <section className="py-24 bg-white">
       <div className="container-custom">
         <div className="grid lg:grid-cols-2 gap-20 items-center">
-          <div className="relative">
-            <div className="absolute -top-10 -left-10 w-40 h-40 bg-primary/5 rounded-full blur-3xl" />
-            <div className="relative z-10">
-              <h2 className="text-3xl md:text-4xl font-extrabold mb-8 text-slate-900 leading-tight">
-                {t('vietvinh_difference_title', 'Sự Khác Biệt Của VIETVINH')}
-              </h2>
-              <p className="text-lg text-muted-foreground mb-12 leading-relaxed">
-                {t('vietvinh_difference_desc', 'Với nhận thức kho lạnh là những anh hùng thầm lặng của ngành thực phẩm, VIETVINH nỗ lực bảo quản thực phẩm theo cách tốt nhất thông qua kỹ thuật tập trung R&D.')}
-              </p>
-              
-              <div className="space-y-8">
-                <div className="flex gap-6">
-                  <div className="flex-shrink-0 w-14 h-14 rounded-2xl bg-green-50 flex items-center justify-center border border-green-100 shadow-sm">
-                    <BatteryCharging className="text-green-600 w-7 h-7" />
+          <div>
+            <EditableElement tagName="h2" fieldKey="diff_title" sectionId={sectionId} defaultContent={displayDiffTitle} className="text-3xl md:text-4xl font-extrabold mb-8 text-slate-900 leading-tight block" />
+            <EditableElement tagName="p" fieldKey="diff_desc" sectionId={sectionId} defaultContent={displayDiffDesc} className="text-lg text-muted-foreground mb-12 leading-relaxed block" />
+            
+            <div className="space-y-8">
+              {diffFeatures.map((f, i) => {
+                const prefix = `diff_feat${i+1}`;
+                return (
+                  <div key={i} className="flex gap-6">
+                    <div className={`flex-shrink-0 w-14 h-14 rounded-2xl bg-${f.color}-50 flex items-center justify-center border border-${f.color}-100 shadow-sm`}>
+                      <f.icon className={`text-${f.color}-600 w-7 h-7`} />
+                    </div>
+                    <div className="flex-grow">
+                      <EditableElement tagName="h4" fieldKey={`${prefix}_title`} sectionId={sectionId} defaultContent={f.title} className="font-bold text-lg mb-1 block" />
+                      <EditableElement tagName="p" fieldKey={`${prefix}_desc`} sectionId={sectionId} defaultContent={f.desc} className="text-muted-foreground text-sm block" />
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="font-bold text-lg mb-1">71% Energy Savings</h4>
-                    <p className="text-muted-foreground text-sm">{t('industry_ref_factor_4_desc', 'Thuật toán thông minh giúp tối ưu điện năng tối đa.')}</p>
-                  </div>
-                </div>
-                <div className="flex gap-6">
-                  <div className="flex-shrink-0 w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center border border-blue-100 shadow-sm">
-                    <Cpu className="text-blue-600 w-7 h-7" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-lg mb-1">R&D Focused Engineering</h4>
-                    <p className="text-muted-foreground text-sm">Design tailored to each specific product and climate conditions.</p>
-                  </div>
-                </div>
-                <div className="flex gap-6">
-                  <div className="flex-shrink-0 w-14 h-14 rounded-2xl bg-amber-50 flex items-center justify-center border border-amber-100 shadow-sm">
-                    <Leaf className="text-amber-600 w-7 h-7" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-lg mb-1">Eco-friendly Energy</h4>
-                    <p className="text-muted-foreground text-sm">Solar and wind integration for A+++ energy efficient systems.</p>
-                  </div>
-                </div>
-              </div>
+                );
+              })}
             </div>
           </div>
 
@@ -206,35 +230,19 @@ export const IndustrialExpertiseBlock = ({ sectionId }: any) => {
             <div className="relative z-10">
               <h3 className="text-2xl md:text-3xl font-bold mb-10 flex items-center">
                 <Droplets className="mr-4 text-primary w-8 h-8" />
-                {t('refrigerants_title', 'Môi Chất Lạnh')}
+                <EditableElement tagName="span" fieldKey="refrig_title" sectionId={sectionId} defaultContent={displayRefrigTitle} />
               </h3>
               
               <div className="space-y-12">
-                <div className="group">
-                  <h4 className="text-xl font-bold mb-4 text-primary flex items-center">
-                    <span className="w-8 h-px bg-primary/40 mr-4 group-hover:w-12 transition-all" />
-                    {t('refrigerants_natural_title', 'Môi chất tự nhiên')}
-                  </h4>
-                  <p className="text-slate-400 leading-relaxed font-medium">
-                    {t('refrigerant_natural_desc', 'Ammonia, CO2, Glycol, Propane. Thân thiện với môi trường, chi phí vận hành thấp.')}
-                  </p>
-                </div>
-                
-                <div className="group">
-                  <h4 className="text-xl font-bold mb-4 text-primary flex items-center">
-                    <span className="w-8 h-px bg-primary/40 mr-4 group-hover:w-12 transition-all" />
-                    {t('refrigerants_freon_title', 'Hệ thống Freon')}
-                  </h4>
-                  <p className="text-slate-400 leading-relaxed font-medium">
-                    {t('refrigerant_freon_desc', 'Chi phí đầu tư thấp, phù hợp với mọi tonnage và lĩnh vực.')}
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-12 p-6 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm">
-                <p className="text-sm italic text-slate-300">
-                  "* {t('industry_ref_distinction_desc', 'Mỗi sản phẩm đều cần yêu cầu làm lạnh đặc thù để duy trì độ tươi ngon.')}"
-                </p>
+                {refrigTypes.map((rt, i) => (
+                  <div key={i} className="group">
+                    <h4 className="text-xl font-bold mb-4 text-primary flex items-center">
+                      <span className="w-8 h-px bg-primary/40 mr-4 group-hover:w-12 transition-all" />
+                      <EditableElement tagName="span" fieldKey={`refrig${i+1}_title`} sectionId={sectionId} defaultContent={rt.title} />
+                    </h4>
+                    <EditableElement tagName="p" fieldKey={`refrig${i+1}_desc`} sectionId={sectionId} defaultContent={rt.desc} className="text-slate-400 leading-relaxed font-medium block" />
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -249,44 +257,47 @@ export const MEBlock = ({
   title,
   description,
   image,
+  cat1_label, cat1_sub,
+  cat2_label, cat2_sub,
+  cat3_label, cat3_sub,
+  cat4_label, cat4_sub,
   sectionId
 }: any) => {
   const { t } = useTranslation();
   
-  const defaultTitle = t('industry_me_title', "Tổng Thầu Cơ Điện (M&E)");
-  const defaultDesc = t('industry_me_desc', "Giải pháp cơ điện toàn diện cho các công trình dân dụng và công nghiệp, đáp ứng các tiêu chuẩn kỹ thuật khắt khe nhất của Việt Nam và Quốc tế.");
-  const defaultImage = "https://images.unsplash.com/photo-1544724569-5f546fd6f2b5?auto=format&fit=crop&q=80&w=1200";
+  const displayTitle = title || t('industry_me_title', "Tổng Thầu Cơ Điện (M&E)");
+  const displayDesc = description || t('industry_me_desc', "Giải pháp cơ điện toàn diện cho mọi công trình.");
+  const displayImage = image || "https://images.unsplash.com/photo-1544724569-5f546fd6f2b5?auto=format&fit=crop&q=80&w=1200";
 
   const categories = [
-    { icon: ZapIcon, label: t('industry_me_c1_title', "Hệ thống điện"), sub: t('industry_me_c1_desc', "Trạm biến áp, chiếu sáng, tủ bảng điện") },
-    { icon: CogIcon, label: t('industry_me_c2_title', "Hệ thống HVAC"), sub: t('industry_me_c2_desc', "Thông gió, điều hòa không khí trung tâm") },
-    { icon: ShieldIcon, label: t('industry_me_c3_title', "Hệ thống PCCC"), sub: t('industry_me_c3_desc', "Báo cháy, chữa cháy tự động tiêu chuẩn") },
-    { icon: SettingsIcon, label: t('industry_me_c4_title', "Cấp thoát nước"), sub: t('industry_me_c4_desc', "Xử lý nước thải, cung cấp nước sạch") }
+    { icon: ZapIcon, label: cat1_label || t('industry_me_c1_title'), sub: cat1_sub || t('industry_me_c1_desc') },
+    { icon: CogIcon, label: cat2_label || t('industry_me_c2_title'), sub: cat2_sub || t('industry_me_c2_desc') },
+    { icon: ShieldIcon, label: cat3_label || t('industry_me_c3_title'), sub: cat3_sub || t('industry_me_c3_desc') },
+    { icon: SettingsIcon, label: cat4_label || t('industry_me_c4_title'), sub: cat4_sub || t('industry_me_c4_desc') }
   ];
-
-  const displayTitle = title || defaultTitle;
-  const displayDesc = description || defaultDesc;
-  const displayImage = image || defaultImage;
 
   return (
     <section className="py-20 bg-slate-50">
       <div className="container-custom">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <EditableElement tagName="h2" fieldKey="title" sectionId={sectionId} defaultContent={displayTitle} className="text-3xl md:text-4xl font-extrabold mb-6" />
-          <EditableElement tagName="p" fieldKey="description" sectionId={sectionId} defaultContent={displayDesc} className="text-lg text-muted-foreground" />
+          <EditableElement tagName="h2" fieldKey="title" sectionId={sectionId} defaultContent={displayTitle} className="text-3xl md:text-4xl font-extrabold mb-6 block" />
+          <EditableElement tagName="p" fieldKey="description" sectionId={sectionId} defaultContent={displayDesc} className="text-lg text-muted-foreground block" />
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {categories.map((cat, i) => (
-            <div key={i} className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border border-slate-100 group relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-full -mr-12 -mt-12 group-hover:bg-primary/10 transition-colors" />
-              <div className="w-20 h-20 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-8 group-hover:bg-primary group-hover:text-white transition-all duration-500 shadow-inner">
-                <cat.icon className="w-10 h-10 group-hover:scale-110 transition-transform" />
+          {categories.map((cat, i) => {
+            const prefix = `cat${i+1}`;
+            return (
+              <div key={i} className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border border-slate-100 group relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-full -mr-12 -mt-12 group-hover:bg-primary/10 transition-colors" />
+                <div className="w-20 h-20 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-8 group-hover:bg-primary group-hover:text-white transition-all duration-500 shadow-inner">
+                  <cat.icon className="w-10 h-10 group-hover:scale-110 transition-transform" />
+                </div>
+                <EditableElement tagName="h3" fieldKey={`${prefix}_label`} sectionId={sectionId} defaultContent={cat.label} className="text-xl font-extrabold mb-4 group-hover:text-primary transition-colors block" />
+                <EditableElement tagName="p" fieldKey={`${prefix}_sub`} sectionId={sectionId} defaultContent={cat.sub} className="text-muted-foreground text-sm leading-relaxed block" />
               </div>
-              <h3 className="text-xl font-extrabold mb-4 group-hover:text-primary transition-colors">{cat.label}</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">{cat.sub}</p>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         <div className="mt-16 relative rounded-2xl overflow-hidden aspect-[21/9]">
@@ -309,55 +320,27 @@ export const AdvancedTechShowcaseBlock = ({
   title,
   subtitle,
   badge,
-  items,
+  item1_title, item1_desc,
+  item2_title, item2_desc,
+  item3_title, item3_desc,
+  item4_title, item4_desc,
   sectionId 
 }: any) => {
   const { t } = useTranslation();
 
-  const defaultTechnologies = [
-    {
-      title: t('tech_ca_title', 'Công nghệ Bảo quản CA'),
-      desc: t('tech_ca_desc', 'Kiểm soát khí quyển (Controlled Atmosphere) cho phép lưu trữ trái cây tươi ngon trên 12 tháng.'),
-      icon: Layers,
-      link: "/cong-nghe-bao-quan-ca"
-    },
-    {
-      title: t('tech_iqf_title', 'Cấp đông nhanh IQF'),
-      desc: t('iqf_desc', 'Công nghệ cấp đông từng cá thể giúp giữ nguyên cấu trúc tế bào và dinh dưỡng.'),
-      icon: Snowflake,
-      link: "/cap-dong-nhanh-iqf"
-    },
-    {
-      title: t('tech_banana_ripening', 'Phòng chín chuối tiêu chuẩn'),
-      desc: t('tech_banana_desc', 'Hệ thống điều khiển quy trình chín nhân tạo khoa học, đảm bảo chất lượng đồng đều.'),
-      icon: Leaf,
-      link: "/phong-chin-chuoi-tieu-chuan"
-    },
-    {
-      title: t('tech_blast_freezer', 'Hầm đông gió (Blast Freezer)'),
-      desc: t('tech_blast_desc', 'Hạ nhiệt độ tâm sản phẩm xuống -35°C cực nhanh, ngăn chặn tinh thể đá lớn.'),
-      icon: ThermometerSnowflake,
-      link: "/ham-dong-gio-cong-suat-lon"
-    }
-  ];
-
   const displayTitle = title || t('advanced_preservation_tech', 'Công Nghệ Bảo Quản & Cấp Đông Chuyên Sâu');
-  const displaySubtitle = subtitle || t('advanced_tech_subtitle', 'VIETVINH tiên phong ứng dụng các giải pháp bảo quản tiên tiến nhất thế giới cho chuỗi cung ứng thực phẩm.');
+  const displaySubtitle = subtitle || t('advanced_tech_subtitle', 'VIETVINH tiên phong ứng dụng các giải pháp bảo quản tiên tiến nhất.');
   const displayBadge = badge || t('specialized_solutions', 'Specialized Solutions');
-  const displayItems = items || defaultTechnologies;
 
-  const { updateSectionProps } = useVisualEditor() as any || {};
-
-  const handleUpdateItem = (index: number, key: string, value: string) => {
-    if (!sectionId || !updateSectionProps) return;
-    const newItems = [...displayItems];
-    newItems[index] = { ...newItems[index], [key]: value };
-    updateSectionProps(sectionId, { items: newItems });
-  };
+  const items = [
+    { title: item1_title || t('tech_ca_title'), desc: item1_desc || t('tech_ca_desc'), icon: Layers, link: "/cong-nghe-bao-quan-ca" },
+    { title: item2_title || t('tech_iqf_title'), desc: item2_desc || t('iqf_desc'), icon: Snowflake, link: "/cap-dong-nhanh-iqf" },
+    { title: item3_title || t('tech_banana_ripening'), desc: item3_desc || t('tech_banana_desc'), icon: Leaf, link: "/phong-chin-chuoi-tieu-chuan" },
+    { title: item4_title || t('tech_blast_freezer'), desc: item4_desc || t('tech_blast_desc'), icon: ThermometerSnowflake, link: "/ham-dong-gio-cong-suat-lon" }
+  ];
 
   return (
     <section className="py-24 bg-slate-950 text-white overflow-hidden relative">
-      {/* Background Decorative Elements */}
       <div className="absolute top-0 left-0 w-full h-full opacity-20 pointer-events-none">
         <div className="absolute -top-24 -left-24 w-96 h-96 bg-blue-600 rounded-full blur-[120px]" />
         <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-cyan-600 rounded-full blur-[120px]" />
@@ -368,82 +351,28 @@ export const AdvancedTechShowcaseBlock = ({
           <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-bold uppercase tracking-wider mb-6">
             <EditableElement tagName="span" fieldKey="badge" sectionId={sectionId} defaultContent={displayBadge} />
           </div>
-          <EditableElement 
-            tagName="h2" 
-            fieldKey="title" 
-            sectionId={sectionId} 
-            defaultContent={displayTitle} 
-            className="text-3xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white via-white to-blue-400" 
-          />
-          <EditableElement 
-            tagName="p" 
-            fieldKey="subtitle" 
-            sectionId={sectionId} 
-            defaultContent={displaySubtitle} 
-            className="text-lg text-slate-400" 
-          />
+          <EditableElement tagName="h2" fieldKey="title" sectionId={sectionId} defaultContent={displayTitle} className="text-3xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white via-white to-blue-400 block" />
+          <EditableElement tagName="p" fieldKey="subtitle" sectionId={sectionId} defaultContent={displaySubtitle} className="text-lg text-slate-400 block" />
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {displayItems.map((tech: any, i: number) => {
-            const Icon = tech.icon || Layers;
+          {items.map((tech, i) => {
+            const Icon = tech.icon;
+            const prefix = `item${i+1}`;
             return (
-              <Link 
-                key={i} 
-                to={tech.link || "#"}
-                className="group p-8 rounded-3xl bg-slate-900/50 border border-white/5 hover:border-blue-500/30 transition-all duration-500 backdrop-blur-sm relative overflow-hidden block"
-              >
+              <div key={i} className="group p-8 rounded-3xl bg-slate-900/50 border border-white/5 hover:border-blue-500/30 transition-all duration-500 backdrop-blur-sm relative overflow-hidden block">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-3xl group-hover:bg-blue-500/10 transition-colors" />
-                
                 <div className="w-14 h-14 rounded-2xl mb-6 flex items-center justify-center bg-blue-500/10 text-blue-400 group-hover:scale-110 transition-transform duration-500 shadow-inner border border-white/5">
-                  {typeof Icon === 'string' ? <img src={Icon} className="w-8 h-8" /> : <Icon className="w-8 h-8" />}
+                  <Icon className="w-8 h-8" />
                 </div>
-                
-                <EditableElement 
-                  tagName="h3" 
-                  fieldKey={`items.${i}.title`} 
-                  sectionId={sectionId} 
-                  defaultContent={tech.title} 
-                  className="text-xl font-bold mb-4 text-white group-hover:text-blue-400 transition-colors block"
-                  onUpdate={(val: string) => handleUpdateItem(i, 'title', val)}
-                />
-                <EditableElement 
-                  tagName="p" 
-                  fieldKey={`items.${i}.desc`} 
-                  sectionId={sectionId} 
-                  defaultContent={tech.desc} 
-                  className="text-slate-400 text-sm leading-relaxed group-hover:text-slate-300 transition-colors block"
-                  onUpdate={(val: string) => handleUpdateItem(i, 'desc', val)}
-                />
-                
-                <div className="mt-8 flex items-center text-blue-400 text-xs font-bold uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0 duration-300">
+                <EditableElement tagName="h3" fieldKey={`${prefix}_title`} sectionId={sectionId} defaultContent={tech.title} className="text-xl font-bold mb-4 text-white group-hover:text-blue-400 transition-colors block" />
+                <EditableElement tagName="p" fieldKey={`${prefix}_desc`} sectionId={sectionId} defaultContent={tech.desc} className="text-slate-400 text-sm leading-relaxed group-hover:text-slate-300 transition-colors block" />
+                <Link to={tech.link} className="mt-8 flex items-center text-blue-400 text-xs font-bold uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0 duration-300">
                   {t('details', 'Chi tiết')} <ArrowRightIcon className="ml-2 w-3 h-3" />
-                </div>
-              </Link>
+                </Link>
+              </div>
             );
           })}
-        </div>
-
-        {/* Technical Specs Summary Footer */}
-        <div className="mt-20 pt-12 border-t border-white/5">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            <div>
-              <div className="text-3xl font-bold text-white mb-2">A+++</div>
-              <div className="text-xs text-slate-500 uppercase tracking-widest">{t('eff_standard', 'Hiệu suất năng lượng')}</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-white mb-2">71%</div>
-              <div className="text-xs text-slate-500 uppercase tracking-widest">{t('max_saving', 'Tiết kiệm tối đa')}</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-white mb-2">24/7</div>
-              <div className="text-xs text-slate-500 uppercase tracking-widest">{t('monitoring', 'Giám sát thông minh')}</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-white mb-2">12M+</div>
-              <div className="text-xs text-slate-500 uppercase tracking-widest">{t('perservation_time', 'Thời gian bảo quản')}</div>
-            </div>
-          </div>
         </div>
       </div>
     </section>
@@ -455,66 +384,54 @@ export const DataCenterBlock = ({
   title,
   description,
   image,
+  dc_feat1_title, dc_feat1_desc,
+  dc_feat2_title, dc_feat2_desc,
   sectionId
 }: any) => {
   const { t } = useTranslation();
   
-  const defaultTitle = t('industry_dc_title', "Trung Tâm Dữ Liệu & Quản Lý Tập Trung");
-  const defaultDesc = t('industry_dc_desc', "Tư vấn và triển khai hạ tầng trung tâm dữ liệu tiêu chuẩn TIER III, kết hợp hệ thống giám sát và quản lý tòa nhà BMS hiện đại.");
-  const defaultImage = "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&q=80&w=1200";
+  const displayTitle = title || t('industry_dc_title', "Trung Tâm Dữ Liệu & Quản Lý Tập Trung");
+  const displayDesc = description || t('industry_dc_desc', "Tư vấn và triển khai hạ tầng trung tâm dữ liệu tiêu chuẩn TIER III.");
+  const displayImage = image || "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&q=80&w=1200";
 
-  const displayTitle = title || defaultTitle;
-  const displayDesc = description || defaultDesc;
-  const displayImage = image || defaultImage;
+  const features = [
+    { title: dc_feat1_title || t('precision_cooling'), desc: dc_feat1_desc || t('precision_cooling_desc'), icon: ServerIcon },
+    { title: dc_feat2_title || t('optimize_pue'), desc: dc_feat2_desc || t('optimize_pue_desc'), icon: ActivityIcon }
+  ];
 
   return (
     <section className="py-24 bg-primary text-white relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-1/3 h-full opacity-10 pointer-events-none">
-        <div className="w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white to-transparent" />
-      </div>
-      
       <div className="container-custom relative z-10">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <div>
             <div className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 text-white/90 text-xs font-bold tracking-widest uppercase mb-6 border border-white/20">
               {t('high_tech_infrastructure', 'High-Tech Infrastructure')}
             </div>
-            <EditableElement tagName="h2" fieldKey="title" sectionId={sectionId} defaultContent={displayTitle} className="text-3xl md:text-5xl font-bold mb-8 leading-tight text-white" />
-            <EditableElement tagName="p" fieldKey="description" sectionId={sectionId} defaultContent={displayDesc} className="text-lg opacity-80 mb-10 leading-relaxed" />
+            <EditableElement tagName="h2" fieldKey="title" sectionId={sectionId} defaultContent={displayTitle} className="text-3xl md:text-5xl font-bold mb-8 leading-tight text-white block" />
+            <EditableElement tagName="p" fieldKey="description" sectionId={sectionId} defaultContent={displayDesc} className="text-lg opacity-80 mb-10 leading-relaxed block" />
             
             <div className="grid sm:grid-cols-2 gap-10">
-              <div className="flex items-start gap-6 group">
-                <div className="w-20 h-20 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-secondary group-hover:border-secondary transition-all duration-500 shadow-[0_0_20px_rgba(255,255,255,0.05)] group-hover:shadow-[0_0_30px_rgba(var(--secondary),0.4)]">
-                  <ServerIcon className="w-10 h-10 text-secondary group-hover:text-white transition-colors" />
-                </div>
-                <div>
-                  <h4 className="font-bold text-xl mb-3 text-white group-hover:text-secondary transition-colors">{t('precision_cooling', 'Precision Cooling')}</h4>
-                  <p className="text-sm opacity-70 leading-relaxed">{t('precision_cooling_desc', 'Làm mát chính xác, độ tin cậy 99.982% cho máy chủ.')}</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-6 group">
-                <div className="w-20 h-20 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-secondary group-hover:border-secondary transition-all duration-500 shadow-[0_0_20px_rgba(255,255,255,0.05)] group-hover:shadow-[0_0_30px_rgba(var(--secondary),0.4)]">
-                  <ActivityIcon className="w-10 h-10 text-secondary group-hover:text-white transition-colors" />
-                </div>
-                <div>
-                  <h4 className="font-bold text-xl mb-3 text-white group-hover:text-secondary transition-colors">{t('optimize_pue', 'Tối ưu PUE')}</h4>
-                  <p className="text-sm opacity-70 leading-relaxed">{t('optimize_pue_desc', 'Giảm 30% năng lượng tiêu thụ với giải pháp quản lý thông minh.')}</p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="mt-12">
-              <a href="/projects/specialized" className="px-8 py-3 bg-secondary text-white font-bold rounded-lg hover:bg-secondary/90 transition-all inline-block shadow-lg">
-                {t('view_dc_projects', 'Xem các dự án Data Center')}
-              </a>
+              {features.map((f, i) => {
+                const prefix = `dc_feat${i+1}`;
+                return (
+                  <div key={i} className="flex items-start gap-6 group">
+                    <div className="w-20 h-20 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-secondary group-hover:border-secondary transition-all duration-500">
+                      <f.icon className="w-10 h-10 text-secondary group-hover:text-white transition-colors" />
+                    </div>
+                    <div className="flex-grow">
+                      <EditableElement tagName="h4" fieldKey={`${prefix}_title`} sectionId={sectionId} defaultContent={f.title} className="font-bold text-xl mb-3 text-white group-hover:text-secondary transition-colors block" />
+                      <EditableElement tagName="p" fieldKey={`${prefix}_desc`} sectionId={sectionId} defaultContent={f.desc} className="text-sm opacity-70 leading-relaxed block" />
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
           
           <div className="relative group">
-            <div className="absolute inset-0 bg-secondary/20 rounded-2xl blur-3xl group-hover:bg-secondary/30 transition-all opacity-50" />
             <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl aspect-video">
               <EditableElement type="image" fieldKey="image" sectionId={sectionId} defaultContent={displayImage}>
-                <img src={displayImage} alt="Data Center Visualization" className="w-full h-full object-cover" />
+                <img src={displayImage} alt="Data Center" className="w-full h-full object-cover" />
               </EditableElement>
             </div>
           </div>
@@ -528,45 +445,49 @@ export const DataCenterBlock = ({
 export const ServiceLifecycleBlock = ({
   title,
   description,
+  step1_title, step1_desc,
+  step2_title, step2_desc,
+  step3_title, step3_desc,
+  step4_title, step4_desc,
   sectionId
 }: any) => {
   const { t } = useTranslation();
   
-  const defaultTitle = t('industry_lifecycle_title', "Vòng Đời Dịch Vụ Toàn Diện");
-  const defaultDesc = t('industry_lifecycle_desc', "Chúng tôi đồng hành cùng khách hàng từ khâu lên ý tưởng đến khi hệ thống đi vào vận hành ổn định và bảo trì lâu dài.");
+  const displayTitle = title || t('industry_lifecycle_title', "Vòng Đời Dịch Vụ Toàn Diện");
+  const displayDesc = description || t('industry_lifecycle_desc', "Đồng hành cùng khách hàng từ khâu lên ý tưởng đến vận hành lâu dài.");
 
   const steps = [
-    { icon: FileTextIcon, title: t('lifecycle_s1_title', "Tư vấn & Thiết kế"), desc: t('lifecycle_s1_desc', "Khảo sát và đề xuất giải pháp kỹ thuật tối ưu nhất.") },
-    { icon: WrenchIcon, title: t('lifecycle_s2_title', "Thi công & Lắp đặt"), desc: t('lifecycle_s2_desc', "Quy trình thực hiện chuyên nghiệp, đúng tiến độ cam kết.") },
-    { icon: ActivityIcon, title: t('lifecycle_s3_title', "Vận hành & Hỗ trợ"), desc: t('lifecycle_s3_desc', "Đảm bảo hệ thống hoạt động ổn định và tin cậy 24/7.") },
-    { icon: CogIcon, title: t('lifecycle_s4_title', "Bảo trì & Sửa chữa"), desc: t('lifecycle_s4_desc', "Dịch vụ sau bán hàng tận tâm, chuyên nghiệp, chính xác.") }
+    { icon: FileTextIcon, title: step1_title || t('lifecycle_s1_title'), desc: step1_desc || t('lifecycle_s1_desc') },
+    { icon: WrenchIcon, title: step2_title || t('lifecycle_s2_title'), desc: step2_desc || t('lifecycle_s2_desc') },
+    { icon: ActivityIcon, title: step3_title || t('lifecycle_s3_title'), desc: step3_desc || t('lifecycle_s3_desc') },
+    { icon: CogIcon, title: step4_title || t('lifecycle_s4_title'), desc: step4_desc || t('lifecycle_s4_desc') }
   ];
-
-  const displayTitle = title || defaultTitle;
-  const displayDesc = description || defaultDesc;
 
   return (
     <section className="py-20 bg-white">
       <div className="container-custom">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <EditableElement tagName="h2" fieldKey="title" sectionId={sectionId} defaultContent={displayTitle} className="text-3xl md:text-4xl font-bold mb-6" />
-          <EditableElement tagName="p" fieldKey="description" sectionId={sectionId} defaultContent={displayDesc} className="text-lg text-muted-foreground" />
+          <EditableElement tagName="h2" fieldKey="title" sectionId={sectionId} defaultContent={displayTitle} className="text-3xl md:text-4xl font-bold mb-6 block" />
+          <EditableElement tagName="p" fieldKey="description" sectionId={sectionId} defaultContent={displayDesc} className="text-lg text-muted-foreground block" />
         </div>
 
         <div className="relative">
-          {/* Decorative Line (Desktop only) */}
           <div className="hidden lg:block absolute top-[60px] left-[10%] right-[10%] h-0.5 bg-slate-100" />
-          
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-12 relative z-10">
-            {steps.map((step, i) => (
-              <div key={i} className="text-center group">
-                <div className="w-20 h-20 bg-white border-2 border-slate-100 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:border-primary transition-all group-hover:scale-110 bg-white shadow-sm">
-                  <step.icon className="w-10 h-10 text-slate-400 group-hover:text-primary transition-colors" />
+            {steps.map((step, i) => {
+              const prefix = `step${i+1}`;
+              return (
+                <div key={i} className="text-center group">
+                  <div className="w-20 h-20 bg-white border-2 border-slate-100 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:border-primary transition-all group-hover:scale-110 bg-white shadow-sm">
+                    <step.icon className="w-10 h-10 text-slate-400 group-hover:text-primary transition-colors" />
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <EditableElement tagName="h3" fieldKey={`${prefix}_title`} sectionId={sectionId} defaultContent={step.title} className="font-bold text-xl mb-3 text-primary block" />
+                    <EditableElement tagName="p" fieldKey={`${prefix}_desc`} sectionId={sectionId} defaultContent={step.desc} className="text-muted-foreground text-sm leading-relaxed block text-center" />
+                  </div>
                 </div>
-                <h3 className="font-bold text-xl mb-3 text-primary">{step.title}</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">{step.desc}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
@@ -582,14 +503,16 @@ export const ServiceLifecycleBlock = ({
 export const TechnicalDetailBlock = ({ 
   title,
   description,
-  features,
+  feature1,
+  feature2,
+  feature3,
+  feature4,
   image,
   accent = 'blue',
   techType = 'ca',
   sectionId 
 }: any) => {
   const { t } = useTranslation();
-  const { updateSectionProps } = useVisualEditor() as any || {};
 
   const techConfigs: Record<string, any> = {
     ca: {
@@ -646,17 +569,16 @@ export const TechnicalDetailBlock = ({
   
   const displayTitle = title || config.title;
   const displayDescription = description || config.description;
-  const displayFeatures = features || config.features;
   const displayAccent = accent || config.accent;
   const displayImage = image || `https://images.unsplash.com/photo-1558444430-32f9109ef810?auto=format&fit=crop&q=80&w=1200&sig=${techType}`;
   const Icon = config.icon;
 
-  const handleUpdateFeature = (index: number, value: string) => {
-    if (!sectionId || !updateSectionProps) return;
-    const newFeatures = [...displayFeatures];
-    newFeatures[index] = value;
-    updateSectionProps(sectionId, { features: newFeatures });
-  };
+  const features = [
+    feature1 || config.features[0],
+    feature2 || config.features[1],
+    feature3 || config.features[2],
+    feature4 || config.features[3]
+  ];
 
   return (
     <section className="py-24 bg-slate-50 overflow-hidden">
@@ -686,18 +608,17 @@ export const TechnicalDetailBlock = ({
             </div>
 
             <div className="grid sm:grid-cols-2 gap-6">
-              {displayFeatures.map((feature: string, idx: number) => (
+              {features.map((feature: string, idx: number) => (
                 <div key={idx} className="flex gap-4 p-5 rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-md transition-all group">
                   <div className={`mt-1 shrink-0 w-6 h-6 rounded-full bg-${displayAccent}-100 flex items-center justify-center group-hover:bg-${displayAccent}-500 group-hover:text-white transition-colors`}>
                     <CheckIcon className="w-4 h-4" />
                   </div>
                   <EditableElement 
                     tagName="span" 
-                    fieldKey={`features.${idx}`} 
+                    fieldKey={`feature${idx+1}`} 
                     sectionId={sectionId} 
                     defaultContent={feature} 
                     className="text-slate-700 font-medium leading-tight block"
-                    onUpdate={(val: string) => handleUpdateFeature(idx, val)}
                   />
                 </div>
               ))}
