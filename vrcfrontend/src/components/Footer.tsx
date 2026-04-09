@@ -106,8 +106,8 @@ const Footer = () => {
     const labelToKeyMap: Record<string, string> = {
       'trang chủ': 'home',
       'về chúng tôi': 'about',
-      'về vvc': 'About Viet Vinh',
-      'về việt vinh': 'About Viet Vinh',
+      'về vvc': 'about',
+      'về việt vinh': 'about',
       'giới thiệu': 'about',
       'sản phẩm': 'products',
       'tin tức': 'news',
@@ -126,9 +126,10 @@ const Footer = () => {
       'hệ thống lạnh': 'industry_refrigeration_title',
       'hệ thống lạnh công nghiệp': 'industry_refrigeration_title',
       'tổng thầu cơ điện': 'industry_me_title',
-      'cơ điện': 'M&E System',
+      'cơ điện': 'industry_me_title',
       'trung tâm dữ liệu': 'industry_dc_title',
       'trung tâm dữ liệu & quản lý tập trung': 'industry_dc_title',
+      'hệ thống tích hợp': 'explore',
       'vòng đời dịch vụ': 'industry_lifecycle_title',
       'hồ sơ năng lực': 'capability_experience',
       'chính sách bảo mật': 'privacy_policy',
@@ -157,10 +158,18 @@ const Footer = () => {
     return item.label;
   };
 
-  const copyrightText = settings['copyright_text'] || t('copyright');
+  const currentLang = i18n.language || 'vi';
+  const isVi = currentLang.startsWith('vi');
+
+  const getLocalizedSetting = (baseKey: string) => {
+    if (isVi) return settings[baseKey];
+    return settings[`${baseKey}_${currentLang}`] || settings[baseKey];
+  };
+
+  const copyrightText = getLocalizedSetting('copyright_text') || t('copyright');
   const contactEmail = settings['contact_email'] || 'info@VVC.com.vn';
-  const contactAddress = settings['contact_address'] || '123 Nguyễn Văn Linh, Quận 7, TP. Hồ Chí Minh, Việt Nam';
-  const siteDescription = settings['site_description'] || 'Cung cấp giải pháp điện lạnh toàn diện cho mọi doanh nghiệp và công trình.';
+  const contactAddress = getLocalizedSetting('contact_address') || '123 Nguyễn Văn Linh, Quận 7, TP. Hồ Chí Minh, Việt Nam';
+  const siteDescription = getLocalizedSetting('site_description') || 'Cung cấp giải pháp điện lạnh toàn diện cho mọi doanh nghiệp và công trình.';
   const siteLogo = settings['footer_logo'] || settings['site_logo'] || '/lovable-uploads/0bd3c048-8e37-4775-a6bc-0b54ec07edbe.png';
 
   if (loading) return <footer className="bg-primary text-white py-12"><div className="flex justify-center"><Loader2 className="animate-spin" /></div></footer>;

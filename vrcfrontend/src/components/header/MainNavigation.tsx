@@ -128,9 +128,10 @@ const MainNavigation = ({ isMobile = false, onItemClick }: MainNavigationProps) 
       'hệ thống lạnh': 'industry_refrigeration_title',
       'hệ thống lạnh công nghiệp': 'industry_refrigeration_title',
       'tổng thầu cơ điện': 'industry_me_title',
-      'cơ điện': 'M&E System',
+      'cơ điện': 'industry_me_title',
       'trung tâm dữ liệu': 'industry_dc_title',
       'trung tâm dữ liệu & quản lý tập trung': 'industry_dc_title',
+      'hệ thống tích hợp': 'explore',
       'vòng đời dịch vụ': 'industry_lifecycle_title',
       'hồ sơ năng lực': 'capability_experience',
     };

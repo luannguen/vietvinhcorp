@@ -10,6 +10,9 @@ import ru from './locales/ru/translation.json';
 import hr from './locales/hr/translation.json';
 import sl from './locales/sl/translation.json';
 import sr from './locales/sr/translation.json';
+import ja from './locales/ja/translation.json';
+import ko from './locales/ko/translation.json';
+import zh from './locales/zh/translation.json';
 
 i18n
     // detect user language
@@ -33,7 +36,10 @@ i18n
             ru: { translation: ru },
             hr: { translation: hr },
             sl: { translation: sl },
-            sr: { translation: sr }
+            sr: { translation: sr },
+            ja: { translation: ja },
+            ko: { translation: ko },
+            zh: { translation: zh }
         }
     });
 

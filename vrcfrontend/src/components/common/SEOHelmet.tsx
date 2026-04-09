@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { useTranslation } from 'react-i18next';
 import { settingsService } from '@/services/settingsService';
 
 interface SEOHelmetProps {
@@ -10,6 +11,7 @@ interface SEOHelmetProps {
 }
 
 const SEOHelmet: React.FC<SEOHelmetProps> = ({ title, description, keywords, image }) => {
+    const { i18n } = useTranslation();
     const [settings, setSettings] = useState<Record<string, string>>({});
     const [mounted, setMounted] = useState(false);
 
@@ -80,10 +82,18 @@ const SEOHelmet: React.FC<SEOHelmetProps> = ({ title, description, keywords, ima
 
     if (!mounted) return null;
 
-    const siteTitle = settings['site_title'] || settings['company_name'] || 'Việt Vinh Corp - Tổng công ty kỹ thuật điện lạnh Việt Nam';
+    const currentLang = i18n.language || 'vi';
+    const isVi = currentLang.startsWith('vi');
+
+    const getLocalizedSetting = (baseKey: string) => {
+        if (isVi) return settings[baseKey];
+        return settings[`${baseKey}_${currentLang}`] || settings[baseKey];
+    };
+
+    const siteTitle = getLocalizedSetting('site_title') || getLocalizedSetting('company_name') || 'Việt Vinh Corp - Tổng công ty kỹ thuật điện lạnh Việt Nam';
     const finalTitle = title ? `${title} | ${siteTitle}` : siteTitle;
-    const finalDescription = description || settings['site_description'] || 'Giải pháp điện lạnh toàn diện cho mọi công trình. Uy tín, Chất lượng, Hiệu quả.';
-    const finalKeywords = keywords || settings['site_keywords'] || 'điện lạnh, viet vinh, vvc, hvac, mep';
+    const finalDescription = description || getLocalizedSetting('site_description') || 'Giải pháp điện lạnh toàn diện cho mọi công trình. Uy tín, Chất lượng, Hiệu quả.';
+    const finalKeywords = keywords || getLocalizedSetting('site_keywords') || 'điện lạnh, viet vinh, vvc, hvac, mep';
     const finalImage = image || settings['og_image_url'] || '/lovable-uploads/0bd3c048-8e37-4775-a6bc-0b54ec07edbe.png';
     const siteUrl = settings['site_url'] || 'http://vietvinhcorp.com/';
 
