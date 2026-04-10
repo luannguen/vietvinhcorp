@@ -648,11 +648,22 @@ const SettingsPage: React.FC = () => {
                             <textarea
                                 rows={4}
                                 value={settings['map_embed_url'] || ''}
-                                onChange={(e) => handleChange('map_embed_url', e.target.value)}
+                                onChange={(e) => {
+                                    const val = e.target.value;
+                                    // Auto-extract src if it looks like an iframe tag
+                                    if (val.includes('<iframe')) {
+                                        const match = val.match(/src=["']([^"']+)["']/);
+                                        if (match) {
+                                            handleChange('map_embed_url', match[1]);
+                                            return;
+                                        }
+                                    }
+                                    handleChange('map_embed_url', val);
+                                }}
                                 className="mt-1 shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border dark:bg-gray-700 dark:border-gray-600 dark:text-white font-mono text-xs"
-                                placeholder="https://www.google.com/maps/embed?..."
+                                placeholder="Dán mã nhúng <iframe> hoặc link nhúng Google Maps..."
                             />
-                            <p className="mt-1 text-xs text-gray-500">Copy the 'src' URL from Google Maps Embed HTML.</p>
+                            <p className="mt-1 text-xs text-gray-500">Bạn có thể dán toàn bộ mã &lt;iframe&gt; từ Google Maps, hệ thống sẽ tự động lọc lấy link nhúng chuẩn.</p>
                         </div>
                     </div>
                 </div>
