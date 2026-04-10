@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '@/features/auth/useAuth';
 import { authService } from '@/services/authService';
 import { ErrorCodes } from '@/components/data/types';
+import { useAntiSpam } from '@/hooks/useAntiSpam';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Loader2, Lock, Mail } from 'lucide-react';
 
@@ -14,6 +15,7 @@ export default function LoginPage() {
     const { login, isAuthenticated } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
+    const { HoneypotField, isBot, honeypotValue } = useAntiSpam();
 
     // Redirect if already logged in
     if (isAuthenticated) {
@@ -25,9 +27,18 @@ export default function LoginPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
+
+        if (isBot()) {
+            console.warn('Login attempt blocked: Bot detected');
+            // Use a delayed response to slow down the bot further
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            setError('Đăng nhập thất bại. Vui lòng thử lại sau.');
+            return;
+        }
+
         setIsSubmitting(true);
 
-        const result = await login({ email, password });
+        const result = await login({ email, password, b_address: honeypotValue });
 
         if (result.success) {
             const from = location.state?.from?.pathname || '/';
@@ -90,6 +101,7 @@ export default function LoginPage() {
                 </div>
 
                 <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+                    <HoneypotField />
                     <div className="space-y-4">
                         <div>
                             <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-200">

@@ -29,7 +29,8 @@ export function failure<T = any>(error: string, code = ErrorCodes.UNKNOWN_ERROR)
 // Auth DTOs
 export interface LoginDTO {
     email: string;
-    password?: string; // Optional because magic link or OAuth might not need it, but for now we use password
+    password?: string;
+    b_address?: string;
 }
 
 export interface CreateUserDTO {

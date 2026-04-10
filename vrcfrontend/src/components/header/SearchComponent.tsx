@@ -7,6 +7,7 @@ import { productService } from '@/services/productService';
 import { projectService } from '@/services/projectService';
 import { pageService } from '@/services/pageService';
 import { Product, Project } from '@/components/data/types';
+import { useAntiSpam } from '@/hooks/useAntiSpam';
 
 interface SearchComponentProps {
   isMobile?: boolean;
@@ -29,6 +30,8 @@ const SearchComponent = ({ isMobile = false }: SearchComponentProps) => {
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const navigate = useNavigate();
+
+  const { HoneypotField, isBot } = useAntiSpam();
 
   useEffect(() => {
     if (isOpen && searchInputRef.current) {
@@ -129,6 +132,12 @@ const SearchComponent = ({ isMobile = false }: SearchComponentProps) => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
 
     if (searchQuery.trim().length >= 2) {
+      // Anti-spam: Don't trigger suggestions for bots
+      if (isBot()) {
+        setIsSearching(false);
+        return;
+      }
+
       setIsSearching(true);
       debounceRef.current = setTimeout(() => {
         fetchSuggestions(searchQuery);
@@ -153,6 +162,14 @@ const SearchComponent = ({ isMobile = false }: SearchComponentProps) => {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (isBot()) {
+      console.warn('Search attempt blocked: Bot detected');
+      setIsOpen(false);
+      setSearchQuery('');
+      return;
+    }
+
     if (searchQuery.trim()) {
       navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
       setIsOpen(false);
@@ -227,6 +244,7 @@ const SearchComponent = ({ isMobile = false }: SearchComponentProps) => {
             >
               {/* Search Input */}
               <form onSubmit={handleSearch} className="flex items-center p-3 border-b border-gray-100 dark:border-gray-700">
+                <HoneypotField />
                 <div className="flex-1 flex items-center relative">
                   <Search size={18} className="absolute left-3 text-gray-400" />
                   <motion.input

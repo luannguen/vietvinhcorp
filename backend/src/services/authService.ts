@@ -2,8 +2,15 @@ import { supabase } from '@/lib/supabase';
 import { failure, success, ErrorCodes, LoginDTO, Result, SessionDTO, UserDTO } from '@/components/data/types';
 
 export const authService = {
-    login: async ({ email, password }: LoginDTO): Promise<Result<SessionDTO>> => {
+    login: async ({ email, password, b_address }: LoginDTO & { b_address?: string }): Promise<Result<SessionDTO>> => {
         try {
+            // Anti-spam honeypot check
+            if (b_address && b_address.length > 0) {
+                console.warn('Backend Auth: Honeypot triggered');
+                // Return generic failure to mislead the bot
+                return failure('Invalid credentials', ErrorCodes.UNAUTHORIZED);
+            }
+
             if (!email || !password) {
                 return failure('Email and password are required', ErrorCodes.VALIDATION_ERROR);
             }
