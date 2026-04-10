@@ -641,3 +641,16 @@ Khi tạo feature mới:
   - ** BẮT BUỘC **: Tất cả file SQL phải được lưu trong thư mục`F:\code duan\vietvinhcorp\SQL`
     - ❌ KHÔNG tạo file SQL rải rác trong `backend/src` hay các folder khác
       - ✅ Đặt tên file rõ ràng, có số thứ tự nếu cần(vd: `01_init.sql`, `02_update_users.sql`)
+
+---
+
+## 🌐 14. Quy Tắc Môi Trường & Ports (BẮT BUỘC)
+
+Tại máy local, dự án chạy trên 2 cổng khác nhau. Tuyệt đối không nhầm lẫn:
+
+| Thành phần | Cổng (Port) | URL |
+|------------|-------------|-----|
+| **Client (Frontend)** | **8081** | `http://localhost:8081/` |
+| **Admin (Backend/CMS)** | **5173** | `http://localhost:5173/` |
+
+> **Lưu ý**: AI phải luôn kiểm tra cổng trước khi đề xuất mở trình duyệt hoặc cấu hình tham số liên quan đến môi trường.

@@ -97,33 +97,39 @@ const Footer = () => {
   const siteLogo = settings['footer_logo'] || settings['site_logo'] || '/lovable-uploads/0bd3c048-8e37-4775-a6bc-0b54ec07edbe.png';
 
   // Parser for the multi-office contact string
+  // Parser for the multi-branch structured data
   const parseOffices = () => {
     if (!contactAddress) return [];
     
-    // Split by double newlines but ignore the first part if it's just the company name
+    try {
+      // 1. Try parsing as JSON first (new structured data)
+      if (contactAddress.startsWith('[') || contactAddress.startsWith('{')) {
+        const data = JSON.parse(contactAddress);
+        const branchArray = Array.isArray(data) ? data : [data];
+        return branchArray.map(b => ({
+          title: b.title,
+          details: [
+            b.address,
+            b.phone ? `${isVi ? 'Điện thoại: ' : 'Phone: '} ${b.phone}` : '',
+            b.email ? `Email: ${b.email}` : ''
+          ].filter(Boolean),
+          mapUrl: b.map_url
+        }));
+      }
+    } catch (e) {
+      console.warn("JSON parse failed, falling back to legacy parser", e);
+    }
+
+    // 2. Legacy Parser Fallback
     const blocks = contactAddress.split(/\n\n+/).filter(b => b.trim().length > 0);
-    
-    // Check if the first block is just the company name (no colon)
     const startIndex = blocks[0] && !blocks[0].includes(':') ? 1 : 0;
     
-    const offices = blocks.slice(startIndex).map(block => {
+    return blocks.slice(startIndex).map(block => {
       const lines = block.split('\n').map(l => l.trim());
       const title = lines[0].replace(':', '');
       const details = lines.slice(1);
-      
       return { title, details };
     });
-
-    // We only want the specific offices (Trụ sở, Thủ Đức, Hà Nội) for the grid
-    // We separate the "Customer Care" block if it exists
-    const physicalOffices = offices.filter(o => 
-      o.title.toLowerCase().includes('trụ sở') || 
-      o.title.toLowerCase().includes('văn phòng') ||
-      o.title.toLowerCase().includes('office') ||
-      o.title.toLowerCase().includes('head')
-    );
-    
-    return physicalOffices;
   };
 
   const offices = parseOffices();
@@ -229,34 +235,46 @@ const Footer = () => {
                     <div className="h-px flex-grow bg-white/5 mx-4 hidden md:block"></div>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {offices.map((office, idx) => (
-                        <div key={idx} className="bg-white/5 rounded-xl p-6 border border-white/5 hover:border-accent/30 transition-all duration-300 group">
-                            <h5 className="text-accent font-bold text-sm mb-4 flex items-center gap-2">
-                                <span className="w-1.5 h-1.5 rounded-full bg-accent"></span>
-                                {office.title}
+                        <div key={idx} className="bg-white/5 rounded-xl p-6 border border-white/5 hover:border-accent/30 transition-all duration-300 group flex flex-col h-full">
+                            <h5 className="text-white font-bold text-sm mb-4 flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 rounded-full bg-accent group-hover:scale-125 transition-transform"></span>
+                                {t(office.title, { defaultValue: office.title })}
                             </h5>
-                            <div className="space-y-3">
+                            <div className="space-y-3 flex-grow">
                                 {office.details.map((detail, dIdx) => {
                                     const isPhone = detail.toLowerCase().includes('điện thoại') || detail.toLowerCase().includes('phone');
                                     const isEmail = detail.toLowerCase().includes('email');
                                     
                                     return (
-                                        <div key={dIdx} className="flex gap-3 text-sm text-gray-400 leading-relaxed">
+                                        <div key={dIdx} className="flex gap-3 text-sm text-gray-400 leading-relaxed group/line">
                                             {isPhone ? (
-                                                <PhoneCall size={14} className="mt-0.5 text-accent/60 flex-shrink-0" />
+                                                <PhoneCall size={14} className="mt-0.5 text-accent/60 flex-shrink-0 group-hover/line:text-accent transition-colors" />
                                             ) : isEmail ? (
-                                                <Mail size={14} className="mt-0.5 text-accent/60 flex-shrink-0" />
+                                                <Mail size={14} className="mt-0.5 text-accent/60 flex-shrink-0 group-hover/line:text-accent transition-colors" />
                                             ) : (
-                                                <MapPin size={14} className="mt-0.5 text-accent/60 flex-shrink-0" />
+                                                <MapPin size={14} className="mt-0.5 text-accent/60 flex-shrink-0 group-hover/line:text-accent transition-colors" />
                                             )}
-                                            <span className={isPhone ? "text-gray-300 font-medium" : ""}>
-                                                {detail}
+                                            <span className={isPhone || isEmail ? "text-gray-300 font-medium group-hover/line:text-white transition-colors" : "group-hover/line:text-gray-200 transition-colors"}>
+                                                {t(detail, { defaultValue: detail })}
                                             </span>
                                         </div>
                                     );
                                 })}
                             </div>
+                            
+                            {(office as any).mapUrl && (
+                                <a 
+                                  href={(office as any).mapUrl} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="mt-6 inline-flex items-center gap-2 text-xs font-semibold text-accent hover:text-white transition-colors border border-accent/20 hover:border-accent bg-accent/5 hover:bg-accent px-3 py-2 rounded-lg self-start"
+                                >
+                                  <ExternalLink size={12} />
+                                  {isVi ? 'Xem bản đồ' : 'View on Maps'}
+                                </a>
+                            )}
                         </div>
                     ))}
                 </div>

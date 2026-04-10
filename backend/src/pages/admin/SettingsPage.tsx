@@ -1,9 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Save, Loader2, Upload, Image as ImageIcon, X } from 'lucide-react';
+import { Save, Loader2, Upload, Image as ImageIcon, X, Plus, Trash2, MapPin, Phone, Mail, ExternalLink } from 'lucide-react';
 import { settingsService } from '@/services/settingsService';
 import { useTranslation } from 'react-i18next';
 import { mediaService } from '@/services/mediaService';
 import { toast } from 'react-hot-toast';
+
+interface Branch {
+    id: string;
+    title: string;
+    address: string;
+    phone: string;
+    email: string;
+    map_url?: string;
+}
 
 const SettingsPage: React.FC = () => {
     const { t } = useTranslation();
@@ -406,14 +415,142 @@ const SettingsPage: React.FC = () => {
                         <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">{t('contact_details')}</h3>
                         <div className="grid grid-cols-1 gap-y-6">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">{t('address')}</label>
-                                <input
-                                    type="text"
-                                    value={settings['contact_address'] || ''}
-                                    onChange={(e) => handleChange('contact_address', e.target.value)}
-                                    className="mt-1 shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                    placeholder="123 Nguyễn Văn Linh, Quận 7, TP. Hồ Chí Minh"
-                                />
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">{t('address')} & Hệ thống Chi nhánh</label>
+                                <div className="space-y-4">
+                                    {(() => {
+                                        let branches: Branch[] = [];
+                                        try {
+                                            const rawValue = settings['contact_address'] || '[]';
+                                            if (rawValue.startsWith('[') || rawValue.startsWith('{')) {
+                                                branches = JSON.parse(rawValue);
+                                                if (!Array.isArray(branches)) branches = [branches];
+                                            } else if (rawValue.trim()) {
+                                                // Fallback: convert plain text to a single branch object
+                                                branches = [{
+                                                    id: 'legacy-1',
+                                                    title: 'Trụ sở chính',
+                                                    address: rawValue,
+                                                    phone: settings['contact_phone'] || '',
+                                                    email: settings['contact_email'] || ''
+                                                }];
+                                            }
+                                        } catch (e) {
+                                            branches = [];
+                                        }
+
+                                        const updateBranches = (newBranches: Branch[]) => {
+                                            handleChange('contact_address', JSON.stringify(newBranches));
+                                        };
+
+                                        const addBranch = () => {
+                                            const newBranch: Branch = {
+                                                id: Date.now().toString(),
+                                                title: '',
+                                                address: '',
+                                                phone: '',
+                                                email: ''
+                                            };
+                                            updateBranches([...branches, newBranch]);
+                                        };
+
+                                        const removeBranch = (id: string) => {
+                                            updateBranches(branches.filter(b => b.id !== id));
+                                        };
+
+                                        const handleBranchChange = (id: string, field: keyof Branch, value: string) => {
+                                            updateBranches(branches.map(b => b.id === id ? { ...b, [field]: value } : b));
+                                        };
+
+                                        return (
+                                            <div className="space-y-6">
+                                                {branches.map((branch, index) => (
+                                                    <div key={branch.id} className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-700 relative group">
+                                                        <button 
+                                                            onClick={() => removeBranch(branch.id)}
+                                                            className="absolute top-2 right-2 text-gray-400 hover:text-red-500 transition-colors"
+                                                            title="Xóa chi nhánh"
+                                                        >
+                                                            <Trash2 size={16} />
+                                                        </button>
+                                                        
+                                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                            <div className="md:col-span-2">
+                                                                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1 block">Tên Chi nhánh / Văn phòng</label>
+                                                                <input
+                                                                    type="text"
+                                                                    value={branch.title}
+                                                                    onChange={(e) => handleBranchChange(branch.id, 'title', e.target.value)}
+                                                                    className="w-full bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded-md text-sm p-2"
+                                                                    placeholder="e.g. Trụ sở chính, Chi nhánh Thủ Đức..."
+                                                                />
+                                                            </div>
+                                                            <div className="md:col-span-2">
+                                                                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1 block">Địa chỉ chi tiết</label>
+                                                                <div className="relative">
+                                                                    <MapPin size={14} className="absolute left-2.5 top-2.5 text-gray-400" />
+                                                                    <input
+                                                                        type="text"
+                                                                        value={branch.address}
+                                                                        onChange={(e) => handleBranchChange(branch.id, 'address', e.target.value)}
+                                                                        className="w-full pl-9 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded-md text-sm p-2"
+                                                                        placeholder="Số nhà, tên đường, quận/huyện..."
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                            <div>
+                                                                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1 block">Số điện thoại</label>
+                                                                <div className="relative">
+                                                                    <Phone size={14} className="absolute left-2.5 top-2.5 text-gray-400" />
+                                                                    <input
+                                                                        type="text"
+                                                                        value={branch.phone}
+                                                                        onChange={(e) => handleBranchChange(branch.id, 'phone', e.target.value)}
+                                                                        className="w-full pl-9 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded-md text-sm p-2"
+                                                                        placeholder="+84..."
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                            <div>
+                                                                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1 block">Email liên hệ</label>
+                                                                <div className="relative">
+                                                                    <Mail size={14} className="absolute left-2.5 top-2.5 text-gray-400" />
+                                                                    <input
+                                                                        type="text"
+                                                                        value={branch.email}
+                                                                        onChange={(e) => handleBranchChange(branch.id, 'email', e.target.value)}
+                                                                        className="w-full pl-9 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded-md text-sm p-2"
+                                                                        placeholder="contact@..."
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                            <div className="md:col-span-2">
+                                                                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1 block">Google Maps Link (Tùy chọn)</label>
+                                                                <div className="relative">
+                                                                    <ExternalLink size={14} className="absolute left-2.5 top-2.5 text-gray-400" />
+                                                                    <input
+                                                                        type="text"
+                                                                        value={branch.map_url || ''}
+                                                                        onChange={(e) => handleBranchChange(branch.id, 'map_url', e.target.value)}
+                                                                        className="w-full pl-9 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded-md text-sm p-2 font-mono text-xs"
+                                                                        placeholder="https://maps.app.goo.gl/..."
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                                
+                                                <button 
+                                                    onClick={addBranch}
+                                                    className="w-full py-3 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-gray-500 hover:text-blue-500 hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-all flex items-center justify-center gap-2 font-medium"
+                                                >
+                                                    <Plus size={18} />
+                                                    Thêm chi nhánh / Văn phòng mới
+                                                </button>
+                                            </div>
+                                        );
+                                    })()}
+                                </div>
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
