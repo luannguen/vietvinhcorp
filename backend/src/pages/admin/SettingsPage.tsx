@@ -463,7 +463,7 @@ const SettingsPage: React.FC = () => {
 
                                         return (
                                             <div className="space-y-6">
-                                                {branches.map((branch, index) => (
+                                                {branches.map((branch) => (
                                                     <div key={branch.id} className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-700 relative group">
                                                         <button 
                                                             onClick={() => removeBranch(branch.id)}
