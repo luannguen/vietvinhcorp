@@ -6,19 +6,17 @@ import { EditWrapper } from './EditWrapper';
 export const VisualPageRenderer = ({ customSections }: { customSections?: any[] }) => {
     const { editMode, contentData, slug, syncSections, selectedSectionId, setSelectedSectionId } = useVisualEditor();
 
-    // Dynamic sections from JSON content or custom fallback
-    const sections = (contentData?.sections && contentData.sections.length > 0) 
-        ? contentData.sections 
-        : (customSections || []);
+    // Smart selection: Use customSections if passed, otherwise use persistent contentData from database
+    const sections = customSections || contentData?.sections || [];
 
     // Listen for messages from Admin (e.g., Select Section)
     useEffect(() => {
-        // Hydrate context with initial sections if empty
+        // Hydrate context with initial sections if they are missing or provided as a fallback
         if (sections && sections.length > 0 && (!contentData.sections || contentData.sections.length === 0)) {
             syncSections(sections);
         }
 
-        // Signal to parent that we are ready and provide current sections (especially for hardcoded pages like About)
+        // Signal to parent that we are ready and provide current sections
         if (sections && sections.length > 0) {
             window.parent.postMessage({ 
                 type: 'VISUAL_EDIT_SYNC_SECTIONS', 
@@ -39,7 +37,7 @@ export const VisualPageRenderer = ({ customSections }: { customSections?: any[] 
 
         window.addEventListener('message', handleMessage);
         return () => window.removeEventListener('message', handleMessage);
-    }, []);
+    }, [sections, contentData.sections, syncSections, slug, setSelectedSectionId]);
 
     const handleSectionSelect = (id: string, type: string) => {
         setSelectedSectionId(id);
@@ -83,10 +81,11 @@ export const VisualPageRenderer = ({ customSections }: { customSections?: any[] 
                 const Component = blockDef.component;
                 const sectionId = section.id;
 
-                // Wrap in a standard section container
+                // Support both new 'props' format and legacy 'data' format
+                const sectionProps = section.props || section.data || {};
                 const content = (
                     <section id={`section-${sectionId}`} className="visual-builder-section">
-                        <Component sectionId={sectionId} {...section.props} />
+                        <Component sectionId={sectionId} {...sectionProps} />
                     </section>
                 );
 

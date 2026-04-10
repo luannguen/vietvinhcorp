@@ -31,6 +31,9 @@ import {
 import { NewsEventsBlock, ProjectsBlock, ProductsBlock } from './HomeSections';
 import { HomeBannerSlider } from './HomeBannerSlider';
 import { CapabilityProfileBlock } from './CapabilityProfileBlock';
+import { ServiceHeroBlock } from './ServiceHeroBlock';
+import { ServiceGridBlock } from './ServiceGridBlock';
+import { CTASectionBlock } from './CTASectionBlock';
 import { JobsListBlock } from './JobsListBlock';
 
 
@@ -529,6 +532,75 @@ export const registerAllBlocks = () => {
       { id: 'subtitle', label: 'Mô tả phụ', type: 'textarea' }
     ]
   });
+
+  registerBlock({
+    type: 'service_hero',
+    name: 'Dịch vụ: Hero',
+    component: ServiceHeroBlock,
+    defaultProps: {
+      title: 'Dịch vụ chuyên nghiệp',
+      description: 'Cung cấp đầy đủ các giải pháp dịch vụ kỹ thuật điện lạnh chất lượng cao.'
+    },
+    fields: [
+      { id: 'title', label: 'Tiêu đề', type: 'text' },
+      { id: 'description', label: 'Mô tả', type: 'textarea' },
+      { id: 'primaryButtonLabel', label: 'Nút chính', type: 'text' },
+      { id: 'primaryButtonLink', label: 'Link nút chính', type: 'text' },
+      { id: 'secondaryButtonLabel', label: 'Nút phụ', type: 'text' },
+      { id: 'secondaryButtonLink', label: 'Link nút phụ', type: 'text' }
+    ]
+  });
+
+  registerBlock({
+    type: 'service_grid',
+    name: 'Dịch vụ: Danh sách & Lọc',
+    component: ServiceGridBlock,
+    defaultProps: {
+      title: 'Danh mục dịch vụ',
+      description: 'Chúng tôi cung cấp đầy đủ các dịch vụ điện lạnh công nghiệp và dân dụng.'
+    },
+    fields: [
+      { id: 'title', label: 'Tiêu đề', type: 'text' },
+      { id: 'description', label: 'Mô tả', type: 'textarea' }
+    ]
+  });
+
+  registerBlock({
+    type: 'cta_section',
+    name: 'Chung: CTA Section',
+    component: CTASectionBlock,
+    defaultProps: {
+      title: 'Bắt đầu với dịch vụ của chúng tôi',
+      description: 'Hãy liên hệ với chúng tôi ngay hôm nay để được tư vấn và báo giáo.'
+    },
+    fields: [
+      { id: 'title', label: 'Tiêu đề', type: 'text' },
+      { id: 'description', label: 'Mô tả', type: 'textarea' },
+      { id: 'badge', label: 'Badge (Nhãn)', type: 'text' },
+      { id: 'primaryButtonLabel', label: 'Nút chính', type: 'text' },
+      { id: 'primaryButtonLink', label: 'Link nút chính', type: 'text' },
+      { id: 'secondaryButtonLabel', label: 'Nút phụ', type: 'text' },
+      { id: 'secondaryButtonLink', label: 'Link nút phụ', type: 'text' }
+    ]
+  });
+
+  // --- Legacy Support Alises ---
+  // These map old block types in existing database records to current components
+  registerBlock({
+    type: 'HeroBlock',
+    name: 'Hero (Legacy)',
+    component: ServiceHeroBlock,
+    defaultProps: {},
+    fields: []
+  });
+
+  registerBlock({
+    type: 'ContentBlock',
+    name: 'Content (Legacy)',
+    component: MediaSectionBlock,
+    defaultProps: {},
+    fields: []
+  });
 };
 
 
@@ -561,5 +633,6 @@ export {
   ProductsBlock, 
   ContactFormBlock, 
   HomeBannerSlider, 
-  CapabilityProfileBlock
+  CapabilityProfileBlock,
+  JobsListBlock
 };
