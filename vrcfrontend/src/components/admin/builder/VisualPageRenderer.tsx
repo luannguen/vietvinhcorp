@@ -2,9 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useVisualEditor } from '../../../context/VisualEditorContext';
 import { getBlock } from './SectionRegistry';
 import { EditWrapper } from './EditWrapper';
+import NotFound from '../../../pages/NotFound';
 
 export const VisualPageRenderer = ({ customSections }: { customSections?: any[] }) => {
-    const { editMode, contentData, slug, syncSections, selectedSectionId, setSelectedSectionId } = useVisualEditor();
+    const { editMode, contentData, slug, syncSections, selectedSectionId, setSelectedSectionId, isPageActive } = useVisualEditor();
+
+    // If page is inactive and not in edit mode, return 404
+    if (!isPageActive && !editMode) {
+        return <NotFound />;
+    }
 
     // Smart selection: Use customSections if passed, otherwise use persistent contentData from database
     const sections = customSections || contentData?.sections || [];

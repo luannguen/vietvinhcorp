@@ -18,6 +18,7 @@ interface VisualEditorContextType {
   setSelectedSectionId: (id: string | null) => void;
   requestImageChange: (fieldKey: string) => void;
   isLoading: boolean;
+  isPageActive: boolean;
   slug: string;
 }
 
@@ -35,6 +36,7 @@ const VisualEditorContext = createContext<VisualEditorContextType>({
   setSelectedSectionId: () => {},
   requestImageChange: () => {},
   isLoading: false,
+  isPageActive: true,
   slug: '',
 });
 
@@ -50,6 +52,7 @@ export const VisualEditorProvider = ({ children, slug }: VisualEditorProviderPro
   const [contentData, setContentData] = useState<any>({});
   const [selectedSectionId, setSelectedSectionId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isPageActive, setIsPageActive] = useState(true);
 
   // Initialize blocks
   useEffect(() => {
@@ -256,17 +259,20 @@ export const VisualEditorProvider = ({ children, slug }: VisualEditorProviderPro
       try {
         const { data, error: fetchError } = await supabase
           .from('static_pages')
-          .select('content')
+          .select('content, is_active')
           .eq('slug', slug)
           .single();
 
-        if (data && data.content) {
-          try {
-            const parsed = JSON.parse(data.content);
-            setContentData(parsed);
-          } catch (e) {
-            console.log('Content is not JSON. Starting with empty visual data.');
-            setContentData({});
+        if (data) {
+          setIsPageActive(data.is_active ?? true);
+          if (data.content) {
+            try {
+              const parsed = JSON.parse(data.content);
+              setContentData(parsed);
+            } catch (e) {
+              console.log('Content is not JSON. Starting with empty visual data.');
+              setContentData({});
+            }
           }
         }
       } catch (err) {
@@ -295,7 +301,7 @@ export const VisualEditorProvider = ({ children, slug }: VisualEditorProviderPro
       editMode, contentData, updateField, updateSectionProps, 
       addSection, removeSection, reorderSections, moveSection, syncSections,
       selectedSectionId, setSelectedSectionId,
-      requestImageChange, isLoading, slug 
+      requestImageChange, isLoading, isPageActive, slug 
     }}>
       {children}
     </VisualEditorContext.Provider>
