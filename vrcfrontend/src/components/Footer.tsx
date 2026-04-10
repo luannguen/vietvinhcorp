@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Facebook, Twitter, Linkedin, Youtube, Mail, Loader2 } from 'lucide-react';
+import { Facebook, Twitter, Linkedin, Youtube, Mail, Loader2, MapPin, PhoneCall, Headset, ExternalLink } from 'lucide-react';
 import { navigationService } from '@/services/navigationService';
 import { useSettings } from '@/hooks/useSettings';
 import { NavigationItem } from '@/components/data/types';
@@ -17,7 +17,6 @@ const Footer = () => {
       try {
         const navResult = await navigationService.getNavigationItems();
         if (navResult.success && navResult.data) {
-          // 1. Build the tree for all footer items
           const allFooterItems = navResult.data.filter(item => item.position === 'footer');
           const itemMap: Record<string, NavigationItem> = {};
           const roots: NavigationItem[] = [];
@@ -35,7 +34,6 @@ const Footer = () => {
             }
           });
 
-          // 2. Sort roots and all children recursively
           const sortItems = (items: NavigationItem[]) => {
             items.sort((a, b) => (a.order_index || 0) - (b.order_index || 0));
             items.forEach(item => {
@@ -57,99 +55,29 @@ const Footer = () => {
 
   const getTranslatedLabel = (item: NavigationItem | { label: string, path?: string }) => {
     const currentLang = i18n.language || 'vi';
-
-    // 1. If language is Vietnamese, priority 100% to the label from database (Admin)
     if (currentLang.startsWith('vi') && item.label) {
-      // Special override for "Về VVC" to "Về Việt Vinh" as requested
       if (item.label.toLowerCase().trim() === 'về vvc') return 'Về Việt Vinh';
       return item.label;
     }
-
-    // 2. Try translating the label directly for other languages (EN, etc.)
     if (item.label) {
-      // Try direct label (case-sensitive)
       const translated = t(item.label);
-      if (translated && translated !== item.label) {
-        return translated;
-      }
-      
-      // Try lowercase label (case-insensitive)
+      if (translated && translated !== item.label) return translated;
       const lowerTranslated = t(item.label.toLowerCase());
-      if (lowerTranslated && lowerTranslated !== item.label.toLowerCase()) {
-        return lowerTranslated;
-      }
+      if (lowerTranslated && lowerTranslated !== item.label.toLowerCase()) return lowerTranslated;
     }
 
-    // 3. Map paths to keys (fallback)
     const pathToKeyMap: Record<string, string> = {
-      '/': 'home',
-      '/about': 'about',
-      '/about-us': 'about',
-      '/products': 'products',
-      '/news': 'news',
-      '/contact': 'contact',
-      '/services': 'services',
-      '/projects': 'projects',
-      '/team': 'team',
-      '/recruitment': 'recruitment',
-      '/publications': 'publications',
-      '/technologies': 'technologies',
-      '/he-thong-tich-hop': 'integrated_systems',
+      '/': 'home', '/about': 'about', '/about-us': 'about', '/products': 'products',
+      '/news': 'news', '/contact': 'contact', '/services': 'services', '/projects': 'projects',
+      '/team': 'team', '/recruitment': 'recruitment', '/publications': 'publications',
+      '/technologies': 'technologies', '/he-thong-tich-hop': 'integrated_systems',
       '/ho-so-nang-luc': 'capability_experience',
     };
 
-    // 4. Map common semantic labels to keys (backup fallback)
-    const labelToKeyMap: Record<string, string> = {
-      'trang chủ': 'home',
-      'về chúng tôi': 'about',
-      'về vvc': 'about',
-      'về việt vinh': 'about',
-      'giới thiệu': 'about',
-      'sản phẩm': 'products',
-      'tin tức': 'news',
-      'liên hệ': 'contact',
-      'dịch vụ': 'services',
-      'dự án': 'projects',
-      'nguồn lực': 'team',
-      'đội ngũ': 'team',
-      'tuyển dụng': 'recruitment',
-      'tài liệu': 'publications',
-      'ấn phẩm': 'publications',
-      'công nghệ': 'technologies',
-      'khám phá': 'explore',
-      'liên kết nhanh': 'quick_links',
-      'quick links': 'quick_links',
-      'hệ thống lạnh': 'industry_refrigeration_title',
-      'hệ thống lạnh công nghiệp': 'industry_refrigeration_title',
-      'tổng thầu cơ điện': 'industry_me_title',
-      'cơ điện': 'industry_me_title',
-      'trung tâm dữ liệu & quản lý tập trung': 'industry_dc_title',
-      'hệ thống tích hợp': 'integrated_systems',
-      'vòng đời dịch vụ': 'industry_lifecycle_title',
-      'hồ sơ năng lực': 'capability_experience',
-      'chính sách bảo mật': 'privacy_policy',
-      'điều khoản sử dụng': 'terms_of_use',
-      'chính sách cookie': 'cookie_policy',
-      'sơ đồ trang': 'sitemap',
-      'tư vấn kỹ thuật': 'technical_support',
-      'bảo trì & sửa chữa': 'industry_lifecycle_title',
-    };
-
-    // Try path next
     if (item.path && pathToKeyMap[item.path]) {
-      const key = pathToKeyMap[item.path];
-      const translated = t(key);
-      if (translated && translated !== key) return translated;
+      const translated = t(pathToKeyMap[item.path]);
+      if (translated && translated !== pathToKeyMap[item.path]) return translated;
     }
-
-    // Try normalized label map last
-    const normalizedLabel = item.label?.toLowerCase().trim() || '';
-    if (normalizedLabel && labelToKeyMap[normalizedLabel]) {
-      const key = labelToKeyMap[normalizedLabel];
-      const translated = t(key);
-      if (translated && translated !== key) return translated;
-    }
-
     return item.label;
   };
 
@@ -162,118 +90,204 @@ const Footer = () => {
   };
 
   const copyrightText = getLocalizedSetting('copyright_text') || t('copyright');
-  const contactEmail = settings['contact_email'] || 'info@VVC.com.vn';
+  const contactEmail = settings['contact_email'] || 'contact@vietvinhcorp.com';
   const contactAddress = getLocalizedSetting('contact_address') || t('contact_address_fallback');
+  const contactHotline = settings['contact_hotline'] || '+84 981 789 248';
   const siteDescription = getLocalizedSetting('site_description') || t('site_description_fallback');
   const siteLogo = settings['footer_logo'] || settings['site_logo'] || '/lovable-uploads/0bd3c048-8e37-4775-a6bc-0b54ec07edbe.png';
+
+  // Parser for the multi-office contact string
+  const parseOffices = () => {
+    if (!contactAddress) return [];
+    
+    // Split by double newlines but ignore the first part if it's just the company name
+    const blocks = contactAddress.split(/\n\n+/).filter(b => b.trim().length > 0);
+    
+    // Check if the first block is just the company name (no colon)
+    const startIndex = blocks[0] && !blocks[0].includes(':') ? 1 : 0;
+    
+    const offices = blocks.slice(startIndex).map(block => {
+      const lines = block.split('\n').map(l => l.trim());
+      const title = lines[0].replace(':', '');
+      const details = lines.slice(1);
+      
+      return { title, details };
+    });
+
+    // We only want the specific offices (Trụ sở, Thủ Đức, Hà Nội) for the grid
+    // We separate the "Customer Care" block if it exists
+    const physicalOffices = offices.filter(o => 
+      o.title.toLowerCase().includes('trụ sở') || 
+      o.title.toLowerCase().includes('văn phòng') ||
+      o.title.toLowerCase().includes('office') ||
+      o.title.toLowerCase().includes('head')
+    );
+    
+    return physicalOffices;
+  };
+
+  const offices = parseOffices();
 
   if (loading) return <footer className="bg-primary text-white py-12"><div className="flex justify-center"><Loader2 className="animate-spin" /></div></footer>;
 
   return (
-    <footer className="bg-primary text-white">
-      <div className="container-custom py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Column 1: Info & Socials */}
-          <div>
-            <div className="mb-4">
-              <img
-                src={siteLogo}
-                alt="VVC Logo"
-                className="h-16 object-contain"
-              />
-            </div>
-            <p className="text-gray-300 mb-6">
+    <footer className="bg-primary text-white border-t border-white/5">
+      {/* Upper Footer: Branding & Navigation */}
+      <div className="container-custom pt-16 pb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12">
+          {/* Brand Column */}
+          <div className="lg:col-span-4 space-y-6">
+            <Link to="/" className="inline-block transition-opacity hover:opacity-90">
+                <img src={siteLogo} alt="Viet Vinh Logo" className="h-14 lg:h-16 w-auto object-contain bg-white/5 p-2 rounded-lg backdrop-blur-sm" />
+            </Link>
+            <p className="text-gray-400 text-sm leading-relaxed max-w-sm">
               {siteDescription}
             </p>
-            <div className="flex space-x-4">
-              {settings['social_facebook'] && (
-                <a href={settings['social_facebook']} className="text-gray-300 hover:text-white transition-colors" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
-                  <Facebook size={20} />
+            <div className="flex items-center gap-4">
+              {[
+                { icon: Facebook, url: settings['social_facebook'], label: 'Facebook' },
+                { icon: Twitter, url: settings['social_twitter'], label: 'Twitter' },
+                { icon: Linkedin, url: settings['social_linkedin'], label: 'LinkedIn' },
+                { icon: Youtube, url: settings['social_youtube'], label: 'YouTube' }
+              ].map((social, idx) => social.url && (
+                <a key={idx} href={social.url} target="_blank" rel="noopener noreferrer" 
+                    className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-accent hover:text-white transition-all duration-300"
+                    aria-label={social.label}>
+                  <social.icon size={18} />
                 </a>
-              )}
-              {settings['social_twitter'] && (
-                <a href={settings['social_twitter']} className="text-gray-300 hover:text-white transition-colors" aria-label="Twitter" target="_blank" rel="noopener noreferrer">
-                  <Twitter size={20} />
-                </a>
-              )}
-              {settings['social_linkedin'] && (
-                <a href={settings['social_linkedin']} className="text-gray-300 hover:text-white transition-colors" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
-                  <Linkedin size={20} />
-                </a>
-              )}
-              {settings['social_youtube'] && (
-                <a href={settings['social_youtube']} className="text-gray-300 hover:text-white transition-colors" aria-label="YouTube" target="_blank" rel="noopener noreferrer">
-                  <Youtube size={20} />
-                </a>
-              )}
+              ))}
             </div>
           </div>
 
-          {/* Dynamic Columns from Menu Manager */}
+          {/* Navigation Columns (Menu Manager) */}
           {footerMenus.map((menu) => (
-            <div key={menu.id}>
-              <h4 className="text-white font-semibold mb-4">{getTranslatedLabel(menu)}</h4>
-              {menu.children && menu.children.length > 0 && (
-                <ul className="space-y-2">
-                  {menu.children.map((child) => (
-                    <li key={child.id}>
-                      {!isExternalLink(child.path) ? (
-                        <Link to={normalizePath(child.path)} className="text-gray-300 hover:text-white transition-colors footer-link">
-                          {getTranslatedLabel(child)}
-                        </Link>
-                      ) : (
-                        <a href={child.path} className="text-gray-300 hover:text-white transition-colors footer-link" target="_blank" rel="noopener noreferrer">
-                          {getTranslatedLabel(child)}
-                        </a>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              )}
+            <div key={menu.id} className="lg:col-span-2">
+              <h4 className="text-white font-bold text-base mb-6 relative inline-block">
+                {getTranslatedLabel(menu)}
+                <span className="absolute -bottom-1.5 left-0 w-1/2 h-0.5 bg-accent rounded-full"></span>
+              </h4>
+              <ul className="space-y-3">
+                {menu.children?.map((child) => (
+                  <li key={child.id}>
+                    <Link 
+                      to={normalizePath(child.path)} 
+                      className="text-gray-400 hover:text-accent transition-colors text-sm flex items-center group"
+                    >
+                      <span className="w-0 group-hover:w-2 h-0.5 bg-accent transition-all duration-300 mr-0 group-hover:mr-2"></span>
+                      {getTranslatedLabel(child)}
+                      {isExternalLink(child.path) && <ExternalLink size={12} className="ml-1 opacity-50" />}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
           ))}
 
-          {/* Fallback Static Columns if no footer menus exist (to prevent empty footer during migration) */}
-          {footerMenus.length === 0 && (
-            <>
-              <div>
-                <h4 className="text-white font-semibold mb-4">{t('quick_links')}</h4>
-                <ul className="space-y-2">
-                  <li><Link to="/about" className="footer-link">{t('about')}</Link></li>
-                  <li><Link to="/products" className="footer-link">{t('products')}</Link></li>
-                  <li><Link to="/contact" className="footer-link">{t('contact')}</Link></li>
-                </ul>
-              </div>
-            </>
-          )}
-
-          {/* Column 4: Contact Info (Always present) */}
-          <div>
-            <h4 className="text-white font-semibold mb-4">{t('contact')}</h4>
-            <address className="not-italic text-gray-300 mb-4 space-y-2 whitespace-pre-line">
-              {contactAddress}
-            </address>
-            <a
-              href={`mailto:${contactEmail}`}
-              className="inline-flex items-center text-gray-300 hover:text-white transition-colors"
-            >
-              <Mail size={16} className="mr-2" />
-              {contactEmail}
-            </a>
+          {/* Fast Contact Column */}
+          <div className="lg:col-span-2">
+            <h4 className="text-white font-bold text-base mb-6 relative inline-block">
+                {t('contact')}
+                <span className="absolute -bottom-1.5 left-0 w-1/2 h-0.5 bg-accent rounded-full"></span>
+            </h4>
+            <div className="space-y-5">
+                <div className="flex gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center text-accent flex-shrink-0">
+                        <Headset size={20} />
+                    </div>
+                    <div>
+                        <p className="text-[10px] uppercase tracking-wider text-gray-500 font-bold mb-0.5">{t('hotline')}</p>
+                        <a href={`tel:${contactHotline.replace(/\s/g, '')}`} className="text-white font-semibold hover:text-accent transition-colors block">
+                            {contactHotline}
+                        </a>
+                    </div>
+                </div>
+                <div className="flex gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center text-accent flex-shrink-0">
+                        <Mail size={20} />
+                    </div>
+                    <div>
+                        <p className="text-[10px] uppercase tracking-wider text-gray-500 font-bold mb-0.5">{t('email')}</p>
+                        <a href={`mailto:${contactEmail}`} className="text-white font-semibold hover:text-accent transition-colors block break-all">
+                            {contactEmail}
+                        </a>
+                    </div>
+                </div>
+            </div>
           </div>
         </div>
+      </div>
 
-        <div className="border-t border-white/10 mt-12 pt-6 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-gray-300 text-sm mb-4 md:mb-0">
-            {copyrightText}
-          </p>
-          <div className="flex flex-wrap justify-center gap-4 md:gap-6 text-sm">
-            {/* Dynamic legal links could be here, for now mapping standard legal pages */}
-            <Link to="/legal/privacy" className="text-gray-300 hover:text-white footer-link">{t('privacy_policy')}</Link>
-            <Link to="/legal/terms" className="text-gray-300 hover:text-white footer-link">{t('terms_of_use')}</Link>
-            <Link to="/legal/cookies" className="text-gray-300 hover:text-white footer-link">{t('cookie_policy')}</Link>
-            <Link to="/legal/sitemap" className="text-gray-300 hover:text-white footer-link">{t('sitemap')}</Link>
-          </div>
+      {/* Middle Footer: Office Network Grid */}
+      {offices.length > 0 && (
+        <div className="bg-white/5 py-12 px-4 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]">
+            <div className="container-custom">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                    <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                        <MapPin className="text-accent" size={20} />
+                        {isVi ? 'Hệ thống Chi nhánh & Văn phòng' : 'Office Network & Branches'}
+                    </h3>
+                    <div className="h-px flex-grow bg-white/5 mx-4 hidden md:block"></div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {offices.map((office, idx) => (
+                        <div key={idx} className="bg-white/5 rounded-xl p-6 border border-white/5 hover:border-accent/30 transition-all duration-300 group">
+                            <h5 className="text-accent font-bold text-sm mb-4 flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 rounded-full bg-accent"></span>
+                                {office.title}
+                            </h5>
+                            <div className="space-y-3">
+                                {office.details.map((detail, dIdx) => {
+                                    const isPhone = detail.toLowerCase().includes('điện thoại') || detail.toLowerCase().includes('phone');
+                                    const isEmail = detail.toLowerCase().includes('email');
+                                    
+                                    return (
+                                        <div key={dIdx} className="flex gap-3 text-sm text-gray-400 leading-relaxed">
+                                            {isPhone ? (
+                                                <PhoneCall size={14} className="mt-0.5 text-accent/60 flex-shrink-0" />
+                                            ) : isEmail ? (
+                                                <Mail size={14} className="mt-0.5 text-accent/60 flex-shrink-0" />
+                                            ) : (
+                                                <MapPin size={14} className="mt-0.5 text-accent/60 flex-shrink-0" />
+                                            )}
+                                            <span className={isPhone ? "text-gray-300 font-medium" : ""}>
+                                                {detail}
+                                            </span>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+      )}
+
+      {/* Bottom Bar: Copyright & Legal */}
+      <div className="bg-primary-darker py-6 border-t border-white/5">
+        <div className="container-custom">
+            <div className="flex flex-col lg:flex-row justify-between items-center gap-6">
+                <p className="text-gray-500 text-xs tracking-wide">
+                    {copyrightText}
+                </p>
+                <div className="flex flex-wrap justify-center gap-x-8 gap-y-3 text-xs">
+                    {[
+                        { to: "/legal/privacy", label: 'privacy_policy' },
+                        { to: "/legal/terms", label: 'terms_of_use' },
+                        { to: "/legal/cookies", label: 'cookie_policy' },
+                        { to: "/legal/sitemap", label: 'sitemap' }
+                    ].map((link, idx) => (
+                        <Link key={idx} to={link.to} className="text-gray-500 hover:text-white transition-colors uppercase font-medium">
+                            {t(link.label)}
+                        </Link>
+                    ))}
+                </div>
+                {/* Scroll to Top placeholder or other element */}
+                <div className="hidden lg:block text-gray-600 text-[10px] italic">
+                    Certified ISO 9001:2015
+                </div>
+            </div>
         </div>
       </div>
     </footer>
