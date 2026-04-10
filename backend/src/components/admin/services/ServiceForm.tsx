@@ -113,9 +113,15 @@ export default function ServiceForm({ initialData, onSuccess, onCancel }: Servic
 
     const onSubmit = async (data: ServiceFormValues) => {
         setIsLoading(true);
+        // Prepare data for submission: transform empty strings to null for certain fields
+        const submissionData = {
+            ...data,
+            category_id: data.category_id === "" ? null : data.category_id,
+        };
+
         try {
             if (initialData) {
-                const result = await serviceService.updateService(initialData.id, data);
+                const result = await serviceService.updateService(initialData.id, submissionData as any);
                 if (result.success) {
                     toast({ title: t('success'), description: t('service_update_success') });
                     onSuccess();
@@ -123,7 +129,7 @@ export default function ServiceForm({ initialData, onSuccess, onCancel }: Servic
                     toast({ variant: "destructive", title: t('error'), description: result.error || t('error_occurred') });
                 }
             } else {
-                const result = await serviceService.createService(data as CreateServiceDTO);
+                const result = await serviceService.createService(submissionData as any);
                 if (result.success) {
                     toast({ title: t('success'), description: t('service_create_success') });
                     onSuccess();
@@ -137,6 +143,7 @@ export default function ServiceForm({ initialData, onSuccess, onCancel }: Servic
             setIsLoading(false);
         }
     };
+
 
     return (
         <Form {...form}>
