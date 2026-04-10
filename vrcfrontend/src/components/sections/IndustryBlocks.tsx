@@ -274,8 +274,8 @@ export const MEBlock = ({
   const categories = [
     { icon: ZapIcon, label: cat1_label || t('industry_me_c1_title'), sub: cat1_sub || t('industry_me_c1_desc'), link: cat1_link || "/he-thong-dien" },
     { icon: Wind, label: cat2_label || t('industry_me_c2_title'), sub: cat2_sub || t('industry_me_c2_desc'), link: cat2_link || "/he-thong-hvac" },
-    { icon: Droplets, label: cat3_label || t('industry_me_c3_title'), sub: cat3_sub || t('industry_me_c3_desc'), link: cat3_link || "/he-thong-ong-cong-nghe" },
-    { icon: Flame, label: cat4_label || t('industry_me_c4_title'), sub: cat4_sub || t('industry_me_c4_desc'), link: cat4_link || "/phong-chay-chua-chay" },
+    { icon: Flame, label: cat3_label || t('industry_me_c3_title'), sub: cat3_sub || t('industry_me_c3_desc'), link: cat3_link || "/phong-chay-chua-chay" },
+    { icon: Droplets, label: cat4_label || t('industry_me_c4_title'), sub: cat4_sub || t('industry_me_c4_desc'), link: cat4_link || "/he-thong-ong-cong-nghe" },
     { icon: ShieldCheckIcon, label: cat5_label || t('industry_me_c5_title'), sub: cat5_sub || t('industry_me_c5_desc'), link: cat5_link || "/phong-sach" },
     { icon: Cpu, label: cat6_label || t('industry_me_c6_title'), sub: cat6_sub || t('industry_me_c6_desc'), link: cat6_link || "/he-thong-bms" }
   ];
