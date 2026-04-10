@@ -272,6 +272,9 @@
     "service_create_success": "Service created successfully",
     "service_update_success": "Service updated successfully",
     "select_category": "Select Category",
+    "security_settings": "Security Settings",
+    "disable_copy": "Disable Selection & Copying",
+    "disable_copy_hint": "Prevent users from selecting, right-clicking, and copying website content.",
     "roles_management": {
         "title": "Roles Management",
         "create_success": "Role created successfully",

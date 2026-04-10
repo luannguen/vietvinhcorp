@@ -282,6 +282,9 @@
     "service_create_success": "Tạo dịch vụ mới thành công",
     "service_update_success": "Cập nhật dịch vụ thành công",
     "select_category": "Chọn danh mục",
+    "security_settings": "Thiết lập Bảo mật",
+    "disable_copy": "Khóa chọn & copy nội dung",
+    "disable_copy_hint": "Ngăn chặn người dùng bôi đen, chuột phải và copy nội dung website.",
     "roles_management": {
         "title": "Quản lý Vai trò",
         "create_success": "Tạo vai trò thành công",

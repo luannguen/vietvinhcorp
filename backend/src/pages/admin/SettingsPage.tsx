@@ -520,6 +520,32 @@ const SettingsPage: React.FC = () => {
                     </div>
                 </div>
 
+                {/* Security Settings */}
+                <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg">
+                    <div className="px-4 py-5 sm:p-6 space-y-6">
+                        <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">{t('security_settings')}</h3>
+                        <div className="flex items-start">
+                            <div className="flex items-center h-5">
+                                <input
+                                    id="security_disable_copy"
+                                    type="checkbox"
+                                    checked={settings['security_disable_copy'] === 'true'}
+                                    onChange={(e) => handleChange('security_disable_copy', e.target.checked ? 'true' : 'false')}
+                                    className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
+                                />
+                            </div>
+                            <div className="ml-3 text-sm">
+                                <label htmlFor="security_disable_copy" className="font-medium text-gray-700 dark:text-gray-300">
+                                    {t('disable_copy')}
+                                </label>
+                                <p className="text-gray-500 dark:text-gray-400">
+                                    {t('disable_copy_hint')}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 {/* Advanced Settings */}
                 <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg lg:col-span-2">
                     <div className="px-4 py-5 sm:p-6 space-y-6">

@@ -44,10 +44,10 @@ export const useVisualEditor = () => useContext(VisualEditorContext);
 
 interface VisualEditorProviderProps {
   children: ReactNode;
-  slug: string;
+  slug?: string;
 }
 
-export const VisualEditorProvider = ({ children, slug }: VisualEditorProviderProps) => {
+export const VisualEditorProvider = ({ children, slug = '' }: VisualEditorProviderProps) => {
   const [editMode, setEditMode] = useState(false);
   const [contentData, setContentData] = useState<any>({});
   const [selectedSectionId, setSelectedSectionId] = useState<string | null>(null);
