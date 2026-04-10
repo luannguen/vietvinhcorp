@@ -3,6 +3,7 @@ import { EditableElement } from '../admin/EditableElement';
 import { FileDown, CheckCircle2, ShieldCheck, Zap, Upload, Loader2, Check, FileText, Info } from 'lucide-react';
 import { useVisualEditor } from '../../context/VisualEditorContext';
 import { supabase } from '../../supabase';
+import { useTranslation } from 'react-i18next';
 
 interface CapabilityProfileBlockProps {
   sectionId?: string;
@@ -19,7 +20,7 @@ interface CapabilityProfileBlockProps {
 export const CapabilityProfileBlock = ({
   sectionId,
   title = "Hồ sơ năng lực Viet Vinh Corp",
-  description = "Tài liệu chi tiết về năng lực thiết kế, thi công và vận hành các hệ thống điện lạnh công nghiệp tiêu chuẩn quốc tế của VVC.",
+  description = "Tài liệu chi tiết về năng lực thiết kế, thi công và vận hành các hệ thống điện lạnh công nghiệp tiêu chuẩn quốc tế của VietVinhCorp.",
   previewImage = "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80",
   pdfUrl = "#",
   downloadText = "Tải xuống Hồ sơ năng lực (PDF)",
@@ -36,6 +37,7 @@ export const CapabilityProfileBlock = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const { t } = useTranslation();
 
   const formatSize = (bytes: number) => {
     if (bytes === 0) return '0 Bytes';
@@ -54,7 +56,7 @@ export const CapabilityProfileBlock = ({
     if (!file || !sectionId) return;
 
     if (file.type !== 'application/pdf') {
-      alert('Vui lòng chỉ tải lên file định dạng PDF.');
+      alert(t('Vui lòng chỉ tải lên file định dạng PDF.', { defaultValue: 'Vui lòng chỉ tải lên file định dạng PDF.' }));
       return;
     }
 
@@ -92,7 +94,7 @@ export const CapabilityProfileBlock = ({
       setTimeout(() => setUploadStatus('idle'), 3000);
     } catch (error: any) {
       console.error('Upload error:', error);
-      alert('Lỗi tải lên: ' + error.message);
+      alert(t('Lỗi tải lên: ', { defaultValue: 'Lỗi tải lên: ' }) + error.message);
       setUploadStatus('error');
     } finally {
       setIsUploading(false);
@@ -109,7 +111,7 @@ export const CapabilityProfileBlock = ({
               tagName="h2"
               fieldKey="title"
               sectionId={sectionId}
-              defaultContent={title}
+              defaultContent={t(title, { defaultValue: title })}
               className="text-3xl md:text-4xl font-bold text-primary mb-6 leading-tight"
             />
             
@@ -117,7 +119,7 @@ export const CapabilityProfileBlock = ({
               tagName="p"
               fieldKey="description"
               sectionId={sectionId}
-              defaultContent={description}
+              defaultContent={t(description, { defaultValue: description })}
               className="text-lg text-muted-foreground mb-8 leading-relaxed"
             />
 
@@ -127,7 +129,7 @@ export const CapabilityProfileBlock = ({
                   <div className="mt-1 bg-primary/10 p-1 rounded-full">
                     <CheckCircle2 className="w-5 h-5 text-primary" />
                   </div>
-                  <span className="text-gray-700 font-medium">{feature.text}</span>
+                  <span className="text-gray-700 font-medium">{t(feature.text, { defaultValue: feature.text })}</span>
                 </div>
               ))}
             </div>
@@ -145,7 +147,7 @@ export const CapabilityProfileBlock = ({
                   tagName="span"
                   fieldKey="downloadText"
                   sectionId={sectionId}
-                  defaultContent={downloadText}
+                  defaultContent={t(downloadText, { defaultValue: downloadText })}
                 />
               </a>
 
@@ -202,7 +204,7 @@ export const CapabilityProfileBlock = ({
               {!editMode && (
                 <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 border border-gray-100 rounded-lg text-sm text-muted-foreground">
                   <ShieldCheck className="w-4 h-4 text-green-600" />
-                  <span>Bản cập nhật 2024 (PDF, {pdfFileSize || '~5MB'})</span>
+                  <span>{t('Bản cập nhật 2024 (PDF, ', { defaultValue: 'Bản cập nhật 2024 (PDF, ' })}{pdfFileSize || '~5MB'})</span>
                 </div>
               )}
             </div>

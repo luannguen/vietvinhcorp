@@ -37,7 +37,7 @@ export const EditableElement = ({
     slug 
   } = useVisualEditor();
   
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const currentLang = i18n.language || 'vi';
   const isDefaultLang = currentLang === 'vi';
   
@@ -180,10 +180,14 @@ export const EditableElement = ({
         />
       );
     }
+    const displayContent = (type === 'text' && typeof currentContent === 'string') 
+      ? t(currentContent, { defaultValue: currentContent }) 
+      : currentContent;
+
     if (tagName === 'a') {
-      return <Tag href={href} target={target} className={className}>{currentContent}</Tag>;
+      return <Tag href={href} target={target} className={className}>{displayContent}</Tag>;
     }
-    return <Tag className={className}>{currentContent}</Tag>;
+    return <Tag className={className}>{displayContent}</Tag>;
   }
 
   // Edit Mode for Text / Rich Text
