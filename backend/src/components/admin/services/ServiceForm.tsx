@@ -24,7 +24,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { serviceService, Service, CreateServiceDTO, ServiceCategory } from "@/services/serviceService";
+import { serviceService, Service, ServiceCategory } from "@/services/serviceService";
 import { slugify } from "@/lib/utils";
 import { useTranslation } from 'react-i18next';
 
