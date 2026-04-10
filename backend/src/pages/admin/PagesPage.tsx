@@ -357,6 +357,17 @@ export default function PagesPage() {
                             />
                         </div>
 
+                        <div className="flex items-center space-x-2 py-2">
+                            <Switch
+                                id="is_active_modal"
+                                checked={formData.is_active}
+                                onCheckedChange={(checked) =>
+                                    setFormData({ ...formData, is_active: checked })
+                                }
+                            />
+                            <Label htmlFor="is_active_modal">Hiển thị trang (Active)</Label>
+                        </div>
+
                         <div className="space-y-2">
                             <Label htmlFor="content">Content</Label>
                             {isJsonContent(formData.content) && !showRawJson ? (
