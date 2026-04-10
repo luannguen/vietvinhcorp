@@ -17,6 +17,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
+import { useAntiSpam } from '@/hooks/useAntiSpam';
 
 export default function JobDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -27,6 +28,7 @@ export default function JobDetail() {
   const [file, setFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+  const { HoneypotField, isBot } = useAntiSpam();
 
   const [formData, setFormData] = useState({
     full_name: '',
@@ -68,6 +70,15 @@ export default function JobDetail() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isBot()) {
+      // Fake success for bots
+      setSubmitted(true);
+      toast({
+        title: 'Thành công',
+        description: 'Hồ sơ của bạn đã được gửi đi. Chúng tôi sẽ sớm liên hệ!'
+      });
+      return;
+    }
     if (!job) return;
     if (!file) {
       toast({
@@ -207,6 +218,7 @@ export default function JobDetail() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
+                <HoneypotField />
                 <h3 className="text-2xl font-bold text-primary text-center">Nộp hồ sơ ứng tuyển</h3>
                 
                 <div className="space-y-2">

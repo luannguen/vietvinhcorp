@@ -67,8 +67,6 @@ export function useContactForm() {
         }
     };
 
-    const [lastSubmitted, setLastSubmitted] = useState<number>(0);
-    const [honeypot, setHoneypot] = useState("");
 
     // Validation Schema
     const contactSchema = z.object({
@@ -85,24 +83,6 @@ export function useContactForm() {
         // Reset errors
         setErrors({});
 
-        // 1. Anti-spam: Honeypot check
-        if (honeypot) {
-            console.warn("Spam detected: Honeypot filled");
-            // Fake success for bots
-            setSubmitStatus("success");
-            return;
-        }
-
-        // 2. Anti-spam: Rate limiting (e.g., 30 seconds cooldown)
-        const now = Date.now();
-        if (now - lastSubmitted < 30000) {
-            toast({
-                title: t('too_fast', "Thao tác quá nhanh"),
-                description: t('please_wait_30s', "Vui lòng đợi 30 giây trước khi gửi lại."),
-                variant: "destructive",
-            });
-            return;
-        }
 
         // 3. Validation
         const validationResult = contactSchema.safeParse(formData);
@@ -135,7 +115,6 @@ export function useContactForm() {
             const result = await contactService.createContact(formData);
 
             if (result.success) {
-                setLastSubmitted(now);
                 setSubmitStatus("success");
                 setFormData({
                     name: "",
@@ -182,6 +161,5 @@ export function useContactForm() {
         submit,
         isSubmitting,
         submitStatus,
-        setHoneypot
     };
 }

@@ -10,12 +10,22 @@ export interface ContactDTO {
 }
 
 export const contactService = {
-    async createContact(contact: ContactDTO): Promise<Result<any>> {
+    async createContact(contact: ContactDTO & { b_address?: string }): Promise<Result<any>> {
         try {
+            // Anti-spam honeypot check (Backend tier)
+            if (contact.b_address && contact.b_address.length > 0) {
+                console.warn('Anti-spam: Backend honeypot triggered');
+                // Use Blackhole strategy: Return success but don't save to DB
+                return success({ message: "Contact submitted successfully" });
+            }
+
+            // Remove honeypot field before sending to Supabase
+            const { b_address, ...cleanContact } = contact;
+
             const { data, error } = await supabase
                 .from('contacts')
                 .insert([{
-                    ...contact,
+                    ...cleanContact,
                     status: 'new'
                 }]);
 

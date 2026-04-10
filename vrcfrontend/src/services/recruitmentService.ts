@@ -47,10 +47,19 @@ export const recruitmentService = {
         return data as Job;
     },
 
-    async submitApplication(application: ApplicationSubmission) {
+    async submitApplication(application: ApplicationSubmission & { b_address?: string }) {
+        // Anti-spam honeypot check
+        if (application.b_address && application.b_address.length > 0) {
+            console.warn('Anti-spam: Backend honeypot triggered (Recruitment)');
+            return { message: "Application submitted successfully" };
+        }
+
+        // Remove honeypot field
+        const { b_address, ...cleanApplication } = application;
+
         const { data, error } = await supabase
             .from('job_applications')
-            .insert([application])
+            .insert([cleanApplication])
             .select()
             .single();
         

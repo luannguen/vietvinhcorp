@@ -17,6 +17,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useToast } from "@/components/ui/use-toast";
+import { useAntiSpam } from "@/hooks/useAntiSpam";
 
 const inquirySchema = z.object({
   name: z.string().min(2, "Họ tên phải có ít nhất 2 ký tự"),
@@ -37,6 +38,7 @@ export default function ServiceInquiryForm({ serviceId, onSuccess }: ServiceInqu
   const { t } = useTranslation();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { HoneypotField, isBot } = useAntiSpam();
 
   const form = useForm<InquiryFormValues>({
     resolver: zodResolver(inquirySchema),
@@ -50,6 +52,15 @@ export default function ServiceInquiryForm({ serviceId, onSuccess }: ServiceInqu
   });
 
   async function onSubmit(values: InquiryFormValues) {
+    if (isBot()) {
+      // Fake success for bots
+      toast({
+        title: "Gửi yêu cầu thành công",
+        description: "Chúng tôi sẽ sớm liên hệ lại với bạn.",
+      });
+      form.reset();
+      return;
+    }
     setIsSubmitting(true);
     try {
       const result = await serviceService.submitInquiry({
@@ -85,6 +96,7 @@ export default function ServiceInquiryForm({ serviceId, onSuccess }: ServiceInqu
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <HoneypotField />
         <FormField
           control={form.control}
           name="name"

@@ -1,17 +1,20 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
-// Sử dụng dynamic import để tải lovable-tagger
-// import { componentTagger } from "lovable-tagger";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // https://vitejs.dev/config/
 export default defineConfig(async ({ mode }) => {
   // Load dynamically to avoid ESM/CommonJS conflict
-  const lovableTagger = await import("lovable-tagger").catch(() => ({ componentTagger: () => ({}) }));
-  const { componentTagger } = lovableTagger;
+  const lovableTagger = await import("lovable-tagger")
+    .then(mod => mod.componentTagger)
+    .catch(() => () => ({ name: 'lovable-tagger-noop' }));
 
   return {
-    base: "/", // Use absolute paths from root
+    base: "/",
     test: {
       globals: true,
       environment: 'jsdom',
@@ -19,36 +22,34 @@ export default defineConfig(async ({ mode }) => {
     },
     server: {
       host: "::",
-      port: 8080,
+      port: 8081,
       proxy: {
-        // Cấu hình proxy cho các API request
         '/api': {
           target: 'http://localhost:3001',
           changeOrigin: true,
-        secure: false,
-        rewrite: (path) => path
-      }
+          secure: false,
+          rewrite: (path: string) => path
+        }
+      },
+      hmr: {
+        overlay: true,
+      },
     },
-    // Thêm thông báo khi khởi động server để xác nhận port và proxy
-    hmr: {
-      overlay: true,
+    plugins: [
+      react(),
+      mode === 'development' && lovableTagger(),
+    ].filter(Boolean),
+    resolve: {
+      alias: {
+        "@": path.resolve(__dirname, "./src"),
+      },
     },
-  },
-  plugins: [
-    react(),
-    mode === 'development' &&
-    componentTagger(),
-  ].filter(Boolean),
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
+    build: {
+      outDir: 'dist',
+      emptyOutDir: true,
+      sourcemap: false,
+      minify: true,
+      chunkSizeWarningLimit: 1500,
     },
-  },
-  build: {
-    outDir: 'dist',
-    emptyOutDir: true,
-    sourcemap: false,
-    minify: true,
-    chunkSizeWarningLimit: 1500,
-  },
-}));
+  };
+});

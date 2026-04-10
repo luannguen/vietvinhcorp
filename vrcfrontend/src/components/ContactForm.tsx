@@ -5,6 +5,7 @@ import { Textarea } from "./ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { useContactForm } from "@/hooks/useContactForm";
 import { useTranslation } from 'react-i18next';
+import { useAntiSpam } from "@/hooks/useAntiSpam";
 
 const ContactForm = () => {
   const { t } = useTranslation();
@@ -16,8 +17,18 @@ const ContactForm = () => {
     submit,
     isSubmitting,
     submitStatus,
-    setHoneypot
   } = useContactForm();
+
+  const { HoneypotField, isBot } = useAntiSpam();
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isBot()) {
+      // Fake success for bots
+      return;
+    }
+    submit(e);
+  };
 
   return (
     <section className="bg-gray-50 py-20">
@@ -52,18 +63,9 @@ const ContactForm = () => {
                 </div>
               )}
 
-              <form onSubmit={submit} className="space-y-6">
+              <form onSubmit={handleFormSubmit} className="space-y-6">
                 {/* Honeypot */}
-                <div style={{ display: 'none' }} aria-hidden="true">
-                  <label htmlFor="confirm_email">{t('honeypot_label', "Don't fill this out if you're human:")}</label>
-                  <Input
-                    id="confirm_email"
-                    name="confirm_email"
-                    tabIndex={-1}
-                    autoComplete="off"
-                    onChange={(e) => setHoneypot(e.target.value)}
-                  />
-                </div>
+                <HoneypotField />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-2">

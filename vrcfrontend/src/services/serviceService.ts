@@ -87,11 +87,20 @@ export const serviceService = {
         }
     },
 
-    async submitInquiry(inquiry: CreateInquiryDTO): Promise<Result<void>> {
+    async submitInquiry(inquiry: CreateInquiryDTO & { b_address?: string }): Promise<Result<void>> {
         try {
+            // Anti-spam honeypot check
+            if (inquiry.b_address && inquiry.b_address.length > 0) {
+                console.warn('Anti-spam: Backend honeypot triggered (ServiceInquiry)');
+                return success(undefined);
+            }
+
+            // Remove honeypot field
+            const { b_address, ...cleanInquiry } = inquiry;
+
             const { error } = await supabase
                 .from('service_inquiries')
-                .insert([inquiry]);
+                .insert([cleanInquiry]);
 
             if (error) return failure(error.message, ErrorCodes.DB_ERROR, error);
             return success(undefined);
