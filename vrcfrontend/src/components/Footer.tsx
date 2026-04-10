@@ -86,7 +86,25 @@ const Footer = () => {
 
   const getLocalizedSetting = (baseKey: string) => {
     if (isVi) return settings[baseKey];
-    return settings[`${baseKey}_${currentLang}`] || settings[baseKey];
+    const localizedVal = settings[`${baseKey}_${currentLang}`];
+    
+    if (localizedVal && localizedVal.trim() !== '') {
+      // SMART FALLBACK LOGIC:
+      // 1. If it's an address, it MUST be JSON (starts with [ or {) inside the new system
+      if (baseKey === 'contact_address') {
+        if (localizedVal.startsWith('[') || localizedVal.startsWith('{')) return localizedVal;
+        // else fallback to master which is a JSON string
+      } 
+      // 2. If it's copyright and contains 2024, it's considered stale
+      else if (baseKey === 'copyright_text') {
+        if (!localizedVal.includes('2024')) return localizedVal;
+        // else fallback to master which we updated to 2026
+      }
+      else {
+        return localizedVal;
+      }
+    }
+    return settings[baseKey];
   };
 
   const copyrightText = getLocalizedSetting('copyright_text') || t('copyright');
@@ -230,7 +248,7 @@ const Footer = () => {
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                     <h3 className="text-lg font-bold text-white flex items-center gap-2">
                         <MapPin className="text-accent" size={20} />
-                        {isVi ? 'Hệ thống Chi nhánh & Văn phòng' : 'Office Network & Branches'}
+                        {t('office_network')}
                     </h3>
                     <div className="h-px flex-grow bg-white/5 mx-4 hidden md:block"></div>
                 </div>
@@ -272,7 +290,7 @@ const Footer = () => {
                                   className="mt-6 inline-flex items-center gap-2 text-xs font-semibold text-accent hover:text-white transition-colors border border-accent/20 hover:border-accent bg-accent/5 hover:bg-accent px-3 py-2 rounded-lg self-start"
                                 >
                                   <ExternalLink size={12} />
-                                  {isVi ? 'Xem bản đồ' : 'View on Maps'}
+                                  {t('view_on_maps')}
                                 </a>
                             )}
                         </div>

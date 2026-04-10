@@ -11,12 +11,40 @@ const Contact = () => {
 
   const getSetting = (key: string, defaultVal: string) => {
     const langKey = isDefaultLang ? key : `${key}_${currentLang}`;
-    return settings[langKey] || settings[key] || defaultVal;
+    const localized = settings[langKey];
+    
+    if (localized && localized.trim() !== '') {
+      // Smart Fallback for address: if not JSON in other languages, ignore it
+      if (key === 'contact_address' && !isDefaultLang) {
+        if (localized.startsWith('[') || localized.startsWith('{')) return localized;
+        // else fallback to master settings[key]
+      } else {
+        return localized;
+      }
+    }
+    
+    return settings[key] || defaultVal;
   };
 
   const companyName = getSetting('company_name', 'Tổng công ty Kỹ thuật lạnh Việt Nam (VVC)');
   const slogan = getSetting('company_slogan', 'Tiên phong trong lĩnh vực kỹ thuật lạnh tại Việt Nam');
-  const address = getSetting('contact_address', '123 Nguyễn Văn Linh, Quận 7, TP. Hồ Chí Minh');
+  const rawAddress = getSetting('contact_address', '123 Nguyễn Văn Linh, Quận 7, TP. Hồ Chí Minh');
+  
+  // Helper to parse JSON address and get the primary one
+  const getDisplayAddress = (val: string) => {
+    try {
+      if (val.startsWith('[') || val.startsWith('{')) {
+        const data = JSON.parse(val);
+        const branches = Array.isArray(data) ? data : [data];
+        return branches[0]?.address || val;
+      }
+    } catch (e) {
+      // Fallback to raw value
+    }
+    return val;
+  };
+
+  const address = getDisplayAddress(rawAddress);
   const phone = getSetting('contact_phone', '+84 (28) 1234 5678');
   const email = getSetting('contact_email', 'info@VVCorp.vn');
   const hotline = getSetting('contact_hotline', '1800 1234');
@@ -56,19 +84,19 @@ const Contact = () => {
 
               <div className="space-y-4">
                 <div>
-                  <h3 className="font-medium text-lg text-primary">{companyName}</h3>
-                  <p className="text-gray-600">{slogan}</p>
+                  <h3 className="font-medium text-lg text-primary">{t(companyName)}</h3>
+                  <p className="text-gray-600">{t(slogan)}</p>
                 </div>
 
                 <div>
                   <h3 className="font-medium">{t('address')}:</h3>
-                  <p className="text-gray-600">{address}</p>
+                  <p className="text-gray-600">{t(address)}</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <h3 className="font-medium">{t('phone')}:</h3>
-                    <p className="text-gray-600">{phone}</p>
+                    <p className="text-gray-600">{t(phone)}</p>
                   </div>
 
                   <div>
@@ -83,7 +111,7 @@ const Contact = () => {
 
                   <div>
                     <h3 className="font-medium">{t('working_hours')}:</h3>
-                    <p className="text-gray-600">{workingHours}</p>
+                    <p className="text-gray-600">{t(workingHours)}</p>
                   </div>
                 </div>
               </div>

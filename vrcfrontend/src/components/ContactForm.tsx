@@ -93,7 +93,7 @@ const ContactForm = () => {
                       type="email"
                       value={formData.email}
                       onChange={handleChange}
-                      placeholder="email@example.com"
+                      placeholder={t('email_placeholder', { defaultValue: 'email@example.com' })}
                       className={`h-12 px-4 rounded-lg border-gray-200 focus:border-primary focus:ring-primary transition-all duration-200 ${errors.email ? 'border-red-500 focus:ring-red-200' : ''}`}
                     />
                     {errors.email && <p className="text-red-500 text-sm mt-1 animate-in fade-in slide-in-from-top-1">{errors.email}</p>}
@@ -166,7 +166,7 @@ const ContactForm = () => {
                         </svg>
                         {t('sending')}...
                       </>
-                    ) : t('send_message')}
+                    ) : t('send_message_now')}
                   </Button>
                 </div>
               </form>
