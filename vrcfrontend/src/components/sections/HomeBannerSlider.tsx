@@ -114,13 +114,13 @@ export const HomeBannerSlider = ({ sectionId }: HomeBannerSliderProps) => {
                                     <div className="max-w-3xl space-y-6">
                                         <div className="overflow-hidden">
                                             <h2 className="text-4xl md:text-7xl font-extrabold tracking-tight leading-[1.1] animate-in slide-in-from-bottom-8 duration-1000">
-                                                {banner.title}
+                                                {t(banner.title || '')}
                                             </h2>
                                         </div>
                                         
                                         <div className="overflow-hidden">
                                             <p className="text-lg md:text-2xl opacity-90 max-w-2xl leading-relaxed animate-in slide-in-from-bottom-6 duration-1000 delay-300">
-                                                {banner.description}
+                                                {t(banner.description || '')}
                                             </p>
                                         </div>
 
