@@ -107,7 +107,9 @@ const Footer = () => {
     return settings[baseKey];
   };
 
-  const copyrightText = getLocalizedSetting('copyright_text') || t('copyright');
+  const rawLocalizedCopyright = isVi ? settings['copyright_text'] : (settings[`copyright_text_${currentLang}`] || t('copyright'));
+  const localizedCopyright = (rawLocalizedCopyright && rawLocalizedCopyright.includes('2024')) ? t('copyright') : rawLocalizedCopyright;
+  const copyrightText = localizedCopyright || settings['copyright_text'];
   const contactEmail = settings['contact_email'] || 'contact@vietvinhcorp.com';
   const contactAddress = getLocalizedSetting('contact_address') || t('contact_address_fallback');
   const contactHotline = settings['contact_hotline'] || '+84 981 789 248';
