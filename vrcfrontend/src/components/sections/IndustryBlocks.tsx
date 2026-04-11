@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { 
   FileText as FileTextIcon, 
@@ -485,36 +486,70 @@ export const ServiceLifecycleBlock = ({
   ];
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-24 bg-white overflow-hidden">
       <div className="container-custom">
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <EditableElement tagName="h2" fieldKey="title" sectionId={sectionId} defaultContent={displayTitle} className="text-3xl md:text-4xl font-bold mb-6 block" />
-          <EditableElement tagName="p" fieldKey="description" sectionId={sectionId} defaultContent={displayDesc} className="text-lg text-muted-foreground block" />
-        </div>
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="text-center max-w-3xl mx-auto mb-20"
+        >
+          <EditableElement tagName="h2" fieldKey="title" sectionId={sectionId} defaultContent={displayTitle} className="text-4xl md:text-5xl font-extrabold mb-6 block tracking-tight" />
+          <EditableElement tagName="p" fieldKey="description" sectionId={sectionId} defaultContent={displayDesc} className="text-xl text-muted-foreground block leading-relaxed" />
+        </motion.div>
 
         <div className="relative">
-          <div className="hidden lg:block absolute top-[60px] left-[10%] right-[10%] h-0.5 bg-slate-100" />
+          <motion.div 
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.5, delay: 0.5, ease: "circOut" }}
+            className="hidden lg:block absolute top-[60px] left-[10%] right-[10%] h-0.5 bg-slate-100 origin-left" 
+          />
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-12 relative z-10">
             {steps.map((step, i) => {
               const prefix = `step${i+1}`;
               return (
-                <div key={i} className="text-center group">
-                  <div className="w-20 h-20 bg-white border-2 border-slate-100 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:border-primary transition-all group-hover:scale-110 bg-white shadow-sm">
+                <motion.div 
+                  key={i} 
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 0.2 * i }}
+                  className="text-center group"
+                >
+                  <motion.div 
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                    className="w-24 h-24 bg-white border-2 border-slate-100 rounded-3xl flex items-center justify-center mx-auto mb-8 transition-colors group-hover:border-primary group-hover:shadow-2xl group-hover:shadow-primary/20 bg-white relative"
+                  >
+                    <div className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-xs font-bold text-slate-400 group-hover:bg-primary group-hover:text-white transition-colors">
+                      0{i+1}
+                    </div>
                     <step.icon className="w-10 h-10 text-slate-400 group-hover:text-primary transition-colors" />
-                  </div>
+                  </motion.div>
                   <div className="flex flex-col items-center">
-                    <EditableElement tagName="h3" fieldKey={`${prefix}_title`} sectionId={sectionId} defaultContent={step.title} className="font-bold text-xl mb-3 text-primary block" />
-                    <EditableElement tagName="p" fieldKey={`${prefix}_desc`} sectionId={sectionId} defaultContent={step.desc} className="text-muted-foreground text-sm leading-relaxed block text-center" />
+                    <EditableElement tagName="h3" fieldKey={`${prefix}_title`} sectionId={sectionId} defaultContent={step.title} className="font-bold text-2xl mb-4 text-primary block" />
+                    <EditableElement tagName="p" fieldKey={`${prefix}_desc`} sectionId={sectionId} defaultContent={step.desc} className="text-muted-foreground text-base leading-relaxed block text-center max-w-[240px]" />
                   </div>
-                </div>
+                </motion.div>
               );
             })}
           </div>
         </div>
 
-        <div className="mt-20 text-center">
-           <a href="/services" className="btn-outline">{t('explore_service_details', 'Khám phá chi tiết dịch vụ')}</a>
-        </div>
+        <motion.div 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1, delay: 1.2 }}
+          className="mt-20 text-center"
+        >
+           <a href="/services" className="btn-outline group inline-flex items-center gap-2 px-8 py-4 rounded-full border-2 border-primary/20 hover:border-primary hover:bg-primary hover:text-white transition-all font-bold">
+             {t('explore_service_details', 'Khám phá chi tiết dịch vụ')}
+             <ArrowRightIcon className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+           </a>
+        </motion.div>
       </div>
     </section>
   );
