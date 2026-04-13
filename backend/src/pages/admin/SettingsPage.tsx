@@ -694,6 +694,32 @@ const SettingsPage: React.FC = () => {
                     </div>
                 </div>
 
+                {/* Feature Settings */}
+                <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg">
+                    <div className="px-4 py-5 sm:p-6 space-y-6">
+                        <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">{t('feature_settings')}</h3>
+                        <div className="flex items-start">
+                            <div className="flex items-center h-5">
+                                <input
+                                    id="enable_profile_download"
+                                    type="checkbox"
+                                    checked={settings['enable_profile_download'] !== 'false'}
+                                    onChange={(e) => handleChange('enable_profile_download', e.target.checked ? 'true' : 'false')}
+                                    className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
+                                />
+                            </div>
+                            <div className="ml-3 text-sm">
+                                <label htmlFor="enable_profile_download" className="font-medium text-gray-700 dark:text-gray-300">
+                                    {t('enable_profile_download')}
+                                </label>
+                                <p className="text-gray-500 dark:text-gray-400">
+                                    {t('enable_profile_download_hint')}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 {/* Advanced Settings */}
                 <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg lg:col-span-2">
                     <div className="px-4 py-5 sm:p-6 space-y-6">

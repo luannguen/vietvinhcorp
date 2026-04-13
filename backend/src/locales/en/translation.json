@@ -275,6 +275,9 @@
     "security_settings": "Security Settings",
     "disable_copy": "Disable Selection & Copying",
     "disable_copy_hint": "Prevent users from selecting, right-clicking, and copying website content.",
+    "feature_settings": "Feature Settings",
+    "enable_profile_download": "Enable Profile Download",
+    "enable_profile_download_hint": "Toggle the ability for users to download the Capability Profile PDF from the homepage.",
     "roles_management": {
         "title": "Roles Management",
         "create_success": "Role created successfully",

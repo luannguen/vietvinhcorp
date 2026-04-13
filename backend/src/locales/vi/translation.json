@@ -285,6 +285,9 @@
     "security_settings": "Thiết lập Bảo mật",
     "disable_copy": "Khóa chọn & copy nội dung",
     "disable_copy_hint": "Ngăn chặn người dùng bôi đen, chuột phải và copy nội dung website.",
+    "feature_settings": "Cài đặt Tính năng",
+    "enable_profile_download": "Cho phép tải Hồ sơ năng lực",
+    "enable_profile_download_hint": "Bật/tắt nút tải xuống file PDF Hồ sơ năng lực trên trang chủ.",
     "roles_management": {
         "title": "Quản lý Vai trò",
         "create_success": "Tạo vai trò thành công",

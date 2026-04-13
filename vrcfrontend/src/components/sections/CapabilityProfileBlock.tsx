@@ -4,6 +4,7 @@ import { FileDown, CheckCircle2, ShieldCheck, Zap, Upload, Loader2, Check, FileT
 import { useVisualEditor } from '../../context/VisualEditorContext';
 import { supabase } from '../../supabase';
 import { useTranslation } from 'react-i18next';
+import { useSettings } from '../../hooks/useSettings';
 
 interface CapabilityProfileBlockProps {
   sectionId?: string;
@@ -38,6 +39,8 @@ export const CapabilityProfileBlock = ({
   const [isUploading, setIsUploading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const { t } = useTranslation();
+  const { getSetting } = useSettings();
+  const isEnabled = getSetting('enable_profile_download', 'true') !== 'false';
 
   const formatSize = (bytes: number) => {
     if (bytes === 0) return '0 Bytes';
@@ -136,13 +139,19 @@ export const CapabilityProfileBlock = ({
 
             <div className="flex flex-col sm:flex-row gap-4 items-center">
               <a
-                href={pdfUrl}
-                download
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-3 px-8 py-4 bg-primary text-white font-bold rounded-xl hover:bg-primary/90 transition-all shadow-lg hover:shadow-primary/20 hover:-translate-y-1 active:scale-95"
+                href={isEnabled ? pdfUrl : undefined}
+                download={isEnabled}
+                target={isEnabled ? "_blank" : undefined}
+                rel={isEnabled ? "noopener noreferrer" : undefined}
+                className={`inline-flex items-center justify-center gap-3 px-8 py-4 font-bold rounded-xl transition-all shadow-lg ${
+                  isEnabled 
+                    ? "bg-primary text-white hover:bg-primary/90 hover:shadow-primary/20 hover:-translate-y-1 active:scale-95" 
+                    : "bg-gray-200 text-gray-400 cursor-not-allowed border border-gray-100"
+                }`}
+                onClick={(e) => !isEnabled && e.preventDefault()}
+                title={!isEnabled ? t('Tính năng tải về hiện đang tạm khóa', { defaultValue: 'Tính năng tải về hiện đang tạm khóa' }) : undefined}
               >
-                <FileDown className="w-6 h-6" />
+                <FileDown className={`w-6 h-6 ${!isEnabled ? 'text-gray-300' : ''}`} />
                 <EditableElement
                   tagName="span"
                   fieldKey="downloadText"
