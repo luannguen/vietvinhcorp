@@ -14,6 +14,21 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import {
+    Pagination,
+    PaginationContent,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
+} from "@/components/ui/pagination";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import {
     Dialog,
     DialogContent,
     DialogDescription,
@@ -28,7 +43,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useToast } from "@/components/ui/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Loader2, Plus, Pencil, Trash2, FileText, Image as ImageIcon, Eye, Wand2, Layout, Code } from "lucide-react";
+import { Loader2, Plus, Pencil, Trash2, FileText, Image as ImageIcon, Eye, Wand2, Layout, Code, Search } from "lucide-react";
 
 export default function PagesPage() {
     const [pages, setPages] = useState<StaticPage[]>([]);
@@ -47,6 +62,12 @@ export default function PagesPage() {
     const [showRawJson, setShowRawJson] = useState(false);
     const { toast } = useToast();
 
+    // Lọc, tìm kiếm và phân trang
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filterStatus, setFilterStatus] = useState("all");
+    const [currentPageIndex, setCurrentPageIndex] = useState(1);
+    const itemsPerPage = 10;
+
     const isJsonContent = (content: string | null) => {
         if (!content) return false;
         try {
@@ -59,6 +80,11 @@ export default function PagesPage() {
     useEffect(() => {
         fetchPages();
     }, []);
+
+    // Reset trang về 1 khi đổi bộ lọc hoặc tìm kiếm
+    useEffect(() => {
+        setCurrentPageIndex(1);
+    }, [searchTerm, filterStatus]);
 
     const fetchPages = async () => {
         try {
@@ -172,6 +198,23 @@ export default function PagesPage() {
         }
     }
 
+    const filteredPages = pages.filter((page) => {
+        const matchesSearch = 
+            page.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+            page.slug.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesStatus = 
+            filterStatus === "all" ? true : 
+            filterStatus === "active" ? page.is_active : !page.is_active;
+        
+        return matchesSearch && matchesStatus;
+    });
+
+    const totalPages = Math.ceil(filteredPages.length / itemsPerPage);
+    const paginatedPages = filteredPages.slice(
+        (currentPageIndex - 1) * itemsPerPage,
+        currentPageIndex * itemsPerPage
+    );
+
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
@@ -190,6 +233,30 @@ export default function PagesPage() {
                     <Button onClick={() => handleOpenDialog()} className="rounded-full bg-slate-900 hover:bg-slate-800 shadow-lg shadow-slate-200">
                         <Plus className="mr-2 h-4 w-4" /> Add Page
                     </Button>
+                </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 mb-4 items-center justify-between">
+                <div className="flex flex-1 gap-4 items-center w-full">
+                    <div className="relative flex-1 max-w-sm">
+                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                        <Input
+                            placeholder="Tìm kiếm trang theo tiêu đề, slug..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="pl-8"
+                        />
+                    </div>
+                    <Select value={filterStatus} onValueChange={setFilterStatus}>
+                        <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Lọc theo trạng thái" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">Tất cả trạng thái</SelectItem>
+                            <SelectItem value="active">Đang hiển thị</SelectItem>
+                            <SelectItem value="inactive">Đang ẩn</SelectItem>
+                        </SelectContent>
+                    </Select>
                 </div>
             </div>
 
@@ -214,14 +281,14 @@ export default function PagesPage() {
                                     </div>
                                 </TableCell>
                             </TableRow>
-                        ) : pages.length === 0 ? (
+                        ) : paginatedPages.length === 0 ? (
                             <TableRow>
                                 <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
-                                    No pages found.
+                                    Không tìm thấy trang nào phù hợp.
                                 </TableCell>
                             </TableRow>
                         ) : (
-                            pages.map((page) => (
+                            paginatedPages.map((page) => (
                                 <TableRow key={page.id}>
                                     <TableCell>
                                         {page.image_url ? (
@@ -287,6 +354,38 @@ export default function PagesPage() {
                     </TableBody>
                 </Table>
             </div>
+
+            {totalPages > 1 && (
+                <div className="mt-4 flex justify-end">
+                    <Pagination>
+                        <PaginationContent>
+                            <PaginationItem>
+                                <PaginationPrevious 
+                                    onClick={() => setCurrentPageIndex(p => Math.max(1, p - 1))}
+                                    className={currentPageIndex === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                                />
+                            </PaginationItem>
+                            {Array.from({ length: totalPages }).map((_, i) => (
+                                <PaginationItem key={i}>
+                                    <PaginationLink 
+                                        onClick={() => setCurrentPageIndex(i + 1)}
+                                        isActive={currentPageIndex === i + 1}
+                                        className="cursor-pointer"
+                                    >
+                                        {i + 1}
+                                    </PaginationLink>
+                                </PaginationItem>
+                            ))}
+                            <PaginationItem>
+                                <PaginationNext 
+                                    onClick={() => setCurrentPageIndex(p => Math.min(totalPages, p + 1))}
+                                    className={currentPageIndex === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                                />
+                            </PaginationItem>
+                        </PaginationContent>
+                    </Pagination>
+                </div>
+            )}
 
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
