@@ -236,19 +236,19 @@ export default function PagesPage() {
                 </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 mb-4 items-center justify-between">
-                <div className="flex flex-1 gap-4 items-center w-full">
-                    <div className="relative flex-1 max-w-sm">
-                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input
-                            placeholder="Tìm kiếm trang theo tiêu đề, slug..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pl-8"
-                        />
-                    </div>
+            <div className="flex flex-col sm:flex-row gap-4 mb-4 items-center">
+                <div className="relative flex-1 w-full">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                        placeholder="Tìm kiếm trang theo tiêu đề, slug..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="pl-9 w-full bg-white"
+                    />
+                </div>
+                <div className="w-full sm:w-56">
                     <Select value={filterStatus} onValueChange={setFilterStatus}>
-                        <SelectTrigger className="w-[180px]">
+                        <SelectTrigger className="w-full bg-white">
                             <SelectValue placeholder="Lọc theo trạng thái" />
                         </SelectTrigger>
                         <SelectContent>
