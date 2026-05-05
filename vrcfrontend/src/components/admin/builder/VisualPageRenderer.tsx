@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useVisualEditor } from '../../../context/VisualEditorContext';
 import { getBlock } from './SectionRegistry';
 import { EditWrapper } from './EditWrapper';
 import NotFound from '../../../pages/NotFound';
 
 export const VisualPageRenderer = ({ customSections }: { customSections?: any[] }) => {
+    const { i18n } = useTranslation();
     const { editMode, contentData, slug, syncSections, selectedSectionId, setSelectedSectionId, isPageActive } = useVisualEditor();
 
     // If page is inactive and not in edit mode, return 404
@@ -22,11 +24,10 @@ export const VisualPageRenderer = ({ customSections }: { customSections?: any[] 
             syncSections(sections);
         }
 
-        // Signal to parent that we are ready and provide current sections
-        if (sections && sections.length > 0) {
+        // Signal to parent that we are ready
+        if (editMode) {
             window.parent.postMessage({ 
-                type: 'VISUAL_EDIT_SYNC_SECTIONS', 
-                sections,
+                type: 'VISUAL_EDIT_READY',
                 slug
             }, '*');
         }
@@ -43,7 +44,7 @@ export const VisualPageRenderer = ({ customSections }: { customSections?: any[] 
 
         window.addEventListener('message', handleMessage);
         return () => window.removeEventListener('message', handleMessage);
-    }, [sections, contentData.sections, syncSections, slug, setSelectedSectionId]);
+    }, [editMode, slug, setSelectedSectionId]);
 
     const handleSectionSelect = (id: string, type: string) => {
         setSelectedSectionId(id);
@@ -88,7 +89,21 @@ export const VisualPageRenderer = ({ customSections }: { customSections?: any[] 
                 const sectionId = section.id;
 
                 // Support both new 'props' format and legacy 'data' format
-                const sectionProps = section.props || section.data || {};
+                const rawProps = section.props || section.data || {};
+                
+                // Remap props based on current language for preview
+                const currentLang = i18n.language?.split('-')[0] || 'vi';
+                const sectionProps = { ...rawProps };
+                
+                if (currentLang !== 'vi') {
+                    Object.keys(rawProps).forEach(key => {
+                        if (key.endsWith(`_${currentLang}`)) {
+                            const baseKey = key.replace(`_${currentLang}`, '');
+                            sectionProps[baseKey] = rawProps[key];
+                        }
+                    });
+                }
+
                 const content = (
                     <section id={`section-${sectionId}`} className="visual-builder-section">
                         <Component sectionId={sectionId} {...sectionProps} />

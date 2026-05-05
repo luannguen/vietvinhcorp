@@ -568,7 +568,8 @@ export const TechnicalDetailBlock = ({
   techType = 'ca',
   sectionId 
 }: any) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const { editMode, updateSectionProps, contentData } = useVisualEditor();
 
   const techConfigs: Record<string, any> = {
     ca: {
@@ -626,15 +627,62 @@ export const TechnicalDetailBlock = ({
   const displayTitle = title || config.title;
   const displayDescription = description || config.description;
   const displayAccent = accent || config.accent;
-  const displayImage = image || `https://images.unsplash.com/photo-1558444430-32f9109ef810?auto=format&fit=crop&q=80&w=1200&sig=${techType}`;
+  const displayImage = image || `/assets/images/industry/${techType}_tech.png`;
   const Icon = config.icon;
 
-  const features = [
+  const displayFeatures = [
     feature1 || config.features[0],
     feature2 || config.features[1],
     feature3 || config.features[2],
     feature4 || config.features[3]
   ];
+
+  // Auto-hydrate: Write resolved display values to section.props once in edit mode
+  // so the Admin PropertyInspector can see them
+  const hydrated = React.useRef(false);
+  
+  React.useEffect(() => {
+    if (!editMode || !sectionId || hydrated.current) return;
+    
+    // Wait until contentData actually has sections
+    const rawSection = contentData?.sections?.find((s: any) => s.id === sectionId);
+    if (!rawSection) return;
+    
+    hydrated.current = true;
+    const rawProps = rawSection.props || {};
+    const currentLang = i18n.language?.split('-')[0] || 'vi';
+    const suffix = currentLang === 'vi' ? '' : `_${currentLang}`;
+    
+    const propsToHydrate: Record<string, string> = {};
+    
+    // Check if the SPECIFIC localized key exists in raw props
+    if (rawProps[`title${suffix}`] === undefined || rawProps[`title${suffix}`] === '') 
+      propsToHydrate[`title${suffix}`] = config.title;
+      
+    if (rawProps[`description${suffix}`] === undefined || rawProps[`description${suffix}`] === '') 
+      propsToHydrate[`description${suffix}`] = config.description;
+      
+    if (rawProps[`feature1${suffix}`] === undefined || rawProps[`feature1${suffix}`] === '') 
+      propsToHydrate[`feature1${suffix}`] = config.features[0];
+      
+    if (rawProps[`feature2${suffix}`] === undefined || rawProps[`feature2${suffix}`] === '') 
+      propsToHydrate[`feature2${suffix}`] = config.features[1];
+      
+    if (rawProps[`feature3${suffix}`] === undefined || rawProps[`feature3${suffix}`] === '') 
+      propsToHydrate[`feature3${suffix}`] = config.features[2];
+      
+    if (rawProps[`feature4${suffix}`] === undefined || rawProps[`feature4${suffix}`] === '') 
+      propsToHydrate[`feature4${suffix}`] = config.features[3];
+      
+    if (rawProps[`image${suffix}`] === undefined || rawProps[`image${suffix}`] === '') 
+      propsToHydrate[`image${suffix}`] = displayImage;
+    
+    if (Object.keys(propsToHydrate).length > 0) {
+      console.log(`[TechnicalDetailBlock] Hydrating ${currentLang} props:`, Object.keys(propsToHydrate));
+      updateSectionProps(sectionId, propsToHydrate);
+    }
+  }, [editMode, sectionId, i18n.language, techType]); // techType added to re-hydrate if type changes
+
 
   return (
     <section className="py-24 bg-slate-50 overflow-hidden">
@@ -664,7 +712,7 @@ export const TechnicalDetailBlock = ({
             </div>
 
             <div className="grid sm:grid-cols-2 gap-6">
-              {features.map((feature: string, idx: number) => (
+              {displayFeatures.map((feat: string, idx: number) => (
                 <div key={idx} className="flex gap-4 p-5 rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-md transition-all group">
                   <div className={`mt-1 shrink-0 w-6 h-6 rounded-full bg-${displayAccent}-100 flex items-center justify-center group-hover:bg-${displayAccent}-500 group-hover:text-white transition-colors`}>
                     <CheckIcon className="w-4 h-4" />
@@ -673,7 +721,7 @@ export const TechnicalDetailBlock = ({
                     tagName="span" 
                     fieldKey={`feature${idx+1}`} 
                     sectionId={sectionId} 
-                    defaultContent={feature} 
+                    defaultContent={feat} 
                     className="text-slate-700 font-medium leading-tight block"
                   />
                 </div>

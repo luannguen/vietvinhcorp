@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { supabase } from '../supabase';
 import { registerAllBlocks } from '../components/sections';
 import { getBlock } from '../components/admin/builder/SectionRegistry';
+import { useTranslation } from 'react-i18next';
 import i18n from '../i18n';
 
 interface VisualEditorContextType {
@@ -17,6 +18,7 @@ interface VisualEditorContextType {
   selectedSectionId: string | null;
   setSelectedSectionId: (id: string | null) => void;
   requestImageChange: (fieldKey: string) => void;
+  forceSync: () => void;
   isLoading: boolean;
   isPageActive: boolean;
   slug: string;
@@ -35,6 +37,7 @@ const VisualEditorContext = createContext<VisualEditorContextType>({
   selectedSectionId: null,
   setSelectedSectionId: () => {},
   requestImageChange: () => {},
+  forceSync: () => {},
   isLoading: false,
   isPageActive: true,
   slug: '',
@@ -48,40 +51,98 @@ interface VisualEditorProviderProps {
 }
 
 export const VisualEditorProvider = ({ children, slug = '' }: VisualEditorProviderProps) => {
-  const [editMode, setEditMode] = useState(false);
+  const { i18n } = useTranslation();
+  const [editMode, setEditMode] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('edit_mode') === 'true';
+    }
+    return false;
+  });
   const [contentData, setContentData] = useState<any>({});
   const [selectedSectionId, setSelectedSectionId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isPageActive, setIsPageActive] = useState(true);
+
+  const isUpdatingFromParent = React.useRef(false);
+  const lastLocalUpdateAt = React.useRef(0);
+  const lastSentTimestamp = React.useRef(0);
+  const syncTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
   // Initialize blocks
   useEffect(() => {
     registerAllBlocks();
   }, []);
 
-  const syncWithParent = React.useCallback((newData: any) => {
-    if (!editMode) return;
+  const syncWithParent = React.useCallback((data: any) => {
+    if (!editMode || window.parent === window) return;
     
+    // Ensure we send sections in the format parent expects
+    const sectionsToSend = data.sections || [];
+    const currentLang = i18n.language?.split('-')[0] || 'vi';
+    
+    // Update our local timestamp
+    const timestamp = Date.now();
+    lastLocalUpdateAt.current = timestamp;
+    lastSentTimestamp.current = timestamp;
+
+    console.log('[VisualEditor Child] Syncing to parent:', sectionsToSend.length, 'sections', 'TS:', timestamp);
+    
+    // Send sections at TOP LEVEL so parent can read data.sections directly
     window.parent.postMessage(
       {
         type: 'VISUAL_EDIT_UPDATE',
         slug,
-        data: newData,
+        sections: sectionsToSend,
+        language: currentLang,
+        source: 'visual-editor-child',
+        lastUpdated: timestamp
       },
       '*'
     );
-  }, [slug, editMode]);
+  }, [slug, editMode, i18n.language]);
+
+  // Notify parent of language changes
+  useEffect(() => {
+    if (editMode && window.parent !== window) {
+      const currentLang = i18n.language?.split('-')[0] || 'vi';
+      window.parent.postMessage({
+        type: 'VISUAL_EDIT_LANGUAGE_CHANGED',
+        language: currentLang,
+        slug
+      }, '*');
+    }
+  }, [i18n.language, editMode, slug]);
+
+  // Synchronize state with parent whenever contentData changes
+  useEffect(() => {
+    if (!editMode || window.parent === window) return;
+    if (Object.keys(contentData).length === 0) return;
+
+    // Only sync if we have local changes NEWER than what we last sent
+    if (lastLocalUpdateAt.current <= lastSentTimestamp.current) {
+      return;
+    }
+
+    // Debounce sync
+    if (syncTimeoutRef.current) clearTimeout(syncTimeoutRef.current);
+    
+    syncTimeoutRef.current = setTimeout(() => {
+      syncWithParent(contentData);
+    }, 50);
+
+    return () => {
+      if (syncTimeoutRef.current) clearTimeout(syncTimeoutRef.current);
+    };
+  }, [contentData, editMode, syncWithParent]);
 
   // Handle updates from EditableElement (Legacy/Simple)
   const updateField = React.useCallback((fieldKey: string, value: string) => {
     if (!editMode) return;
     
-    setContentData((prev: any) => {
-      const newData = { ...prev, [fieldKey]: value };
-      syncWithParent(newData);
-      return newData;
-    });
-  }, [editMode, syncWithParent]);
+    lastLocalUpdateAt.current = Date.now();
+    setContentData((prev: any) => ({ ...prev, [fieldKey]: value }));
+  }, [editMode]);
 
   // Builder Methods
   const addSection = React.useCallback((type: string, index?: number) => {
@@ -102,30 +163,22 @@ export const VisualEditorProvider = ({ children, slug = '' }: VisualEditorProvid
       } else {
         sections.push(newSection);
       }
-      const newData = { ...prev, sections };
-      syncWithParent(newData);
-      return newData;
+      return { ...prev, sections };
     });
-  }, [editMode, syncWithParent]);
+  }, [editMode]);
 
   const removeSection = React.useCallback((id: string) => {
     if (!editMode) return;
     setContentData((prev: any) => {
       const sections = (prev.sections || []).filter((s: any) => s.id !== id);
-      const newData = { ...prev, sections };
-      syncWithParent(newData);
-      return newData;
+      return { ...prev, sections };
     });
-  }, [editMode, syncWithParent]);
+  }, [editMode]);
 
   const reorderSections = React.useCallback((newSections: any[]) => {
     if (!editMode) return;
-    setContentData((prev: any) => {
-      const newData = { ...prev, sections: newSections };
-      syncWithParent(newData);
-      return newData;
-    });
-  }, [editMode, syncWithParent]);
+    setContentData((prev: any) => ({ ...prev, sections: newSections }));
+  }, [editMode]);
 
   const moveSection = React.useCallback((id: string, direction: 'up' | 'down') => {
     if (!editMode) return;
@@ -140,11 +193,9 @@ export const VisualEditorProvider = ({ children, slug = '' }: VisualEditorProvid
       // Swap
       [sections[index], sections[newIndex]] = [sections[newIndex], sections[index]];
 
-      const newData = { ...prev, sections };
-      syncWithParent(newData);
-      return newData;
+      return { ...prev, sections };
     });
-  }, [editMode, syncWithParent]);
+  }, [editMode]);
 
   const syncSections = React.useCallback((sections: any[]) => {
     setContentData((prev: any) => {
@@ -162,17 +213,25 @@ export const VisualEditorProvider = ({ children, slug = '' }: VisualEditorProvid
   }, []);
 
   const updateSectionProps = React.useCallback((id: string, newProps: any) => {
-    if (!editMode) return;
+    lastLocalUpdateAt.current = Date.now();
     setContentData((prev: any) => {
-      const currentSections = prev.sections || [];
-      const sections = currentSections.map((s: any) => 
+      const newSections = (prev.sections || []).map((s: any) => 
         s.id === id ? { ...s, props: { ...s.props, ...newProps } } : s
       );
-      const newData = { ...prev, sections };
-      syncWithParent(newData);
-      return newData;
+      return { ...prev, sections: newSections };
     });
-  }, [editMode, syncWithParent]);
+  }, []);
+
+  // Keep a ref for the latest contentData to avoid stale closures
+  const contentDataRef = React.useRef(contentData);
+  useEffect(() => {
+    contentDataRef.current = contentData;
+  }, [contentData]);
+
+  const forceSync = React.useCallback(() => {
+    if (syncTimeoutRef.current) clearTimeout(syncTimeoutRef.current);
+    syncWithParent(contentDataRef.current);
+  }, [syncWithParent]);
 
   // Handle image pick requests
   const requestImageChange = React.useCallback((fieldKey: string) => {
@@ -186,13 +245,7 @@ export const VisualEditorProvider = ({ children, slug = '' }: VisualEditorProvid
     }, '*');
   }, [editMode, slug, selectedSectionId]);
 
-  // Check URL params for edit_mode
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('edit_mode') === 'true') {
-      setEditMode(true);
-    }
-  }, []);
+
 
   // Listen for messages from Admin
   useEffect(() => {
@@ -201,9 +254,60 @@ export const VisualEditorProvider = ({ children, slug = '' }: VisualEditorProvid
       
       switch (type) {
         case 'VISUAL_EDIT_UPDATE_DATA':
+          const incomingLastUpdated = event.data.lastUpdated || 0;
+          if (incomingLastUpdated > 0 && incomingLastUpdated < lastLocalUpdateAt.current) {
+            console.log('[VisualEditor Child] Ignoring STALE update from parent (Local is newer)', {
+              incoming: incomingLastUpdated,
+              local: lastLocalUpdateAt.current
+            });
+            return;
+          }
+
           if (sections) {
-            console.log('[VisualEditorContext] Updating data from parent:', sections.length);
-            setContentData((prev: any) => ({ ...prev, sections }));
+            console.log('[VisualEditorContext] Updating data from parent:', sections.length, 'TS:', incomingLastUpdated);
+            isUpdatingFromParent.current = true;
+            lastLocalUpdateAt.current = incomingLastUpdated;
+            lastSentTimestamp.current = incomingLastUpdated; // Don't sync back what we just got
+            
+            // Auto-hydrate: fill empty props with block defaultProps
+            const hydratedSections = sections.map((s: any) => {
+              const blockDef = getBlock(s.type);
+              if (!blockDef) return s;
+              
+              const hydratedProps = { ...(blockDef.defaultProps || {}), ...(s.props || {}) };
+              return { ...s, props: hydratedProps };
+            });
+            
+            // Check if hydration actually changed anything
+            const hasChanges = hydratedSections.some((hs: any, i: number) => {
+              const origProps = sections[i]?.props || {};
+              return Object.keys(hs.props || {}).length > Object.keys(origProps).length;
+            });
+            
+            setContentData((prev: any) => ({ ...prev, sections: hydratedSections }));
+            
+            // If hydration added new props, sync back to parent after a short delay
+            if (hasChanges && window.parent !== window) {
+              const timestamp = Date.now();
+              lastLocalUpdateAt.current = timestamp;
+              
+              setTimeout(() => {
+                window.parent.postMessage({
+                  type: 'VISUAL_EDIT_UPDATE',
+                  slug,
+                  sections: hydratedSections,
+                  language: i18n.language?.split('-')[0] || 'vi',
+                  lastUpdated: timestamp,
+                  source: 'visual-editor-child'
+                }, '*');
+              }, 200);
+            }
+          }
+          break;
+        case 'VISUAL_EDIT_CHANGE_LANGUAGE':
+          if (event.data.language && i18n.language !== event.data.language) {
+            console.log('[VisualEditorContext] Changing language from parent:', event.data.language);
+            i18n.changeLanguage(event.data.language);
           }
           break;
         case 'VISUAL_EDIT_IMAGE_SELECTED':
@@ -296,12 +400,29 @@ export const VisualEditorProvider = ({ children, slug = '' }: VisualEditorProvid
     }
   }, [editMode, isLoading, slug]);
 
+  // Sync language changes back to parent
+  useEffect(() => {
+    if (!editMode || window.parent === window) return;
+    
+    const handleLangChange = (lng: string) => {
+      const normalizedLang = lng.split('-')[0];
+      console.log('[VisualEditor Child] Language changed to:', normalizedLang, 'notifying parent.');
+      window.parent.postMessage({
+        type: 'VISUAL_EDIT_LANGUAGE_CHANGED',
+        language: normalizedLang
+      }, '*');
+    };
+
+    i18n.on('languageChanged', handleLangChange);
+    return () => i18n.off('languageChanged', handleLangChange);
+  }, [editMode, i18n]);
+
   return (
     <VisualEditorContext.Provider value={{ 
       editMode, contentData, updateField, updateSectionProps, 
       addSection, removeSection, reorderSections, moveSection, syncSections,
       selectedSectionId, setSelectedSectionId,
-      requestImageChange, isLoading, isPageActive, slug 
+      requestImageChange, forceSync, isLoading, isPageActive, slug 
     }}>
       {children}
     </VisualEditorContext.Provider>

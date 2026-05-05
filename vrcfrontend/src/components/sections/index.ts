@@ -413,7 +413,13 @@ export const registerAllBlocks = () => {
     name: 'Technical detail page',
     defaultProps: {
       techType: 'ca',
-      accent: 'blue'
+      accent: 'blue',
+      title: 'Công nghệ bảo quản tiên tiến',
+      description: 'Giải pháp tối ưu cho chuỗi cung ứng nông sản và thực phẩm sạch.',
+      feature1: 'Tiết kiệm năng lượng',
+      feature2: 'Bảo quản vượt trội',
+      feature3: 'Vận hành tự động',
+      feature4: 'Thân thiện môi trường'
     },
     fields: [
       { id: 'title', label: 'Tiêu đề trang', type: 'text' },
@@ -431,7 +437,11 @@ export const registerAllBlocks = () => {
         { label: 'IQF (Cấp đông nhanh)', value: 'iqf' },
         { label: 'Chín chuối', value: 'ripening' },
         { label: 'Hầm đông gió', value: 'blast' }
-      ]}
+      ]},
+      { id: 'feature1', label: 'Điểm nhấn 1', type: 'text' },
+      { id: 'feature2', label: 'Điểm nhấn 2', type: 'text' },
+      { id: 'feature3', label: 'Điểm nhấn 3', type: 'text' },
+      { id: 'feature4', label: 'Điểm nhấn 4', type: 'text' }
     ]
   });
 

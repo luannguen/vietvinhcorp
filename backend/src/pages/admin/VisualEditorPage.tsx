@@ -75,7 +75,9 @@ const VisualEditorPage: React.FC = () => {
         isSettingsOpen,
         setIsSettingsOpen,
         sendToIframe,
-        frontendUrl
+        frontendUrl,
+        language,
+        setLanguage
     } = useVisualEditor(iframeRef);
 
     const refreshPreview = React.useCallback(() => {
@@ -211,6 +213,10 @@ const VisualEditorPage: React.FC = () => {
                                     fieldId,
                                     sectionId: selectedSectionId
                                 })}
+                                frontendUrl={frontendUrl}
+                                language={language}
+                                onLanguageChange={setLanguage}
+                                sendToIframe={sendToIframe}
                             />
                         </ResizablePanel>
 

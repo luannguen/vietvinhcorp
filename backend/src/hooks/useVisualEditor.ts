@@ -20,6 +20,15 @@ export function useVisualEditor(iframeRef: React.RefObject<HTMLIFrameElement>) {
     const [isDragging, setIsDragging] = useState(false);
     const [iframeSrc, setIframeSrc] = useState<string>('');
     const [frontendUrl, setFrontendUrl] = useState<string>('');
+    const [language, setLanguage] = useState<string>('vi');
+    const [lastUpdateAt, setLastUpdateAt] = useState<number>(0);
+    const lastSentTimestamp = React.useRef<number>(0);
+
+    // Ref for sections to avoid closure issues in handleMessage
+    const sectionsRef = React.useRef<any[]>([]);
+    useEffect(() => {
+        sectionsRef.current = sections;
+    }, [sections]);
 
     // Page metadata for new pages or updating existing ones
     const [pageMetadata, setPageMetadata] = useState<Partial<PageFormData>>({
@@ -32,8 +41,6 @@ export function useVisualEditor(iframeRef: React.RefObject<HTMLIFrameElement>) {
 
     const [isSettingsOpen, setIsSettingsOpen] = useState(isNewPage);
 
-
-
     // Send messages to iframe
     const sendToIframe = useCallback((type: string, payload: any) => {
         if (iframeRef.current && iframeRef.current.contentWindow) {
@@ -41,10 +48,25 @@ export function useVisualEditor(iframeRef: React.RefObject<HTMLIFrameElement>) {
         }
     }, [iframeRef]);
 
+    // Sync sections
+    useEffect(() => {
+        if (!isDragging && lastUpdateAt > lastSentTimestamp.current) {
+            console.log('[VisualEditor Parent] Syncing sections to child:', sections.length, 'TS:', lastUpdateAt);
+            lastSentTimestamp.current = lastUpdateAt;
+            sendToIframe('VISUAL_EDIT_UPDATE_DATA', { sections, lastUpdated: lastUpdateAt });
+        }
+    }, [sections, sendToIframe, isDragging, lastUpdateAt]);
+
     // Sync selected section
     useEffect(() => {
         sendToIframe('VISUAL_EDIT_SELECT_SECTION', { sectionId: selectedSectionId });
     }, [selectedSectionId, sendToIframe]);
+
+    // Sync language
+    useEffect(() => {
+        console.log('[VisualEditor Parent] Syncing language to child:', language);
+        sendToIframe('VISUAL_EDIT_CHANGE_LANGUAGE', { language });
+    }, [language, sendToIframe]);
 
     // Fetch initial data
     useEffect(() => {
@@ -162,45 +184,72 @@ export function useVisualEditor(iframeRef: React.RefObject<HTMLIFrameElement>) {
             try {
                 data = JSON.parse(data);
             } catch (e) {
-                return; // Not a JSON message we care about
+                return; 
             }
         }
 
         if (!data || typeof data !== 'object') return;
+        
+        console.log('[VisualEditor Parent] Received message:', data.type, data.slug);
 
-        // Standardize protocol: handle both legacy and new names
-        if (data.type === 'VISUAL_EDIT_UPDATE' || data.type === 'VISUAL_EDIT_UPDATE_DATA_FROM_IFRAME') {
-            const sectionsData = data.sections || data.data?.sections;
-            if (sectionsData && Array.isArray(sectionsData)) {
-                console.log('[VisualEditor Parent] Syncing sections from iframe:', sectionsData.length);
-                setSections(sectionsData);
-                setHasPendingChanges(true);
-            }
-        } else if (data.type === 'VISUAL_EDIT_SECTION_SELECTED') {
-            console.log('[VisualEditor Parent] Section selected in iframe:', data.sectionId);
-            setSelectedSectionId(data.sectionId);
-        } else if (data.type === 'VISUAL_EDIT_PICK_IMAGE') {
-            setImagePicker({
-                isOpen: true,
-                fieldId: data.fieldKey,
-                sectionId: data.sectionId
-            });
-        } else if (data.type === 'VISUAL_EDIT_SYNC_SECTIONS') {
-            // Fired by VisualPageRenderer on mount or when hydration happens
-            if (data.sections && Array.isArray(data.sections)) {
-                console.log('[VisualEditor Parent] Full sections sync from iframe:', data.sections.length);
-                setSections(data.sections);
-                // Also update page metadata if it was a new page or empty
-                if (isNewPage && !pageMetadata.title) {
-                    setPageMetadata(prev => ({ ...prev, title: `Trang ${data.slug || ''}` }));
+        switch (data.type) {
+            case 'VISUAL_EDIT_UPDATE':
+            case 'VISUAL_EDIT_UPDATE_DATA_FROM_IFRAME':
+            case 'VISUAL_EDIT_SYNC_SECTIONS':
+                const normalizedLang = data.language?.split('-')[0] || 'vi';
+                if (data.language) {
+                    console.log('[VisualEditor Parent] Syncing language:', normalizedLang);
+                    setLanguage(normalizedLang);
                 }
-            }
-        } else if (data.type === 'VISUAL_EDIT_READY' || data.type === 'VISUAL_EDIT_SYNC_REQUEST') {
-            const iframeSlug = data.slug || 'unknown';
-            console.log(`[VisualEditor Parent] Iframe READY/SYNC_REQ (${iframeSlug}), pushing ${sections.length} sections to child.`);
-            sendToIframe('VISUAL_EDIT_UPDATE_DATA', { sections });
+                
+                const sectionsData = data.sections || data.data?.sections;
+                if (sectionsData && Array.isArray(sectionsData)) {
+                    const incomingTS = data.lastUpdated || 0;
+                    
+                    if (incomingTS > 0 && incomingTS < lastUpdateAt) {
+                        console.log('[VisualEditor Parent] Ignoring STALE update from child');
+                        return;
+                    }
+
+                    console.log(`[VisualEditor Parent] Updating ${sectionsData.length} sections from child`, 'TS:', incomingTS);
+                    
+                    if (incomingTS > 0) {
+                        setLastUpdateAt(incomingTS);
+                        lastSentTimestamp.current = incomingTS; // Don't sync back what we just got
+                    }
+                    
+                    setSections(sectionsData);
+                    setHasPendingChanges(true);
+                }
+                break;
+
+            case 'VISUAL_EDIT_LANGUAGE_CHANGED':
+                if (data.language) {
+                    const normLang = data.language.split('-')[0];
+                    console.log('[VisualEditor Parent] Language changed in child:', normLang);
+                    setLanguage(normLang);
+                }
+                break;
+
+            case 'VISUAL_EDIT_SECTION_SELECTED':
+                setSelectedSectionId(data.sectionId);
+                break;
+
+            case 'VISUAL_EDIT_PICK_IMAGE':
+                setImagePicker({
+                    isOpen: true,
+                    fieldId: data.fieldKey,
+                    sectionId: data.sectionId
+                });
+                break;
+
+            case 'VISUAL_EDIT_READY':
+            case 'VISUAL_EDIT_SYNC_REQUEST':
+                console.log(`[VisualEditor Parent] Child READY (${data.slug || 'unknown'}), pushing data:`, sectionsRef.current.length);
+                sendToIframe('VISUAL_EDIT_UPDATE_DATA', { sections: sectionsRef.current });
+                break;
         }
-    }, [sections, sendToIframe]);
+    }, [slug, sendToIframe]); // Removed sections dependency, using sectionsRef instead
 
     useEffect(() => {
         window.addEventListener('message', handleMessage);
@@ -248,9 +297,16 @@ export function useVisualEditor(iframeRef: React.RefObject<HTMLIFrameElement>) {
     };
 
     const updateSection = (id: string, updates: any) => {
+        setLastUpdateAt(Date.now());
         setSections(prev => {
-            const next = prev.map(s => s.id === id ? { ...s, ...updates } : s);
-            sendToIframe('VISUAL_EDIT_UPDATE_DATA', { sections: next });
+            const next = prev.map(s => {
+                if (s.id === id) {
+                    // Properly merge props if they exist in updates
+                    const newProps = updates.props ? { ...(s.props || {}), ...updates.props } : (s.props || {});
+                    return { ...s, ...updates, props: newProps };
+                }
+                return s;
+            });
             return next;
         });
         setHasPendingChanges(true);
@@ -378,6 +434,8 @@ export function useVisualEditor(iframeRef: React.RefObject<HTMLIFrameElement>) {
         isSettingsOpen,
         setIsSettingsOpen,
         refreshPreview,
-        frontendUrl
+        frontendUrl,
+        language,
+        setLanguage
     };
 }

@@ -32,13 +32,14 @@ export const EditableElement = ({
     contentData, 
     updateField, 
     updateSectionProps,
-    requestImageChange, 
+    requestImageChange,
+    forceSync,
     selectedSectionId, 
     slug 
   } = useVisualEditor();
   
   const { i18n, t } = useTranslation();
-  const currentLang = i18n.language || 'vi';
+  const currentLang = i18n.language?.split('-')[0] || 'vi';
   const isDefaultLang = currentLang === 'vi';
   
   // Logic mapping: title -> title_en, title_de, etc.
@@ -136,7 +137,7 @@ export const EditableElement = ({
 
   // Sync ref when not in focus (only for text and rich-text)
   useEffect(() => {
-    if (contentRef.current) {
+    if (contentRef.current && document.activeElement !== contentRef.current) {
       if (type === 'text' && contentRef.current.textContent !== currentContent) {
         contentRef.current.textContent = currentContent;
       } else if (type === 'rich-text' && contentRef.current.innerHTML !== currentContent) {
@@ -198,6 +199,14 @@ export const EditableElement = ({
         contentEditable
         suppressContentEditableWarning
         onBlur={(e: React.FocusEvent<HTMLElement>) => {
+          const newValue = type === 'rich-text' ? e.currentTarget.innerHTML : (e.currentTarget.textContent || '');
+          handleContentUpdate(newValue);
+          // Force immediate sync when leaving the element
+          if (typeof forceSync === 'function') {
+            forceSync();
+          }
+        }}
+        onInput={(e: React.FormEvent<HTMLElement>) => {
           const newValue = type === 'rich-text' ? e.currentTarget.innerHTML : (e.currentTarget.textContent || '');
           handleContentUpdate(newValue);
         }}
