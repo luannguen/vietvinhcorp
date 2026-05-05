@@ -255,8 +255,12 @@ export const VisualEditorProvider = ({ children, slug = '' }: VisualEditorProvid
       switch (type) {
         case 'VISUAL_EDIT_UPDATE_DATA':
           const incomingLastUpdated = event.data.lastUpdated || 0;
-          if (incomingLastUpdated > 0 && incomingLastUpdated < lastLocalUpdateAt.current) {
-            console.log('[VisualEditor Child] Ignoring STALE update from parent (Local is newer)', {
+          const isFromParent = event.data.source === 'visual-editor-parent';
+          
+          // Only filter by timestamp if it's NOT from the parent (to allow Right Panel edits to win)
+          // Or if it IS from parent, still check timestamp but be more lenient if needed
+          if (!isFromParent && incomingLastUpdated > 0 && incomingLastUpdated < lastLocalUpdateAt.current) {
+            console.log('[VisualEditor Child] Ignoring STALE update (Local is newer)', {
               incoming: incomingLastUpdated,
               local: lastLocalUpdateAt.current
             });
@@ -264,10 +268,11 @@ export const VisualEditorProvider = ({ children, slug = '' }: VisualEditorProvid
           }
 
           if (sections) {
-            console.log('[VisualEditorContext] Updating data from parent:', sections.length, 'TS:', incomingLastUpdated);
+            console.log('[VisualEditorContext] Updating data from parent:', sections.length, 'TS:', incomingLastUpdated, 'FromParent:', isFromParent);
             isUpdatingFromParent.current = true;
-            lastLocalUpdateAt.current = incomingLastUpdated;
-            lastSentTimestamp.current = incomingLastUpdated; // Don't sync back what we just got
+            lastLocalUpdateAt.current = Math.max(lastLocalUpdateAt.current, incomingLastUpdated);
+            lastSentTimestamp.current = Math.max(lastSentTimestamp.current, incomingLastUpdated); 
+
             
             // Auto-hydrate: fill empty props with block defaultProps
             const hydratedSections = sections.map((s: any) => {

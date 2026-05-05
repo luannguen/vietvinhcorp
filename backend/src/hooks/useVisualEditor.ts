@@ -53,7 +53,11 @@ export function useVisualEditor(iframeRef: React.RefObject<HTMLIFrameElement>) {
         if (!isDragging && lastUpdateAt > lastSentTimestamp.current) {
             console.log('[VisualEditor Parent] Syncing sections to child:', sections.length, 'TS:', lastUpdateAt);
             lastSentTimestamp.current = lastUpdateAt;
-            sendToIframe('VISUAL_EDIT_UPDATE_DATA', { sections, lastUpdated: lastUpdateAt });
+            sendToIframe('VISUAL_EDIT_UPDATE_DATA', { 
+                sections, 
+                lastUpdated: lastUpdateAt,
+                source: 'visual-editor-parent'
+            });
         }
     }, [sections, sendToIframe, isDragging, lastUpdateAt]);
 

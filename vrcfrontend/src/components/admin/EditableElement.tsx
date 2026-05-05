@@ -135,17 +135,6 @@ export const EditableElement = ({
     }
   };
 
-  // Sync ref when not in focus (only for text and rich-text)
-  useEffect(() => {
-    if (contentRef.current && document.activeElement !== contentRef.current) {
-      if (type === 'text' && contentRef.current.textContent !== currentContent) {
-        contentRef.current.textContent = currentContent;
-      } else if (type === 'rich-text' && contentRef.current.innerHTML !== currentContent) {
-        contentRef.current.innerHTML = currentContent;
-      }
-    }
-  }, [currentContent, type]);
-
   // Reset requesting if content changed
   useEffect(() => {
     if (type === 'image' && currentContent !== defaultContent) {
@@ -191,6 +180,16 @@ export const EditableElement = ({
     return <Tag className={className}>{displayContent}</Tag>;
   }
 
+  const [localContent, setLocalContent] = React.useState(currentContent);
+  const isFocused = React.useRef(false);
+
+  // Sync local state from props only when not focused
+  React.useEffect(() => {
+    if (!isFocused.current) {
+      setLocalContent(currentContent);
+    }
+  }, [currentContent]);
+
   // Edit Mode for Text / Rich Text
   if (type === 'text' || type === 'rich-text') {
     return (
@@ -198,10 +197,16 @@ export const EditableElement = ({
         ref={contentRef}
         contentEditable
         suppressContentEditableWarning
+        onFocus={() => {
+          isFocused.current = true;
+        }}
         onBlur={(e: React.FocusEvent<HTMLElement>) => {
+          isFocused.current = false;
           const newValue = type === 'rich-text' ? e.currentTarget.innerHTML : (e.currentTarget.textContent || '');
           handleContentUpdate(newValue);
-          // Force immediate sync when leaving the element
+          // Update local state to match what's actually in the DOM
+          setLocalContent(newValue);
+          
           if (typeof forceSync === 'function') {
             forceSync();
           }
@@ -211,9 +216,8 @@ export const EditableElement = ({
           handleContentUpdate(newValue);
         }}
         className={`outline-dashed outline-1 outline-blue-400 hover:outline-2 hover:bg-blue-50/50 transition-all cursor-text min-w-[20px] inline-block ${className}`}
-      >
-        {type === 'rich-text' ? null : currentContent}
-      </Tag>
+        dangerouslySetInnerHTML={{ __html: localContent }}
+      />
     );
   }
 
