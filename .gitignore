@@ -27,3 +27,12 @@ dist-ssr
 .env
 .env.*
 !.env.example
+
+# Local and Temp
+tmp/
+*.tsbuildinfo
+.agents/
+scratch/
+.vercel
+.scratch/
+*.log

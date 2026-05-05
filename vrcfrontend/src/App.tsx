@@ -9,23 +9,10 @@ import MainLayout from "./components/layouts/MainLayout";
 import { registerAllBlocks } from "./components/sections";
 import SecurityManager from "./components/common/SecurityManager";
 import { VisualEditorProvider } from "./context/VisualEditorContext";
+import ScrollToTop from "./components/common/ScrollToTop";
 
 // Register all visual editor blocks
 registerAllBlocks();
-
-// Loading component
-const PageLoader = () => {
-  const siteAcronym = "VIET VINH";
-  return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] animate-in fade-in duration-500">
-      <div className="flex flex-col items-center gap-6">
-        <div className="text-4xl font-extrabold tracking-tighter text-primary animate-pulse">{siteAcronym}</div>
-        <div className="w-10 h-10 border-3 border-primary/10 border-t-primary rounded-full animate-spin"></div>
-        <p className="text-sm uppercase tracking-widest text-muted-foreground animate-pulse">Đang tải...</p>
-      </div>
-    </div>
-  );
-};
 
 // Public pages - Lazy loaded
 const Index = lazy(() => import("./pages/Index"));
@@ -92,7 +79,7 @@ const App = () => (
         <SEOHelmet />
         <SecurityManager />
         <BrowserRouter>
-          <Suspense fallback={<PageLoader />}>
+          <ScrollToTop />
           <Routes>
             {/* Public routes */}
             <Route path="/" element={<MainLayout />}>
@@ -158,7 +145,6 @@ const App = () => (
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>
-        </Suspense>
         <Toaster />
         <Sonner />
       </BrowserRouter>

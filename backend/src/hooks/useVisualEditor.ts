@@ -75,6 +75,11 @@ export function useVisualEditor(iframeRef: React.RefObject<HTMLIFrameElement>) {
                 // Fallback: Default local port
                 if (!frontendUrl) frontendUrl = 'http://localhost:8080';
                 
+                // Auto-upgrade to HTTPS if Admin is on HTTPS to prevent Mixed Content errors
+                if (window.location.protocol === 'https:' && frontendUrl.startsWith('http://') && !frontendUrl.includes('localhost') && !frontendUrl.includes('127.0.0.1')) {
+                    frontendUrl = frontendUrl.replace('http://', 'https://');
+                }
+                
                 setFrontendUrl(frontendUrl);
                 const previewSlug = isNewPage ? '' : urlSlug;
                 setIframeSrc(`${frontendUrl}/${previewSlug}?edit_mode=true${isNewPage ? '&new=true' : ''}`);
