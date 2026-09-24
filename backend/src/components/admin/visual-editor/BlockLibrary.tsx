@@ -56,13 +56,284 @@ export const BLOCK_LIBRARY = [
     },
     { 
         type: 'cards', 
-        name: 'Danh sách Card', 
+        name: 'Danh sách Card Cơ bản', 
         icon: '🎴',
-        category: 'Basic',
+        category: 'Cards & Showcases',
         fields: [
             { id: 'title', label: 'Tiêu đề lưới card', type: 'text' },
-            { id: 'image_url', label: 'Ảnh mặc định', type: 'image' },
-            { id: 'columns', label: 'Số cột hiển thị', type: 'number' }
+            { id: 'columns', label: 'Số cột hiển thị', type: 'number' },
+            { id: 'style', label: 'Kiểu dáng card', type: 'select', options: [
+                { label: 'Đổ bóng nổi bật', value: 'elevated' },
+                { label: 'Viền tinh tế', value: 'bordered' },
+                { label: 'Phẳng tối giản', value: 'flat' }
+            ]},
+            { id: 'containerWidth', label: 'Độ rộng khung chứa', type: 'select', options: [
+                { label: 'Thu hẹp (896px)', value: 'narrow' },
+                { label: 'Tiêu chuẩn (1280px)', value: 'normal' },
+                { label: 'Rộng (1536px)', value: 'wide' },
+                { label: 'Tràn màn hình (100%)', value: 'full' }
+            ]},
+            { id: 'cardHeight', label: 'Độ cao card', type: 'select', options: [
+                { label: 'Tự động', value: 'auto' },
+                { label: 'Nhỏ gọn (300px)', value: 'equal-sm' },
+                { label: 'Vừa vặn (400px)', value: 'equal-md' },
+                { label: 'Cao (500px)', value: 'equal-lg' }
+            ]},
+            { id: 'imageAspect', label: 'Tỷ lệ ảnh card', type: 'select', options: [
+                { label: 'Chuẩn ngang (16:9)', value: '16:9' },
+                { label: 'Rộng (4:3)', value: '4:3' },
+                { label: 'Vuông (1:1)', value: '1:1' },
+                { label: 'Tự do', value: 'auto' }
+            ]},
+            { id: 'textAlign', label: 'Căn lề chữ', type: 'select', options: [
+                { label: 'Căn trái', value: 'left' },
+                { label: 'Căn giữa', value: 'center' }
+            ]}
+        ]
+    },
+    {
+        type: 'intro_card_pro',
+        name: 'Card: Giới thiệu Pro',
+        icon: '📇',
+        category: 'Cards & Showcases',
+        fields: [
+            { id: 'badge', label: 'Nhãn phụ (Badge)', type: 'text' },
+            { id: 'title', label: 'Tiêu đề chính', type: 'text' },
+            { id: 'subtitle', label: 'Tiêu đề phụ / Slogan', type: 'text' },
+            { id: 'description', label: 'Mô tả chi tiết', type: 'textarea' },
+            { id: 'highlight1', label: 'Điểm nhấn 1', type: 'text' },
+            { id: 'highlight2', label: 'Điểm nhấn 2', type: 'text' },
+            { id: 'highlight3', label: 'Điểm nhấn 3', type: 'text' },
+            { id: 'highlight4', label: 'Điểm nhấn 4', type: 'text' },
+            { id: 'image', label: 'Hình ảnh đại diện', type: 'image' },
+            { id: 'layout', label: 'Bố cục Card', type: 'select', options: [
+                { label: 'Ảnh bên phải', value: 'image-right' },
+                { label: 'Ảnh bên trái', value: 'image-left' },
+                { label: 'Chỉ nội dung văn bản', value: 'text-only' },
+                { label: 'Card hộp bao quanh', value: 'boxed-card' }
+            ]},
+            { id: 'cardStyle', label: 'Phong cách Card', type: 'select', options: [
+                { label: 'Hiện đại (Trắng bóng)', value: 'modern' },
+                { label: 'Kính mờ (Glassmorphism)', value: 'glass' },
+                { label: 'Tối kỹ thuật (Tech Dark)', value: 'tech-dark' },
+                { label: 'Gradient công nghệ xanh', value: 'tech-gradient' },
+                { label: 'Viền mảnh tối giản', value: 'bordered' }
+            ]},
+            { id: 'containerWidth', label: 'Độ rộng khung chứa', type: 'select', options: [
+                { label: 'Thu hẹp (896px)', value: 'narrow' },
+                { label: 'Tiêu chuẩn (1280px)', value: 'normal' },
+                { label: 'Rộng (1536px)', value: 'wide' },
+                { label: 'Tràn màn hình (100%)', value: 'full' }
+            ]},
+            { id: 'minHeight', label: 'Độ cao tối thiểu', type: 'select', options: [
+                { label: 'Tự động', value: 'auto' },
+                { label: 'Nhỏ (350px)', value: 'small' },
+                { label: 'Vừa (500px)', value: 'medium' },
+                { label: 'Lớn (650px)', value: 'large' },
+                { label: 'Toàn màn hình (100vh)', value: 'screen' }
+            ]},
+            { id: 'textAlign', label: 'Căn lề chữ', type: 'select', options: [
+                { label: 'Căn trái', value: 'left' },
+                { label: 'Căn giữa', value: 'center' },
+                { label: 'Căn đều 2 bên', value: 'justify' }
+            ]},
+            { id: 'paddingY', label: 'Khoảng cách lề (Padding)', type: 'select', options: [
+                { label: 'Không lề', value: 'none' },
+                { label: 'Nhỏ', value: 'small' },
+                { label: 'Vừa', value: 'medium' },
+                { label: 'Lớn', value: 'large' },
+                { label: 'Cực lớn', value: 'xlarge' }
+            ]},
+            { id: 'buttonText', label: 'Chữ trên nút CTA', type: 'text' },
+            { id: 'buttonLink', label: 'Liên kết nút CTA', type: 'text' }
+        ]
+    },
+    {
+        type: 'modern_card_grid',
+        name: 'Card: Lưới Đa Năng',
+        icon: '💎',
+        category: 'Cards & Showcases',
+        fields: [
+            { id: 'title', label: 'Tiêu đề lưới', type: 'text' },
+            { id: 'subtitle', label: 'Mô tả phụ', type: 'textarea' },
+            { id: 'columns', label: 'Số cột hiển thị', type: 'select', options: [
+                { label: '2 Cột', value: '2' },
+                { label: '3 Cột', value: '3' },
+                { label: '4 Cột', value: '4' }
+            ]},
+            { id: 'cardStyle', label: 'Kiểu dáng Card', type: 'select', options: [
+                { label: 'Đổ bóng nổi bật (Elevated)', value: 'elevated' },
+                { label: 'Viền tinh tế (Bordered)', value: 'bordered' },
+                { label: 'Kính mờ (Glassmorphism)', value: 'glass' },
+                { label: 'Gradient công nghệ tối', value: 'tech-gradient' },
+                { label: 'Phẳng tối giản (Flat)', value: 'flat' }
+            ]},
+            { id: 'cardHeight', label: 'Độ cao Card', type: 'select', options: [
+                { label: 'Tự động', value: 'auto' },
+                { label: 'Nhỏ gọn (340px)', value: 'equal-sm' },
+                { label: 'Vừa vặn (440px)', value: 'equal-md' },
+                { label: 'Cao (540px)', value: 'equal-lg' }
+            ]},
+            { id: 'imageAspect', label: 'Tỷ lệ ảnh Card', type: 'select', options: [
+                { label: 'Chuẩn ngang (16:9)', value: '16:9' },
+                { label: 'Rộng (4:3)', value: '4:3' },
+                { label: 'Vuông (1:1)', value: '1:1' },
+                { label: 'Ẩn ảnh (Chỉ icon/text)', value: 'none' }
+            ]},
+            { id: 'imageRounded', label: 'Bo góc ảnh', type: 'select', options: [
+                { label: 'Vuông góc', value: 'none' },
+                { label: 'Bo nhẹ (12px)', value: 'md' },
+                { label: 'Bo tròn đẹp (16px)', value: 'xl' },
+                { label: 'Tròn đều (Circle)', value: 'full' }
+            ]},
+            { id: 'textAlign', label: 'Căn lề chữ', type: 'select', options: [
+                { label: 'Căn trái', value: 'left' },
+                { label: 'Căn giữa', value: 'center' }
+            ]},
+            { id: 'containerWidth', label: 'Độ rộng khung chứa', type: 'select', options: [
+                { label: 'Tiêu chuẩn (1280px)', value: 'normal' },
+                { label: 'Rộng (1536px)', value: 'wide' },
+                { label: 'Tràn màn hình (100%)', value: 'full' }
+            ]},
+            { id: 'paddingY', label: 'Khoảng cách lề (Padding)', type: 'select', options: [
+                { label: 'Nhỏ', value: 'small' },
+                { label: 'Vừa', value: 'medium' },
+                { label: 'Lớn', value: 'large' }
+            ]}
+        ]
+    },
+    {
+        type: 'stats_counter_card',
+        name: 'Card: Thống Kê Số Liệu',
+        icon: '📊',
+        category: 'Cards & Showcases',
+        fields: [
+            { id: 'title', label: 'Tiêu đề chính', type: 'text' },
+            { id: 'subtitle', label: 'Mô tả phụ', type: 'textarea' },
+            { id: 'columns', label: 'Số cột hiển thị', type: 'select', options: [
+                { label: '2 Cột', value: '2' },
+                { label: '3 Cột', value: '3' },
+                { label: '4 Cột', value: '4' }
+            ]},
+            { id: 'cardStyle', label: 'Phong cách Card', type: 'select', options: [
+                { label: 'Trắng sang trọng (White)', value: 'white-card' },
+                { label: 'Kính mờ (Glassmorphism)', value: 'glass-card' },
+                { label: 'Tối kỹ thuật (Tech Dark)', value: 'tech-dark-card' },
+                { label: 'Viền trên nổi bật (Accent Border)', value: 'accent-border' }
+            ]},
+            { id: 'num1', label: 'Số 1', type: 'text' },
+            { id: 'label1', label: 'Nhãn số 1', type: 'text' },
+            { id: 'desc1', label: 'Mô tả số 1', type: 'text' },
+            { id: 'num2', label: 'Số 2', type: 'text' },
+            { id: 'label2', label: 'Nhãn số 2', type: 'text' },
+            { id: 'desc2', label: 'Mô tả số 2', type: 'text' },
+            { id: 'num3', label: 'Số 3', type: 'text' },
+            { id: 'label3', label: 'Nhãn số 3', type: 'text' },
+            { id: 'desc3', label: 'Mô tả số 3', type: 'text' },
+            { id: 'num4', label: 'Số 4', type: 'text' },
+            { id: 'label4', label: 'Nhãn số 4', type: 'text' },
+            { id: 'desc4', label: 'Mô tả số 4', type: 'text' },
+            { id: 'containerWidth', label: 'Độ rộng khung chứa', type: 'select', options: [
+                { label: 'Tiêu chuẩn (1280px)', value: 'normal' },
+                { label: 'Rộng (1536px)', value: 'wide' },
+                { label: 'Tràn màn hình (100%)', value: 'full' }
+            ]},
+            { id: 'paddingY', label: 'Khoảng cách lề (Padding)', type: 'select', options: [
+                { label: 'Nhỏ', value: 'small' },
+                { label: 'Vừa', value: 'medium' },
+                { label: 'Lớn', value: 'large' }
+            ]}
+        ]
+    },
+    {
+        type: 'split_media_card',
+        name: 'Card: Media Hai Cột',
+        icon: '🖼️',
+        category: 'Cards & Showcases',
+        fields: [
+            { id: 'badge', label: 'Nhãn phụ (Badge)', type: 'text' },
+            { id: 'title', label: 'Tiêu đề chính', type: 'text' },
+            { id: 'description', label: 'Mô tả chi tiết', type: 'textarea' },
+            { id: 'feature1', label: 'Điểm nổi bật 1', type: 'text' },
+            { id: 'feature2', label: 'Điểm nổi bật 2', type: 'text' },
+            { id: 'feature3', label: 'Điểm nổi bật 3', type: 'text' },
+            { id: 'image', label: 'Hình ảnh chính', type: 'image' },
+            { id: 'layout', label: 'Vị trí hình ảnh', type: 'select', options: [
+                { label: 'Ảnh bên phải', value: 'image-right' },
+                { label: 'Ảnh bên trái', value: 'image-left' }
+            ]},
+            { id: 'imageAspect', label: 'Tỷ lệ ảnh', type: 'select', options: [
+                { label: 'Chuẩn ngang (16:9)', value: '16:9' },
+                { label: 'Rộng (4:3)', value: '4:3' },
+                { label: 'Vuông (1:1)', value: '1:1' }
+            ]},
+            { id: 'imageRounded', label: 'Bo góc ảnh', type: 'select', options: [
+                { label: 'Vuông vức', value: 'none' },
+                { label: 'Bo nhẹ (12px)', value: 'md' },
+                { label: 'Bo tròn đẹp (16px)', value: 'xl' },
+                { label: 'Bo cong lớn (24px)', value: '3xl' }
+            ]},
+            { id: 'buttonText', label: 'Chữ trên nút CTA', type: 'text' },
+            { id: 'buttonLink', label: 'Liên kết nút CTA', type: 'text' },
+            { id: 'bgStyle', label: 'Phong cách nền', type: 'select', options: [
+                { label: 'Xám hiện đại (Slate)', value: 'slate' },
+                { label: 'Trắng tinh khôi (White)', value: 'white' },
+                { label: 'Gradient sáng nhẹ', value: 'gradient-light' },
+                { label: 'Tối kỹ thuật (Tech Dark)', value: 'tech-dark' }
+            ]},
+            { id: 'containerWidth', label: 'Độ rộng khung chứa', type: 'select', options: [
+                { label: 'Thu hẹp (896px)', value: 'narrow' },
+                { label: 'Tiêu chuẩn (1280px)', value: 'normal' },
+                { label: 'Rộng (1536px)', value: 'wide' },
+                { label: 'Tràn màn hình (100%)', value: 'full' }
+            ]},
+            { id: 'minHeight', label: 'Độ cao tối thiểu', type: 'select', options: [
+                { label: 'Tự động', value: 'auto' },
+                { label: 'Nhỏ (400px)', value: 'small' },
+                { label: 'Vừa (520px)', value: 'medium' },
+                { label: 'Lớn (650px)', value: 'large' }
+            ]},
+            { id: 'paddingY', label: 'Khoảng cách lề (Padding)', type: 'select', options: [
+                { label: 'Nhỏ', value: 'small' },
+                { label: 'Vừa', value: 'medium' },
+                { label: 'Lớn', value: 'large' }
+            ]}
+        ]
+    },
+    {
+        type: 'cta_banner_card',
+        name: 'Card: Banner Kêu Gọi',
+        icon: '📢',
+        category: 'Cards & Showcases',
+        fields: [
+            { id: 'badge', label: 'Nhãn phụ (Badge)', type: 'text' },
+            { id: 'title', label: 'Tiêu đề chính', type: 'text' },
+            { id: 'description', label: 'Mô tả chi tiết', type: 'textarea' },
+            { id: 'button1Text', label: 'Chữ trên Nút 1 (Chính)', type: 'text' },
+            { id: 'button1Link', label: 'Liên kết Nút 1', type: 'text' },
+            { id: 'button2Text', label: 'Chữ trên Nút 2 (Phụ)', type: 'text' },
+            { id: 'button2Link', label: 'Liên kết Nút 2', type: 'text' },
+            { id: 'bgStyle', label: 'Phong cách Card Banner', type: 'select', options: [
+                { label: 'Gradient xanh Vietvinh', value: 'primary-gradient' },
+                { label: 'Tối kỹ thuật công nghệ', value: 'dark-tech' },
+                { label: 'Mesh Blue hiện đại', value: 'mesh-blue' },
+                { label: 'Hộp trắng viền xanh', value: 'light-boxed' }
+            ]},
+            { id: 'textAlign', label: 'Căn lề nội dung', type: 'select', options: [
+                { label: 'Căn giữa', value: 'center' },
+                { label: 'Căn trái', value: 'left' }
+            ]},
+            { id: 'containerWidth', label: 'Độ rộng khung chứa', type: 'select', options: [
+                { label: 'Tiêu chuẩn (Hộp 1280px)', value: 'normal' },
+                { label: 'Thu hẹp (Hộp 896px)', value: 'narrow' },
+                { label: 'Rộng (1536px)', value: 'wide' },
+                { label: 'Tràn màn hình (100%)', value: 'full' }
+            ]},
+            { id: 'paddingY', label: 'Khoảng cách lề (Padding)', type: 'select', options: [
+                { label: 'Nhỏ', value: 'small' },
+                { label: 'Vừa', value: 'medium' },
+                { label: 'Lớn', value: 'large' }
+            ]}
         ]
     },
     { 
@@ -255,10 +526,57 @@ export const BLOCK_LIBRARY = [
         name: 'About: Hero',
         icon: 'ℹ️',
         category: 'About Us',
-        defaultProps: { title: 'Giới thiệu', description: 'Tổng công ty Kỹ thuật lạnh Việt Nam (VVC)...' },
+        defaultProps: { 
+            badge: 'VỀ CHÚNG TÔI • VIETVINH INDUSTRIES',
+            title: 'Giới thiệu', 
+            description: 'Tổng công ty Kỹ thuật lạnh Việt Nam (VVC) - Đơn vị tiên phong trong giải pháp nhiệt lạnh công nghiệp.',
+            textAlign: 'left',
+            textSize: 'lg',
+            containerWidth: 'normal',
+            minHeight: 'auto',
+            bgStyle: 'gradient-light',
+            paddingY: 'medium'
+        },
         fields: [
-            { id: 'title', label: 'Tiêu đề', type: 'text' },
-            { id: 'description', label: 'Mô tả', type: 'textarea' }
+            { id: 'badge', label: 'Nhãn phụ (Badge)', type: 'text' },
+            { id: 'title', label: 'Tiêu đề chính', type: 'text' },
+            { id: 'highlight', label: 'Dòng điểm nhấn / Trích dẫn', type: 'text' },
+            { id: 'description', label: 'Mô tả chi tiết', type: 'textarea' },
+            { id: 'textAlign', label: 'Căn lề chữ', type: 'select', options: [
+                { label: 'Căn trái', value: 'left' },
+                { label: 'Căn giữa', value: 'center' },
+                { label: 'Căn đều 2 bên', value: 'justify' }
+            ]},
+            { id: 'textSize', label: 'Cỡ chữ mô tả', type: 'select', options: [
+                { label: 'Vừa (16px)', value: 'base' },
+                { label: 'Lớn (18px)', value: 'lg' },
+                { label: 'Rất lớn (20px)', value: 'xl' }
+            ]},
+            { id: 'containerWidth', label: 'Độ rộng khung chứa', type: 'select', options: [
+                { label: 'Thu hẹp (896px)', value: 'narrow' },
+                { label: 'Tiêu chuẩn (1280px)', value: 'normal' },
+                { label: 'Rộng (1536px)', value: 'wide' },
+                { label: 'Tràn màn hình (100%)', value: 'full' }
+            ]},
+            { id: 'minHeight', label: 'Độ cao tối thiểu', type: 'select', options: [
+                { label: 'Tự động', value: 'auto' },
+                { label: 'Nhỏ (300px)', value: 'small' },
+                { label: 'Vừa (460px)', value: 'medium' },
+                { label: 'Lớn (600px)', value: 'large' }
+            ]},
+            { id: 'paddingY', label: 'Khoảng cách lề (Padding)', type: 'select', options: [
+                { label: 'Không lề', value: 'none' },
+                { label: 'Nhỏ', value: 'small' },
+                { label: 'Vừa', value: 'medium' },
+                { label: 'Lớn', value: 'large' }
+            ]},
+            { id: 'bgStyle', label: 'Phong cách nền', type: 'select', options: [
+                { label: 'Gradient sáng nhẹ', value: 'gradient-light' },
+                { label: 'Trắng tinh khôi', value: 'white' },
+                { label: 'Xám hiện đại', value: 'slate' },
+                { label: 'Xanh nhạt thanh lịch', value: 'primary-subtle' },
+                { label: 'Tối kỹ thuật công nghệ', value: 'tech-dark' }
+            ]}
         ]
     },
     {
@@ -388,7 +706,7 @@ export const BlockLibrary: React.FC = () => {
     }, {} as Record<string, typeof BLOCK_LIBRARY>);
 
     // Order categories logically
-    const categoryOrder = ['Basic', 'About Us', 'Industry & Tech', 'Corporate', 'General'];
+    const categoryOrder = ['Basic', 'Cards & Showcases', 'About Us', 'Industry & Tech', 'Corporate', 'General'];
     const sortedCategories = Object.keys(categories).sort((a, b) => {
         const idxA = categoryOrder.indexOf(a);
         const idxB = categoryOrder.indexOf(b);

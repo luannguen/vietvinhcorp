@@ -7,37 +7,130 @@ import { Edit, ImagePlus, Plus, Pencil, Trash2 } from 'lucide-react';
 
 // --- About Hero Block ---
 interface AboutHeroBlockProps {
+  badge?: string;
   title: string;
   description: string;
+  textAlign?: 'left' | 'center' | 'justify';
+  textSize?: 'base' | 'lg' | 'xl';
+  containerWidth?: 'narrow' | 'normal' | 'wide' | 'full';
+  minHeight?: 'auto' | 'small' | 'medium' | 'large';
+  bgStyle?: 'gradient-light' | 'white' | 'slate' | 'primary-subtle' | 'tech-dark';
+  paddingY?: 'none' | 'small' | 'medium' | 'large';
+  highlight?: string;
   sectionId?: string;
 }
 
 export const AboutHeroBlock = ({ 
+  badge,
   title, 
   description,
+  textAlign = 'left',
+  textSize = 'lg',
+  containerWidth = 'normal',
+  minHeight = 'auto',
+  bgStyle = 'gradient-light',
+  paddingY = 'medium',
+  highlight,
   sectionId
 }: any) => {
   const { t } = useTranslation();
   const defaultTitle = t('about_hero_title', "Giới thiệu");
   const defaultDescription = t('about_hero_desc', "Tổng công ty Kỹ thuật lạnh Việt Nam (VVC) - Đơn vị tiên phong trong giải pháp nhiệt lạnh công nghiệp.");
 
+  const widthClass = {
+    narrow: 'max-w-4xl mx-auto px-4 sm:px-6',
+    normal: 'container-custom',
+    wide: 'max-w-7xl 2xl:max-w-[1600px] mx-auto px-4 sm:px-8',
+    full: 'w-full px-4 sm:px-8'
+  }[containerWidth as string] || 'container-custom';
+
+  const heightClass = {
+    small: 'min-h-[300px]',
+    medium: 'min-h-[460px]',
+    large: 'min-h-[600px]',
+    auto: ''
+  }[minHeight as string] || '';
+
+  const paddingClass = {
+    none: 'py-0',
+    small: 'py-8 md:py-12',
+    medium: 'py-12 md:py-20',
+    large: 'py-20 md:py-28'
+  }[paddingY as string] || 'py-12 md:py-20';
+
+  const alignClass = {
+    center: 'text-center items-center',
+    right: 'text-right items-end',
+    justify: 'text-justify items-start',
+    left: 'text-left items-start'
+  }[textAlign as string] || 'text-left items-start';
+
+  const textSizeClass = {
+    base: 'text-base',
+    lg: 'text-lg',
+    xl: 'text-xl'
+  }[textSize as string] || 'text-lg';
+
+  const bgClasses = {
+    'gradient-light': 'bg-gradient-to-b from-primary/10 via-primary/5 to-transparent',
+    white: 'bg-white',
+    slate: 'bg-slate-50 border-b border-slate-100',
+    'primary-subtle': 'bg-blue-50/80 border-b border-blue-100',
+    'tech-dark': 'bg-slate-950 text-white'
+  }[bgStyle as string] || 'bg-gradient-to-b from-primary/10 to-transparent';
+
+  const isDark = bgStyle === 'tech-dark';
+
   return (
-    <div className="bg-gradient-to-b from-primary/10 to-transparent py-12 md:py-20">
-      <div className="container-custom">
-        <EditableElement 
-          tagName="h1" 
-          fieldKey="title" 
-          sectionId={sectionId}
-          defaultContent={title || defaultTitle} 
-          className="text-3xl md:text-5xl font-bold text-primary mb-6" 
-        />
-        <EditableElement 
-          tagName="p" 
-          fieldKey="description" 
-          sectionId={sectionId}
-          defaultContent={description || defaultDescription} 
-          className="text-lg text-muted-foreground max-w-3xl" 
-        />
+    <div className={`transition-all duration-300 flex items-center ${bgClasses} ${paddingClass} ${heightClass}`}>
+      <div className={`w-full ${widthClass}`}>
+        <div className={`flex flex-col ${alignClass}`}>
+          {badge && (
+            <span className={`inline-block px-3 py-1 mb-4 text-xs font-bold uppercase rounded-md tracking-wider ${
+              isDark ? 'bg-blue-500/20 text-blue-400' : 'bg-primary/10 text-primary'
+            }`}>
+              <EditableElement
+                tagName="span"
+                fieldKey="badge"
+                sectionId={sectionId}
+                defaultContent={badge}
+                className="font-bold"
+              />
+            </span>
+          )}
+
+          <EditableElement 
+            tagName="h1" 
+            fieldKey="title" 
+            sectionId={sectionId}
+            defaultContent={title || defaultTitle} 
+            className={`text-3xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6 ${
+              isDark ? 'text-white' : 'text-primary'
+            }`} 
+          />
+
+          {highlight && (
+            <div className={`p-4 mb-6 rounded-xl border-l-4 border-primary ${
+              isDark ? 'bg-slate-900/80 text-blue-200' : 'bg-white shadow-sm text-slate-800'
+            } max-w-3xl font-semibold`}>
+              <EditableElement
+                tagName="p"
+                fieldKey="highlight"
+                sectionId={sectionId}
+                defaultContent={highlight}
+              />
+            </div>
+          )}
+
+          <div className={`${textSizeClass} ${isDark ? 'text-slate-300' : 'text-slate-600'} leading-relaxed max-w-3xl whitespace-pre-line`}>
+            <EditableElement 
+              tagName="p" 
+              fieldKey="description" 
+              sectionId={sectionId}
+              defaultContent={description || defaultDescription} 
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

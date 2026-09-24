@@ -16,6 +16,10 @@ interface CardBlockProps {
   style?: 'elevated' | 'bordered' | 'flat';
   padding?: 'none' | 'small' | 'medium' | 'large';
   title?: string;
+  containerWidth?: 'narrow' | 'normal' | 'wide' | 'full';
+  cardHeight?: 'auto' | 'equal-sm' | 'equal-md' | 'equal-lg';
+  imageAspect?: '16:9' | '4:3' | '1:1' | 'auto';
+  textAlign?: 'left' | 'center';
   sectionId?: string;
 }
 
@@ -25,6 +29,10 @@ export const CardBlock = ({
   style = 'elevated', 
   padding = 'medium',
   title,
+  containerWidth = 'normal',
+  cardHeight = 'auto',
+  imageAspect = '16:9',
+  textAlign = 'left',
   sectionId
 }: CardBlockProps) => {
   const { updateSectionProps } = useVisualEditor();
@@ -35,6 +43,29 @@ export const CardBlock = ({
     medium: 'py-16',
     large: 'py-24'
   };
+
+  const widthClass = {
+    narrow: 'max-w-4xl mx-auto px-4 sm:px-6',
+    normal: 'container-custom',
+    wide: 'max-w-7xl 2xl:max-w-[1600px] mx-auto px-4 sm:px-8',
+    full: 'w-full px-4 sm:px-8'
+  }[containerWidth as string] || 'container-custom';
+
+  const aspectClass = {
+    '16:9': 'aspect-video',
+    '4:3': 'aspect-[4/3]',
+    '1:1': 'aspect-square',
+    'auto': 'aspect-auto'
+  }[imageAspect as string] || 'aspect-video';
+
+  const heightClass = {
+    'equal-sm': 'min-h-[300px]',
+    'equal-md': 'min-h-[400px]',
+    'equal-lg': 'min-h-[500px]',
+    'auto': ''
+  }[cardHeight as string] || '';
+
+  const alignClass = textAlign === 'center' ? 'text-center' : 'text-left';
 
   const gridCols = {
     1: 'grid-cols-1',
@@ -57,7 +88,7 @@ export const CardBlock = ({
   };
 
   return (
-    <div className={`container-custom ${paddingClasses[padding]}`}>
+    <div className={`${widthClass} ${paddingClasses[padding]}`}>
       {title !== undefined && (
         <EditableElement 
           tagName="h2" 
@@ -71,9 +102,9 @@ export const CardBlock = ({
         {items.map((item, idx) => (
           <div 
             key={item.id || idx} 
-            className={`rounded-xl overflow-hidden transition-all duration-300 transform hover:-translate-y-1 ${cardStyles[style]}`}
+            className={`rounded-xl overflow-hidden transition-all duration-300 transform hover:-translate-y-1 flex flex-col justify-between ${cardStyles[style]} ${heightClass}`}
           >
-            <div className="aspect-video overflow-hidden bg-primary/5 flex items-center justify-center">
+            <div className={`${aspectClass} overflow-hidden bg-primary/5 flex items-center justify-center`}>
               <EditableElement 
                 type="image" 
                 fieldKey={`items.${idx}.image`} 
@@ -91,7 +122,7 @@ export const CardBlock = ({
                 )}
               </EditableElement>
             </div>
-            <div className="p-6">
+            <div className={`p-6 flex-grow ${alignClass}`}>
               <EditableElement 
                 tagName="h3" 
                 fieldKey={`items.${idx}.title`} 
