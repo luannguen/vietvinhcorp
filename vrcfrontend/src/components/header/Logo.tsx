@@ -10,35 +10,29 @@ const Logo = ({ isScrolled = false }: LogoProps) => {
   const { settings, loading } = useSettings();
   const { t } = useTranslation();
   
-  if (loading) {
+  if (loading && !settings['site_logo']) {
     return (
       <div className={`flex items-center flex-shrink-0 animate-pulse bg-gray-100 rounded-md ${
-        isScrolled ? 'h-[40px] w-[120px]' : 'h-[50px] w-[150px] md:h-[80px] md:w-[200px]'
+        isScrolled ? 'h-9 w-28' : 'h-11 w-36'
       }`}>
       </div>
     );
   }
 
-  const logoSrc = settings['site_logo'];
-  
-  // If no logo in settings, and not loading, we can show a text logo or the default
-  if (!logoSrc) {
-    return (
-      <Link to="/" className="flex items-center gap-2 flex-shrink-0 relative z-10 transition-transform active:scale-95">
-        <span className="text-xl md:text-2xl font-bold text-primary">VIET VINH</span>
-      </Link>
-    );
-  }
+  const logoSrc = settings['site_logo'] || '/lovable-uploads/0bd3c048-8e37-4775-a6bc-0b54ec07edbe.png';
 
   return (
-    <Link to="/" className="flex items-center gap-2 flex-shrink-0 relative z-10 transition-transform active:scale-95">
+    <Link 
+      to="/" 
+      className="flex items-center flex-shrink-0 relative z-10 transition-transform active:scale-95 py-0.5 overflow-hidden rounded-md"
+    >
       <img
         src={logoSrc}
-        alt={t('logo_alt_text')}
-        className={`object-contain transition-all duration-500 ease-in-out ${
+        alt={t('logo_alt_text', 'Viet Vinh Corporation')}
+        className={`w-auto object-contain rounded transition-all duration-300 ease-in-out ${
           isScrolled 
-            ? 'h-[40px] md:h-[60px]' 
-            : 'h-[50px] md:h-[100px]'
+            ? 'h-8 md:h-10 max-h-10' 
+            : 'h-10 md:h-12 max-h-12'
         }`}
       />
     </Link>

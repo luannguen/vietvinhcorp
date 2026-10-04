@@ -33,9 +33,8 @@ export const AboutHeroBlock = ({
   highlight,
   sectionId
 }: any) => {
-  const { t } = useTranslation();
-  const defaultTitle = t('about_hero_title', "Giới thiệu");
-  const defaultDescription = t('about_hero_desc', "Tổng công ty Kỹ thuật lạnh Việt Nam (VVC) - Đơn vị tiên phong trong giải pháp nhiệt lạnh công nghiệp.");
+  const defaultTitle = t('about_hero_title', "VIETVINH INDUSTRIES CORPORATION");
+  const defaultDescription = t('about_hero_desc', "VIETVINH INDUSTRIES CORPORATION - Nhà thầu hệ thống lạnh và cơ điện công nghiệp hàng đầu.");
 
   const widthClass = {
     narrow: 'max-w-4xl mx-auto px-4 sm:px-6',
@@ -143,15 +142,15 @@ export const HistoryBlock = ({
   p2,
   p3,
   image = "/lovable-uploads/0bd3c048-8e37-4775-a6bc-0b54ec07edbe.png",
-  expYears = "20+",
+  expYears = "10+",
   expText,
   sectionId
 }: any) => {
   const { t } = useTranslation();
-  const defaultTitle = t('history_title', "Lịch sử phát triển");
-  const defaultP1 = t('history_p1', "Được thành lập vào năm 2003, VietVinhCorp bắt đầu hành trình với khát vọng chinh phục đỉnh cao công nghệ lạnh.");
-  const defaultP2 = t('history_p2', "Từ một đơn vị chuyên về lắp đặt, chúng tôi đã mở rộng sang tư vấn thiết kế và sản xuất cấu kiện cơ khí lạnh chính xác.");
-  const defaultP3 = t('history_p3', "Ngày nay, VVC tự hào là đối tác chiến lược của nhiều tập đoàn đa quốc gia và các dự án hạ tầng trọng điểm.");
+  const defaultTitle = t('history_title', "Hành trình kiến tạo từ năm 2014");
+  const defaultP1 = t('history_p1', "Từ năm 2014, đội ngũ kỹ sư và nhân viên của VIETVINH đã tiên phong trong việc thiết kế, thi công và sản xuất các sản phẩm điện lạnh thương mại và công nghiệp.");
+  const defaultP2 = t('history_p2', "Chúng tôi ưu tiên sử dụng thiết bị từ các nhà cung cấp uy tín hàng đầu thế giới nhằm mang lại giải pháp tối ưu cho khách hàng.");
+  const defaultP3 = t('history_p3', "Ngày nay, VIETVINH tự hào là đối tác chiến lược của nhiều chủ đầu tư và các dự án hạ tầng trọng điểm.");
   const defaultExpText = t('years_experience', "Năm kinh nghiệm");
 
   return (

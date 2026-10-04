@@ -163,13 +163,17 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12">
           {/* Brand Column */}
           <div className="lg:col-span-4 space-y-6">
-            <Link to="/" className="inline-block transition-opacity hover:opacity-90">
-                <img src={siteLogo} alt="Viet Vinh Logo" className="h-14 lg:h-16 w-auto object-contain bg-white/5 p-2 rounded-lg backdrop-blur-sm" />
+            <Link to="/" className="inline-block transition-transform hover:scale-[1.02] active:scale-95">
+                <img 
+                  src={siteLogo} 
+                  alt="Viet Vinh Logo" 
+                  className="h-20 lg:h-24 w-auto object-contain bg-white/10 p-2.5 rounded-xl border border-white/15 backdrop-blur-md shadow-lg" 
+                />
             </Link>
-            <p className="text-gray-400 text-sm leading-relaxed max-w-sm">
+            <p className="text-gray-200 text-base font-medium leading-relaxed max-w-md">
               {siteDescription}
             </p>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 pt-1">
               {[
                 { icon: Facebook, url: settings['social_facebook'], label: 'Facebook' },
                 { icon: Twitter, url: settings['social_twitter'], label: 'Twitter' },
@@ -177,7 +181,7 @@ const Footer = () => {
                 { icon: Youtube, url: settings['social_youtube'], label: 'YouTube' }
               ].map((social, idx) => social.url && (
                 <a key={idx} href={social.url} target="_blank" rel="noopener noreferrer" 
-                    className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-accent hover:text-white transition-all duration-300"
+                    className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-gray-200 hover:bg-secondary hover:text-gray-900 transition-all duration-300"
                     aria-label={social.label}>
                   <social.icon size={18} />
                 </a>
@@ -188,20 +192,20 @@ const Footer = () => {
           {/* Navigation Columns (Menu Manager) */}
           {footerMenus.map((menu) => (
             <div key={menu.id} className="lg:col-span-2">
-              <h4 className="text-white font-bold text-base mb-6 relative inline-block">
+              <h4 className="text-white font-bold text-base mb-6 relative inline-block tracking-wide">
                 {getTranslatedLabel(menu)}
-                <span className="absolute -bottom-1.5 left-0 w-1/2 h-0.5 bg-accent rounded-full"></span>
+                <span className="absolute -bottom-1.5 left-0 w-1/2 h-0.5 bg-secondary rounded-full"></span>
               </h4>
-              <ul className="space-y-3">
+              <ul className="space-y-3.5">
                 {menu.children?.map((child) => (
                   <li key={child.id}>
                     <Link 
                       to={normalizePath(child.path)} 
-                      className="text-gray-400 hover:text-accent transition-colors text-sm flex items-center group"
+                      className="text-gray-200 hover:text-white hover:translate-x-1 transition-all text-sm font-medium flex items-center group"
                     >
-                      <span className="w-0 group-hover:w-2 h-0.5 bg-accent transition-all duration-300 mr-0 group-hover:mr-2"></span>
+                      <span className="w-0 group-hover:w-2 h-0.5 bg-secondary transition-all duration-300 mr-0 group-hover:mr-2"></span>
                       {getTranslatedLabel(child)}
-                      {isExternalLink(child.path) && <ExternalLink size={12} className="ml-1 opacity-50" />}
+                      {isExternalLink(child.path) && <ExternalLink size={12} className="ml-1 opacity-60" />}
                     </Link>
                   </li>
                 ))}
@@ -211,29 +215,29 @@ const Footer = () => {
 
           {/* Fast Contact Column */}
           <div className="lg:col-span-2">
-            <h4 className="text-white font-bold text-base mb-6 relative inline-block">
+            <h4 className="text-white font-bold text-base mb-6 relative inline-block tracking-wide">
                 {t('contact')}
-                <span className="absolute -bottom-1.5 left-0 w-1/2 h-0.5 bg-accent rounded-full"></span>
+                <span className="absolute -bottom-1.5 left-0 w-1/2 h-0.5 bg-secondary rounded-full"></span>
             </h4>
             <div className="space-y-5">
                 <div className="flex gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center text-accent flex-shrink-0">
+                    <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-secondary flex-shrink-0">
                         <Headset size={20} />
                     </div>
                     <div>
-                        <p className="text-[10px] uppercase tracking-wider text-gray-500 font-bold mb-0.5">{t('hotline')}</p>
-                        <a href={`tel:${contactHotline.replace(/\s/g, '')}`} className="text-white font-semibold hover:text-accent transition-colors block">
+                        <p className="text-xs uppercase tracking-wider text-gray-300 font-bold mb-0.5">{t('hotline')}</p>
+                        <a href={`tel:${contactHotline.replace(/\s/g, '')}`} className="text-white font-semibold hover:text-secondary transition-colors block text-sm">
                             {contactHotline}
                         </a>
                     </div>
                 </div>
                 <div className="flex gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center text-accent flex-shrink-0">
+                    <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-secondary flex-shrink-0">
                         <Mail size={20} />
                     </div>
                     <div>
-                        <p className="text-[10px] uppercase tracking-wider text-gray-500 font-bold mb-0.5">{t('email')}</p>
-                        <a href={`mailto:${contactEmail}`} className="text-white font-semibold hover:text-accent transition-colors block break-all">
+                        <p className="text-xs uppercase tracking-wider text-gray-300 font-bold mb-0.5">{t('email')}</p>
+                        <a href={`mailto:${contactEmail}`} className="text-white font-semibold hover:text-secondary transition-colors block break-all text-sm">
                             {contactEmail}
                         </a>
                     </div>
@@ -257,9 +261,9 @@ const Footer = () => {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {offices.map((office, idx) => (
-                        <div key={idx} className="bg-white/5 rounded-xl p-6 border border-white/5 hover:border-accent/30 transition-all duration-300 group flex flex-col h-full">
-                            <h5 className="text-white font-bold text-sm mb-4 flex items-center gap-2">
-                                <span className="w-1.5 h-1.5 rounded-full bg-accent group-hover:scale-125 transition-transform"></span>
+                        <div key={idx} className="bg-white/10 rounded-xl p-6 border border-white/10 hover:border-secondary/50 transition-all duration-300 group flex flex-col h-full shadow-sm">
+                            <h5 className="text-white font-bold text-base mb-4 flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full bg-secondary group-hover:scale-125 transition-transform"></span>
                                 {t(office.title, { defaultValue: office.title })}
                             </h5>
                             <div className="space-y-3 flex-grow">
@@ -268,15 +272,15 @@ const Footer = () => {
                                     const isEmail = detail.toLowerCase().includes('email');
                                     
                                     return (
-                                        <div key={dIdx} className="flex gap-3 text-sm text-gray-400 leading-relaxed group/line">
+                                        <div key={dIdx} className="flex gap-3 text-sm text-gray-200 leading-relaxed group/line">
                                             {isPhone ? (
-                                                <PhoneCall size={14} className="mt-0.5 text-accent/60 flex-shrink-0 group-hover/line:text-accent transition-colors" />
+                                                <PhoneCall size={15} className="mt-0.5 text-secondary flex-shrink-0 group-hover/line:text-white transition-colors" />
                                             ) : isEmail ? (
-                                                <Mail size={14} className="mt-0.5 text-accent/60 flex-shrink-0 group-hover/line:text-accent transition-colors" />
+                                                <Mail size={15} className="mt-0.5 text-secondary flex-shrink-0 group-hover/line:text-white transition-colors" />
                                             ) : (
-                                                <MapPin size={14} className="mt-0.5 text-accent/60 flex-shrink-0 group-hover/line:text-accent transition-colors" />
+                                                <MapPin size={15} className="mt-0.5 text-secondary flex-shrink-0 group-hover/line:text-white transition-colors" />
                                             )}
-                                            <span className={isPhone || isEmail ? "text-gray-300 font-medium group-hover/line:text-white transition-colors" : "group-hover/line:text-gray-200 transition-colors"}>
+                                            <span className={isPhone || isEmail ? "text-white font-semibold group-hover/line:text-secondary transition-colors" : "group-hover/line:text-white transition-colors"}>
                                                 {t(detail, { defaultValue: detail })}
                                             </span>
                                         </div>
@@ -289,7 +293,7 @@ const Footer = () => {
                                   href={(office as any).mapUrl} 
                                   target="_blank" 
                                   rel="noopener noreferrer"
-                                  className="mt-6 inline-flex items-center gap-2 text-xs font-semibold text-accent hover:text-white transition-colors border border-accent/20 hover:border-accent bg-accent/5 hover:bg-accent px-3 py-2 rounded-lg self-start"
+                                  className="mt-6 inline-flex items-center gap-2 text-xs font-semibold text-secondary hover:text-white transition-colors border border-secondary/30 hover:border-secondary bg-white/5 hover:bg-secondary/20 px-3 py-2 rounded-lg self-start"
                                 >
                                   <ExternalLink size={12} />
                                   {t('view_on_maps')}
@@ -303,10 +307,10 @@ const Footer = () => {
       )}
 
       {/* Bottom Bar: Copyright & Legal */}
-      <div className="bg-primary-darker py-6 border-t border-white/5">
+      <div className="bg-primary-darker py-6 border-t border-white/10">
         <div className="container-custom">
             <div className="flex flex-col lg:flex-row justify-between items-center gap-6">
-                <p className="text-gray-500 text-xs tracking-wide">
+                <p className="text-gray-300 text-xs tracking-wide">
                     {copyrightText}
                 </p>
                 <div className="flex flex-wrap justify-center gap-x-8 gap-y-3 text-xs">
@@ -316,13 +320,13 @@ const Footer = () => {
                         { to: "/legal/cookies", label: 'cookie_policy' },
                         { to: "/legal/sitemap", label: 'sitemap' }
                     ].map((link, idx) => (
-                        <Link key={idx} to={link.to} className="text-gray-500 hover:text-white transition-colors uppercase font-medium">
+                        <Link key={idx} to={link.to} className="text-gray-300 hover:text-white transition-colors uppercase font-medium">
                             {t(link.label)}
                         </Link>
                     ))}
                 </div>
-                {/* Scroll to Top placeholder or other element */}
-                <div className="hidden lg:block text-gray-600 text-[10px] italic">
+                {/* ISO Certified */}
+                <div className="hidden lg:block text-gray-400 text-xs font-medium italic">
                     Certified ISO 9001:2015
                 </div>
             </div>

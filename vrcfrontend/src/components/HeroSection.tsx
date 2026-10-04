@@ -89,12 +89,12 @@ const HeroSection = () => {
             className="absolute inset-0 bg-cover bg-center"
             style={{ backgroundImage: `url(${slide.image_url})` }}
           >
-            <div className="absolute inset-0 bg-black/40"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent"></div>
           </div>
           <div className="container-custom h-full flex items-center relative z-20">
             <div className="max-w-2xl text-white">
-              <h1 className="text-white text-4xl md:text-5xl font-bold mb-4">{slide.title}</h1>
-              <p className="text-xl md:text-2xl mb-8">{slide.description}</p>
+              <h1 className="text-white text-4xl md:text-5xl font-bold mb-4 drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]">{slide.title}</h1>
+              <p className="text-xl md:text-2xl mb-8 text-white/95 font-medium drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)]">{slide.description}</p>
               {slide.link && (
                 <a
                   href={slide.link}

@@ -9,8 +9,8 @@ interface LanguageOption {
 }
 
 const languageOptions: LanguageOption[] = [
-  { code: 'vi', name: 'Tiếng Việt', flagIcon: '/assets/svg/flags/vi-flag.svg' },
   { code: 'en', name: 'English', flagIcon: '/assets/svg/flags/en-flag.svg' },
+  { code: 'vi', name: 'Tiếng Việt', flagIcon: '/assets/svg/flags/vi-flag.svg' },
   { code: 'de', name: 'Deutsch', flagIcon: '/assets/svg/flags/de-flag.svg' },
   { code: 'fr', name: 'Français', flagIcon: '/assets/svg/flags/fr-flag.svg' },
   { code: 'ru', name: 'Русский', flagIcon: '/assets/svg/flags/ru-flag.svg' },
@@ -32,7 +32,7 @@ const LanguageSwitcher = ({ isMobile = false, onItemClick }: LanguageSwitcherPro
   const [isOpen, setIsOpen] = useState(false);
   
   // Ensure we use the short code (e.g., 'en', 'vi')
-  const activeLanguage = i18n.language ? i18n.language.split('-')[0] : 'vi';
+  const activeLanguage = i18n.language ? i18n.language.split('-')[0] : 'en';
 
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);

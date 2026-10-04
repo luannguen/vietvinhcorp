@@ -104,22 +104,21 @@ export const HomeBannerSlider = ({ sectionId }: HomeBannerSliderProps) => {
                                         alt={banner.title || "Banner"} 
                                         className="w-full h-full object-cover"
                                     />
-                                    {/* Overlays */}
-                                    <div className="absolute inset-0 bg-black/40" />
-                                    <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
+                                    {/* Overlays: Bỏ màu nền đen đè ảnh để hiện rõ hình ảnh banner, chỉ giữ dải mờ nhẹ bên trái cho chữ */}
+                                    <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/25 via-40% to-transparent pointer-events-none" />
                                 </div>
 
                                 {/* Content */}
                                 <div className="container-custom relative z-10 text-white">
                                     <div className="max-w-3xl space-y-6">
                                         <div className="overflow-hidden">
-                                            <h2 className="text-4xl md:text-7xl font-extrabold tracking-tight leading-[1.1] animate-in slide-in-from-bottom-8 duration-1000">
+                                            <h2 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1] drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] animate-in slide-in-from-bottom-8 duration-1000">
                                                 {t(banner.title || '')}
                                             </h2>
                                         </div>
                                         
                                         <div className="overflow-hidden">
-                                            <p className="text-lg md:text-2xl opacity-90 max-w-2xl leading-relaxed animate-in slide-in-from-bottom-6 duration-1000 delay-300">
+                                            <p className="text-lg md:text-2xl text-white/95 font-medium max-w-2xl leading-relaxed drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)] animate-in slide-in-from-bottom-6 duration-1000 delay-300">
                                                 {t(banner.description || '')}
                                             </p>
                                         </div>

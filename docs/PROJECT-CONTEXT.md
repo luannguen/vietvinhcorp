@@ -22,3 +22,8 @@
 ## 📍 Office Network
 - Stored as JSON in `contact_address` setting.
 - Structured as: `Array<{ id, title, address, phone, email, map_url }>`
+
+## 🌐 Localization & Cache
+- **Default Language**: English (`en`) with full multi-language support (vi, ja, ko, zh, de, fr, etc.).
+- **FOUC Prevention**: Stale-While-Revalidate (SWR) caching with `localStorage` for `site_settings` and static pages.
+

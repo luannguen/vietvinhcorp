@@ -59,10 +59,38 @@ export const VisualEditorProvider = ({ children, slug = '' }: VisualEditorProvid
     }
     return false;
   });
-  const [contentData, setContentData] = useState<any>({});
+  const [contentData, setContentData] = useState<any>(() => {
+    if (typeof window !== 'undefined' && slug) {
+      try {
+        const cached = localStorage.getItem(`vrc_page_cache_${slug}`);
+        if (cached) {
+          return JSON.parse(cached);
+        }
+      } catch (e) {
+        // ignore JSON parse error
+      }
+    }
+    return {};
+  });
   const [selectedSectionId, setSelectedSectionId] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isPageActive, setIsPageActive] = useState(true);
+  const [isLoading, setIsLoading] = useState(() => {
+    if (typeof window !== 'undefined' && slug) {
+      try {
+        const cached = localStorage.getItem(`vrc_page_cache_${slug}`);
+        if (cached) return false;
+      } catch (e) {
+        // ignore
+      }
+    }
+    return true;
+  });
+  const [isPageActive, setIsPageActive] = useState(() => {
+    if (typeof window !== 'undefined' && slug) {
+      const cachedActive = localStorage.getItem(`vrc_page_active_${slug}`);
+      if (cachedActive !== null) return cachedActive === 'true';
+    }
+    return true;
+  });
 
   const isUpdatingFromParent = React.useRef(false);
   const lastLocalUpdateAt = React.useRef(0);
@@ -309,12 +337,14 @@ export const VisualEditorProvider = ({ children, slug = '' }: VisualEditorProvid
             }
           }
           break;
-        case 'VISUAL_EDIT_CHANGE_LANGUAGE':
-          if (event.data.language && i18n.language !== event.data.language) {
-            console.log('[VisualEditorContext] Changing language from parent:', event.data.language);
-            i18n.changeLanguage(event.data.language);
+        case 'VISUAL_EDIT_CHANGE_LANGUAGE': {
+          const targetLang = event.data.language || event.data.lng;
+          if (targetLang && i18n.language !== targetLang) {
+            console.log('[VisualEditorContext] Changing language from parent:', targetLang);
+            i18n.changeLanguage(targetLang);
           }
           break;
+        }
         case 'VISUAL_EDIT_IMAGE_SELECTED':
           if (sectionId) {
             updateSectionProps(sectionId, { [fieldKey]: imageUrl });
@@ -340,12 +370,6 @@ export const VisualEditorProvider = ({ children, slug = '' }: VisualEditorProvid
           break;
         case 'VISUAL_EDIT_SELECT_SECTION':
           setSelectedSectionId(sectionId);
-          break;
-        case 'VISUAL_EDIT_CHANGE_LANGUAGE':
-          if (event.data.lng) {
-            console.log('[VisualEditorContext] Changing language to:', event.data.lng);
-            i18n.changeLanguage(event.data.lng);
-          }
           break;
       }
     };
@@ -373,11 +397,22 @@ export const VisualEditorProvider = ({ children, slug = '' }: VisualEditorProvid
           .single();
 
         if (data) {
-          setIsPageActive(data.is_active ?? true);
+          const activeState = data.is_active ?? true;
+          setIsPageActive(activeState);
+          if (typeof window !== 'undefined' && slug) {
+            try {
+              localStorage.setItem(`vrc_page_active_${slug}`, String(activeState));
+            } catch (e) {}
+          }
           if (data.content) {
             try {
               const parsed = JSON.parse(data.content);
               setContentData(parsed);
+              if (typeof window !== 'undefined' && slug) {
+                try {
+                  localStorage.setItem(`vrc_page_cache_${slug}`, JSON.stringify(parsed));
+                } catch (e) {}
+              }
             } catch (e) {
               console.log('Content is not JSON. Starting with empty visual data.');
               setContentData({});

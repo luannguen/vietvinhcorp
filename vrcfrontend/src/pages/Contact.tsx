@@ -1,34 +1,32 @@
 import { useTranslation } from 'react-i18next';
 import ContactForm from "@/components/ContactForm";
 import { useSettings } from "@/hooks/useSettings";
-import { Loader2 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Contact = () => {
   const { t, i18n } = useTranslation();
-  const { settings } = useSettings();
-  const currentLang = i18n.language || 'vi';
-  const isDefaultLang = currentLang === 'vi';
+  const { settings, loading } = useSettings();
+  const currentLang = i18n.language ? i18n.language.split('-')[0] : 'en';
 
   const getSetting = (key: string, defaultVal: string) => {
-    const langKey = isDefaultLang ? key : `${key}_${currentLang}`;
-    const localized = settings[langKey];
-    
-    if (localized && localized.trim() !== '') {
-      // Smart Fallback for address: if not JSON in other languages, ignore it
-      if (key === 'contact_address' && !isDefaultLang) {
-        if (localized.startsWith('[') || localized.startsWith('{')) return localized;
-        // else fallback to master settings[key]
-      } else {
-        return localized;
+    // If not English or default, check localized version first
+    if (currentLang !== 'vi') {
+      const localized = settings[`${key}_${currentLang}`];
+      if (localized && localized.trim() !== '') {
+        if (key === 'contact_address') {
+          if (localized.startsWith('[') || localized.startsWith('{')) return localized;
+        } else {
+          return localized;
+        }
       }
     }
     
     return settings[key] || defaultVal;
   };
 
-  const companyName = getSetting('company_name', 'Tổng công ty Kỹ thuật lạnh Việt Nam (VVC)');
-  const slogan = getSetting('company_slogan', 'Tiên phong trong lĩnh vực kỹ thuật lạnh tại Việt Nam');
-  const rawAddress = getSetting('contact_address', '123 Nguyễn Văn Linh, Quận 7, TP. Hồ Chí Minh');
+  const companyName = getSetting('company_name', 'VIETVINH INDUSTRIES CORPORATION');
+  const slogan = getSetting('company_slogan', 'Nhà thầu hệ thống lạnh và cơ điện công nghiệp');
+  const rawAddress = getSetting('contact_address', 'Tầng 14, HM Town Building, 412 Nguyễn Thị Minh Khai, P. Bàn Cờ, TP.HCM');
   
   // Helper to parse JSON address and get the primary one
   const getDisplayAddress = (val: string) => {
@@ -45,9 +43,9 @@ const Contact = () => {
   };
 
   const address = getDisplayAddress(rawAddress);
-  const phone = getSetting('contact_phone', '+84 (28) 1234 5678');
-  const email = getSetting('contact_email', 'info@VVCorp.vn');
-  const hotline = getSetting('contact_hotline', '1800 1234');
+  const phone = getSetting('contact_phone', '+84 775 842 789');
+  const email = getSetting('contact_email', 'contact@vietvinhcorp.com');
+  const hotline = getSetting('contact_hotline', '(+84) 981 789 248');
   const workingHours = getSetting('contact_working_hours', '8:00 - 17:30, Thứ 2 - Thứ 6');
   // Helper to extract src from iframe fallback or raw URL
   const extractSrcFromHtml = (input: string) => {
@@ -92,39 +90,58 @@ const Contact = () => {
             <div className="bg-white shadow-md rounded-lg p-6">
               <h2 className="text-xl font-semibold text-primary mb-4">{t('contact_info')}</h2>
 
-              <div className="space-y-4">
-                <div>
-                  <h3 className="font-medium text-lg text-primary">{t(companyName)}</h3>
-                  <p className="text-gray-600">{t(slogan)}</p>
-                </div>
-
-                <div>
-                  <h3 className="font-medium">{t('address')}:</h3>
-                  <p className="text-gray-600">{t(address)}</p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {loading && !settings['company_name'] ? (
+                <div className="space-y-5 animate-pulse">
                   <div>
-                    <h3 className="font-medium">{t('phone')}:</h3>
-                    <p className="text-gray-600">{t(phone)}</p>
+                    <Skeleton className="h-6 w-3/4 mb-2" />
+                    <Skeleton className="h-4 w-1/2" />
                   </div>
-
                   <div>
-                    <h3 className="font-medium">{t('email')}:</h3>
-                    <p className="text-gray-600">{email}</p>
+                    <Skeleton className="h-4 w-20 mb-2" />
+                    <Skeleton className="h-4 w-full" />
                   </div>
-
-                  <div>
-                    <h3 className="font-medium">{t('hotline')}:</h3>
-                    <p className="text-gray-600">{hotline}</p>
-                  </div>
-
-                  <div>
-                    <h3 className="font-medium">{t('working_hours')}:</h3>
-                    <p className="text-gray-600">{t(workingHours)}</p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Skeleton className="h-12 w-full" />
+                    <Skeleton className="h-12 w-full" />
+                    <Skeleton className="h-12 w-full" />
+                    <Skeleton className="h-12 w-full" />
                   </div>
                 </div>
-              </div>
+              ) : (
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="font-medium text-lg text-primary">{companyName}</h3>
+                    <p className="text-gray-600">{slogan}</p>
+                  </div>
+
+                  <div>
+                    <h3 className="font-medium">{t('address')}:</h3>
+                    <p className="text-gray-600">{address}</p>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <h3 className="font-medium">{t('phone')}:</h3>
+                      <p className="text-gray-600">{phone}</p>
+                    </div>
+
+                    <div>
+                      <h3 className="font-medium">{t('email')}:</h3>
+                      <p className="text-gray-600">{email}</p>
+                    </div>
+
+                    <div>
+                      <h3 className="font-medium">{t('hotline')}:</h3>
+                      <p className="text-gray-600">{hotline}</p>
+                    </div>
+
+                    <div>
+                      <h3 className="font-medium">{t('working_hours')}:</h3>
+                      <p className="text-gray-600">{workingHours}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <div className="mt-6">
                 <h3 className="font-medium mb-2">{t('connect_with_us')}:</h3>

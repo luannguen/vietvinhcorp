@@ -28,15 +28,15 @@ const Header = () => {
 
       {/* Main header */}
       <header
-        className={`bg-primary/10 backdrop-blur-sm sticky top-0 z-50 transition-all duration-300 ${
-          isScrolled ? 'shadow-md bg-white/95' : ''
+        className={`sticky top-0 z-50 transition-all duration-300 ${
+          isScrolled ? 'bg-white/95 backdrop-blur-md shadow-md' : 'bg-white/90 backdrop-blur-md shadow-sm'
         }`}
       >
         <div className="container-custom">
           <div className={`flex justify-between items-center transition-all duration-300 ${
             isScrolled ? 'py-1' : 'py-1.5'
           }`}>
-            {/* Logo - shrinks on scroll */}
+            {/* Logo - bounded and responsive */}
             <Logo isScrolled={isScrolled} />
 
             {/* Desktop Navigation */}
