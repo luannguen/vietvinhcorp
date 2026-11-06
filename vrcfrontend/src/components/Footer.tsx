@@ -113,8 +113,9 @@ const Footer = () => {
   const contactEmail = settings['contact_email'] || 'contact@vietvinhcorp.com';
   const contactAddress = getLocalizedSetting('contact_address') || t('contact_address_fallback');
   const contactHotline = settings['contact_hotline'] || '+84 981 789 248';
-  const siteDescription = getLocalizedSetting('site_description') || t('site_description_fallback');
-  const siteLogo = settings['footer_logo'] || settings['site_logo'] || '/lovable-uploads/0bd3c048-8e37-4775-a6bc-0b54ec07edbe.png';
+  const siteDescription = getLocalizedSetting('footer_slogan') || getLocalizedSetting('site_description') || settings['company_slogan'] || t('site_description_fallback');
+  const siteLogo = settings['footer_logo'] || settings['site_logo'] || '/assets/images/logo4x.png';
+  const footerLogoWidth = settings['footer_logo_width'] ? parseInt(settings['footer_logo_width'], 10) : 0;
 
   // Parser for the multi-office contact string
   // Parser for the multi-branch structured data
@@ -160,19 +161,29 @@ const Footer = () => {
     <footer className="bg-primary text-white border-t border-white/5">
       {/* Upper Footer: Branding & Navigation */}
       <div className="container-custom pt-16 pb-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-8">
           {/* Brand Column */}
-          <div className="lg:col-span-4 space-y-6">
-            <Link to="/" className="inline-block transition-transform hover:scale-[1.02] active:scale-95">
+          <div className="lg:col-span-3 space-y-5">
+            <div className="inline-flex flex-col items-center min-w-[200px] max-w-full space-y-3.5">
+              <Link
+                to="/"
+                className={`block transition-transform hover:scale-[1.02] active:scale-95 ${
+                  footerLogoWidth > 0 ? '' : 'w-0 min-w-full'
+                }`}
+              >
                 <img 
                   src={siteLogo} 
                   alt="Viet Vinh Logo" 
-                  className="h-20 lg:h-24 w-auto object-contain bg-white/10 p-2.5 rounded-xl border border-white/15 backdrop-blur-md shadow-lg" 
+                  style={footerLogoWidth > 0 ? { width: `${footerLogoWidth}px` } : undefined}
+                  className={`${footerLogoWidth > 0 ? '' : 'w-full'} h-auto max-h-24 object-contain block`} 
                 />
-            </Link>
-            <p className="text-gray-200 text-base font-medium leading-relaxed max-w-md">
-              {siteDescription}
-            </p>
+              </Link>
+              <p className={`text-gray-200 text-base font-medium leading-relaxed text-center ${
+                siteDescription.length <= 45 ? 'sm:whitespace-nowrap' : 'max-w-[280px]'
+              }`}>
+                {siteDescription}
+              </p>
+            </div>
             <div className="flex items-center gap-4 pt-1">
               {[
                 { icon: Facebook, url: settings['social_facebook'], label: 'Facebook' },
@@ -214,30 +225,30 @@ const Footer = () => {
           ))}
 
           {/* Fast Contact Column */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-3">
             <h4 className="text-white font-bold text-base mb-6 relative inline-block tracking-wide">
                 {t('contact')}
                 <span className="absolute -bottom-1.5 left-0 w-1/2 h-0.5 bg-secondary rounded-full"></span>
             </h4>
             <div className="space-y-5">
-                <div className="flex gap-3">
+                <div className="flex gap-3 items-start">
                     <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-secondary flex-shrink-0">
                         <Headset size={20} />
                     </div>
-                    <div>
+                    <div className="min-w-0">
                         <p className="text-xs uppercase tracking-wider text-gray-300 font-bold mb-0.5">{t('hotline')}</p>
-                        <a href={`tel:${contactHotline.replace(/\s/g, '')}`} className="text-white font-semibold hover:text-secondary transition-colors block text-sm">
+                        <a href={`tel:${contactHotline.replace(/\s/g, '')}`} className="text-white font-semibold hover:text-secondary transition-colors block whitespace-nowrap text-sm">
                             {contactHotline}
                         </a>
                     </div>
                 </div>
-                <div className="flex gap-3">
+                <div className="flex gap-3 items-start">
                     <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-secondary flex-shrink-0">
                         <Mail size={20} />
                     </div>
-                    <div>
+                    <div className="min-w-0">
                         <p className="text-xs uppercase tracking-wider text-gray-300 font-bold mb-0.5">{t('email')}</p>
-                        <a href={`mailto:${contactEmail}`} className="text-white font-semibold hover:text-secondary transition-colors block break-all text-sm">
+                        <a href={`mailto:${contactEmail}`} className="text-white font-semibold hover:text-secondary transition-colors block whitespace-nowrap text-sm">
                             {contactEmail}
                         </a>
                     </div>

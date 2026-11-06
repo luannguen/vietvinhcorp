@@ -19,7 +19,7 @@ const Logo = ({ isScrolled = false }: LogoProps) => {
     );
   }
 
-  const logoSrc = settings['site_logo'] || '/lovable-uploads/0bd3c048-8e37-4775-a6bc-0b54ec07edbe.png';
+  const logoSrc = settings['site_logo'] || '/assets/images/logo4x.png';
 
   return (
     <Link 

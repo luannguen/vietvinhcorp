@@ -43,3 +43,17 @@ Customer requested 6 crucial enhancements:
 - **Positive**: Zero FOUC / content flashing on page load, instant load feeling, professional brand consistency, polished UI/UX adhering to Design System.
 - **Negative**: Cached content needs SWR invalidation on update (handled automatically via background re-fetch).
 
+
+---
+
+## Date: 2026-11-06
+
+### Issue
+1. Footer logo had a raised box border (`bg-white/10 p-2.5 rounded-xl border border-white/15`) and did not align evenly in width with the slogan line below it (`"Chuyên nghiệp - Tận tâm - Tân tiến"`).
+2. Footer contact email (`contact@vietvinhcorp.com`) wrapped onto two lines due to narrow `lg:col-span-2` column and `break-all`.
+3. Admin CMS (`SettingsPage.tsx`) lacked direct controls for Footer logo Media Library selection, custom logo width, multi-language Footer slogan (`vi`/`en`), and live Footer preview.
+
+### Decision
+- Removed the raised border/background box on the Footer logo in `Footer.tsx` and grouped Logo + Slogan in an `inline-flex flex-col items-center` container where the logo defaults to `w-0 min-w-full` (matching the exact width of the slogan line below) or uses `footer_logo_width` if customized by Admin.
+- Rebalanced Upper Footer grid in `Footer.tsx` (`lg:col-span-3` Brand, `lg:col-span-2` per menu, `lg:col-span-3` Fast Contact) and replaced `break-all` with `whitespace-nowrap` on the email and hotline links.
+- Upgraded `SettingsPage.tsx` with `ImagePickerModal` (Media Library selection), Live Footer Preview on `#0B3B8C` background, Footer Logo Width control (`footer_logo_width`), bilingual Footer Slogan (`site_description`/`footer_slogan` & `site_description_en`/`footer_slogan_en`), bilingual Copyright (`copyright_text` & `copyright_text_en`), quick Footer Contact inputs (`contact_hotline`, `contact_email`), and a shortcut to Footer Menu Manager (`/admin/navigation`).
