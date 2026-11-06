@@ -79,3 +79,24 @@ Customer requested 6 crucial enhancements:
   - Upgraded `ProjectDetail.tsx` (XSS-safe HTML rendering via `sanitizeHtml`, working Share / Copy Link button, Related Projects section, Skeleton loader) and `ProjectCategory.tsx`.
 - Upgraded `backend/src/hooks/useVisualEditor.ts` to support virtual system pages (creating the `static_pages` row automatically on first save and preserving child default sections when DB sections are empty).
 - Added Core System Pages quick-edit cards in `PagesPage.tsx` and upgraded `ProjectsPage.tsx` + `ProjectForm.tsx` with Visual Editor shortcut, `categoryService.getCategories('project')`, inline quick-create category, `ImagePickerModal` + direct upload, `ReactQuill` rich text editor, RBAC permission guards, and featured toggle.
+
+---
+
+## Date: 2026-11-06 (Footer Logo Smart Contrast & Footer Background Studio)
+
+### Issue
+1. The VRC logo (`logo4x.png` / `site_logo`) has dark-blue letters (`V`, `R`, `C`) and red accents (`Service First`). Without a box border on the dark-blue `#0B3B8C` footer, the dark-blue letters `V R C` blended into the blue background (`logo bị lẫn với nền xanh`).
+2. Admin could not customize the Footer background color, gradient, theme preset, or logo contrast mode in `SettingsPage.tsx`.
+3. `Footer.tsx` did not render the `social_zalo` link configured in `SettingsPage.tsx`, and `"Certified ISO 9001:2015"` was hardcoded.
+
+### Decision
+- Implemented a 5-mode **Footer Logo Contrast Engine (`footer_logo_mode`)** in `Footer.tsx` and `SettingsPage.tsx`:
+  - `smart-contrast` (default on dark backgrounds via `auto`): Uses an inline SVG `<feColorMatrix>` filter (`#vrc-footer-smart-logo`) that transforms dark-blue pixels (`B > R`) into **Pure White (`#FFFFFF`)** while preserving **Vivid Brand Red** (`R > B`) on the vertical bar and `"Service First"` and keeping 100% transparency (zero border/box).
+  - `white-glow`: Multi-layer white contour glow around original colors.
+  - `monochrome-white`: Pure white monochrome (`brightness(0) invert(1)`).
+  - `soft-light-pad`: Soft borderless light cushion (`bg-white/95 rounded-2xl shadow-md`).
+  - `original` (default on light backgrounds via `auto`): Original untouched logo.
+- Built the **Footer Background & Theme Studio** in `SettingsPage.tsx` and `Footer.tsx`:
+  - 6 1-click Theme Presets (*Xanh VRC Tiêu chuẩn*, *Xanh Navy Hoàng gia*, *Xám Đen Kỹ thuật*, *Xanh Công nghệ HVAC*, *Sáng Trang nhã (Light)*, *Trắng Tinh khiết*).
+  - Custom controls for `footer_bg_style` (`gradient`, `solid`, `image`), `footer_bg_color`, `footer_bg_color_end`, `footer_accent_color`, `footer_pattern` (`none`, `grid`, `dots`, `glow`), `footer_text_mode` (`auto` luminance detection, `light`, `dark`), `footer_bg_image`, `footer_bg_overlay`, and `footer_certification_text`.
+  - Added Zalo (`social_zalo`) rendering in `Footer.tsx` and LinkedIn (`social_linkedin`) input in `SettingsPage.tsx`.
