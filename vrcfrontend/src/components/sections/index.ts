@@ -35,6 +35,7 @@ import { ServiceHeroBlock } from './ServiceHeroBlock';
 import { ServiceGridBlock } from './ServiceGridBlock';
 import { CTASectionBlock } from './CTASectionBlock';
 import { JobsListBlock } from './JobsListBlock';
+import { ProjectHeroBlock, ProjectOverviewBlock, ProjectShowcaseBlock } from './ProjectBlocks';
 import { 
   IntroCardProBlock, 
   ModernCardGridBlock, 
@@ -998,6 +999,67 @@ export const registerAllBlocks = () => {
       { id: 'primaryButtonLink', label: 'Link nút chính', type: 'text' },
       { id: 'secondaryButtonLabel', label: 'Nút phụ', type: 'text' },
       { id: 'secondaryButtonLink', label: 'Link nút phụ', type: 'text' }
+    ]
+  });
+
+  // --- Projects Page Blocks ---
+  registerBlock({
+    type: 'project_hero',
+    name: 'Dự án: Hero Banner',
+    component: ProjectHeroBlock,
+    defaultProps: {
+      badge: 'NĂNG LỰC THI CÔNG • DỰ ÁN TIÊU BIỂU',
+      title: 'Dự án tiêu biểu',
+      description: 'Những công trình thực tế đã được Việt Vinh Corporation thiết kế, cung cấp thiết bị và thi công lắp đặt trên khắp cả nước.',
+      primaryButtonLabel: 'Liên hệ tư vấn',
+      primaryButtonLink: '/contact',
+      secondaryButtonLabel: 'Xem dịch vụ',
+      secondaryButtonLink: '/services'
+    },
+    fields: [
+      { id: 'badge', label: 'Nhãn phụ (Badge)', type: 'text' },
+      { id: 'title', label: 'Tiêu đề chính', type: 'text' },
+      { id: 'description', label: 'Mô tả chi tiết', type: 'textarea' },
+      { id: 'primaryButtonLabel', label: 'Nút chính', type: 'text' },
+      { id: 'primaryButtonLink', label: 'Link nút chính', type: 'text' },
+      { id: 'secondaryButtonLabel', label: 'Nút phụ', type: 'text' },
+      { id: 'secondaryButtonLink', label: 'Link nút phụ', type: 'text' }
+    ]
+  });
+
+  registerBlock({
+    type: 'project_overview',
+    name: 'Dự án: Năng lực & Kinh nghiệm',
+    component: ProjectOverviewBlock,
+    defaultProps: {
+      title: 'Năng lực và kinh nghiệm',
+      description: 'Với hơn 20 năm kinh nghiệm, Việt Vinh Corporation đã thực hiện hàng trăm dự án lớn nhỏ trong lĩnh vực điện lạnh công nghiệp và dân dụng.',
+      image: '/assets/images/projects-overview.jpg'
+    },
+    fields: [
+      { id: 'title', label: 'Tiêu đề', type: 'text' },
+      { id: 'description', label: 'Mô tả', type: 'textarea' },
+      { id: 'stat1', label: 'Điểm nhấn 1', type: 'text' },
+      { id: 'stat2', label: 'Điểm nhấn 2', type: 'text' },
+      { id: 'stat3', label: 'Điểm nhấn 3', type: 'text' },
+      { id: 'stat4', label: 'Điểm nhấn 4', type: 'text' },
+      { id: 'image', label: 'Hình ảnh minh họa', type: 'image' }
+    ]
+  });
+
+  registerBlock({
+    type: 'project_showcase',
+    name: 'Dự án: Danh mục & Danh sách công trình',
+    component: ProjectShowcaseBlock,
+    defaultProps: {
+      catTitle: 'Danh mục dự án',
+      catDescription: 'Việt Vinh Corporation tự hào thực hiện các dự án đa dạng với quy mô khác nhau, từ hệ thống điều hòa không khí trung tâm cho tòa nhà thương mại đến các hệ thống làm lạnh công nghiệp phức tạp.',
+      listTitle: 'Dự án nổi bật'
+    },
+    fields: [
+      { id: 'catTitle', label: 'Tiêu đề Danh mục', type: 'text' },
+      { id: 'catDescription', label: 'Mô tả Danh mục', type: 'textarea' },
+      { id: 'listTitle', label: 'Tiêu đề Danh sách Dự án', type: 'text' }
     ]
   });
 

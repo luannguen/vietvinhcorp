@@ -4,6 +4,18 @@ import { toast } from 'sonner';
 import { pageService, PageFormData } from '@/services/pageService';
 import { settingsService } from '@/services/settingsService';
 import { DropResult } from '@hello-pangea/dnd';
+
+const SYSTEM_PAGE_TITLES: Record<string, string> = {
+    'home': 'Trang chủ (Home)',
+    'about-us': 'Giới thiệu (About Us)',
+    'about': 'Giới thiệu (About Us)',
+    'projects': 'Dự án tiêu biểu (Projects)',
+    'services': 'Dịch vụ kỹ thuật (Services)',
+    'team': 'Đội ngũ lãnh đạo & Chuyên gia (Team)',
+    'contact': 'Liên hệ (Contact)',
+    'intro': 'Hồ sơ năng lực (Intro)'
+};
+
 export function useVisualEditor(iframeRef: React.RefObject<HTMLIFrameElement>) {
     const { slug: urlSlug } = useParams<{ slug: string }>();
     const navigate = useNavigate();
@@ -99,7 +111,7 @@ export function useVisualEditor(iframeRef: React.RefObject<HTMLIFrameElement>) {
                 }
                 
                 // Fallback: Default local port
-                if (!frontendUrl) frontendUrl = 'http://localhost:8080';
+                if (!frontendUrl) frontendUrl = 'http://localhost:8081';
                 
                 // Auto-upgrade to HTTPS if Admin is on HTTPS to prevent Mixed Content errors
                 if (window.location.protocol === 'https:' && frontendUrl.startsWith('http://') && !frontendUrl.includes('localhost') && !frontendUrl.includes('127.0.0.1')) {
@@ -107,7 +119,8 @@ export function useVisualEditor(iframeRef: React.RefObject<HTMLIFrameElement>) {
                 }
                 
                 setFrontendUrl(frontendUrl);
-                const previewSlug = isNewPage ? '' : urlSlug;
+                const normalizedSlug = urlSlug === 'about' ? 'about-us' : (urlSlug || '');
+                const previewSlug = isNewPage || normalizedSlug === 'home' ? '' : normalizedSlug;
                 setIframeSrc(`${frontendUrl}/${previewSlug}?edit_mode=true${isNewPage ? '&new=true' : ''}`);
 
                 if (isNewPage) {
@@ -121,10 +134,20 @@ export function useVisualEditor(iframeRef: React.RefObject<HTMLIFrameElement>) {
                 }
 
                 const pages = await pageService.getPages();
-                const page = pages.find(p => p.slug === urlSlug);
+                const page = pages.find(p => p.slug === normalizedSlug || p.slug === urlSlug);
                 
                 if (!page) {
-                    setError('Không tìm thấy trang này');
+                    // Initialize virtual system page so Admin can visually edit & save pages like /projects, /services, /home even before first DB save
+                    setPageId(null);
+                    setSlug(normalizedSlug);
+                    setPageMetadata({
+                        title: SYSTEM_PAGE_TITLES[normalizedSlug] || SYSTEM_PAGE_TITLES[urlSlug] || `Trang ${normalizedSlug}`,
+                        slug: normalizedSlug,
+                        excerpt: '',
+                        image_url: '',
+                        is_active: true
+                    });
+                    setSections([]);
                     return;
                 }
 
@@ -249,8 +272,12 @@ export function useVisualEditor(iframeRef: React.RefObject<HTMLIFrameElement>) {
 
             case 'VISUAL_EDIT_READY':
             case 'VISUAL_EDIT_SYNC_REQUEST':
-                console.log(`[VisualEditor Parent] Child READY (${data.slug || 'unknown'}), pushing data:`, sectionsRef.current.length);
-                sendToIframe('VISUAL_EDIT_UPDATE_DATA', { sections: sectionsRef.current });
+                if (sectionsRef.current.length > 0) {
+                    console.log(`[VisualEditor Parent] Child READY (${data.slug || 'unknown'}), pushing data:`, sectionsRef.current.length);
+                    sendToIframe('VISUAL_EDIT_UPDATE_DATA', { sections: sectionsRef.current });
+                } else {
+                    console.log(`[VisualEditor Parent] Child READY (${data.slug || 'unknown'}), parent has 0 DB sections — awaiting default sections from child`);
+                }
                 break;
         }
     }, [slug, sendToIframe]); // Removed sections dependency, using sectionsRef instead
@@ -270,27 +297,39 @@ export function useVisualEditor(iframeRef: React.RefObject<HTMLIFrameElement>) {
         setIsSaving(true);
         try {
             const contentJson = JSON.stringify({ sections });
+            const targetSlug = pageMetadata.slug || slug;
+            const targetTitle = pageMetadata.title || SYSTEM_PAGE_TITLES[targetSlug] || `Trang ${targetSlug}`;
             
-            if (isNewPage) {
+            if (isNewPage || !pageId) {
                 const newPage = await pageService.createPage({
-                    title: pageMetadata.title!,
-                    slug: pageMetadata.slug!,
+                    title: targetTitle,
+                    slug: targetSlug,
                     excerpt: pageMetadata.excerpt || null,
                     image_url: pageMetadata.image_url || null,
-                    is_active: pageMetadata.is_active || true,
+                    is_active: pageMetadata.is_active ?? true,
                     content: contentJson
                 } as PageFormData);
                 
-                toast.success('Đã tạo trang mới thành công');
+                setPageId(newPage.id);
                 setHasPendingChanges(false);
-                // Redirect to the newly created page's editor
-                navigate(`/pages/visual-edit/${newPage.slug}`, { replace: true });
+                try {
+                    localStorage.removeItem(`vrc_page_cache_${newPage.slug}`);
+                } catch {}
+                if (isNewPage) {
+                    toast.success('Đã tạo trang mới thành công');
+                    navigate(`/pages/visual-edit/${newPage.slug}`, { replace: true });
+                } else {
+                    toast.success('Đã lưu thay đổi giao diện trang thành công');
+                }
             } else if (pageId) {
                 await pageService.updatePage(pageId, {
                     ...pageMetadata,
                     content: contentJson
                 });
                 setHasPendingChanges(false);
+                try {
+                    localStorage.removeItem(`vrc_page_cache_${targetSlug}`);
+                } catch {}
                 toast.success('Đã lưu thay đổi');
             }
         } catch (err: any) {

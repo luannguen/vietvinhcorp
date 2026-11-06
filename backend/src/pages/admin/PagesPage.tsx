@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { pageService, StaticPage, PageFormData } from "@/services/pageService";
@@ -45,6 +44,14 @@ import { useToast } from "@/components/ui/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Loader2, Plus, Pencil, Trash2, FileText, Image as ImageIcon, Eye, Wand2, Layout, Code, Search } from "lucide-react";
 
+const CORE_SYSTEM_PAGES = [
+    { slug: 'home', path: '/', label: 'Trang chủ (Home)', desc: 'Hero, Giải pháp, Thống kê, Sản phẩm & Dự án nổi bật' },
+    { slug: 'about-us', path: '/about-us', label: 'Giới thiệu (About Us)', desc: 'Câu chuyện thương hiệu, Năng lực & Thành tựu' },
+    { slug: 'projects', path: '/projects', label: 'Dự án tiêu biểu (Projects)', desc: 'Tiêu đề, Tổng quan năng lực & Danh mục công trình' },
+    { slug: 'services', path: '/services', label: 'Dịch vụ kỹ thuật (Services)', desc: 'Khối giới thiệu dịch vụ, Quy trình & Cam kết hỗ trợ' },
+    { slug: 'team', path: '/team', label: 'Đội ngũ chuyên gia (Team)', desc: 'Ban lãnh đạo, Kỹ sư & Văn hóa doanh nghiệp' },
+];
+
 export default function PagesPage() {
     const [pages, setPages] = useState<StaticPage[]>([]);
     const [loading, setLoading] = useState(true);
@@ -60,6 +67,7 @@ export default function PagesPage() {
     });
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [showRawJson, setShowRawJson] = useState(false);
+    const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
     const { toast } = useToast();
 
     // Lọc, tìm kiếm và phân trang
@@ -174,9 +182,9 @@ export default function PagesPage() {
     };
 
     const handleDelete = async (id: string) => {
-        if (!confirm("Are you sure you want to delete this page?")) return;
         try {
             await pageService.deletePage(id);
+            setDeleteConfirmId(null);
             toast({ title: "Success", description: "Page deleted successfully" });
             fetchPages();
         } catch (error) {
@@ -196,7 +204,7 @@ export default function PagesPage() {
         } catch (error) {
             toast({ title: "Error", description: "Failed to update status", variant: "destructive" });
         }
-    }
+    };
 
     const filteredPages = pages.filter((page) => {
         const matchesSearch = 
@@ -233,6 +241,58 @@ export default function PagesPage() {
                     <Button onClick={() => handleOpenDialog()} className="rounded-full bg-slate-900 hover:bg-slate-800 shadow-lg shadow-slate-200">
                         <Plus className="mr-2 h-4 w-4" /> Add Page
                     </Button>
+                </div>
+            </div>
+
+            {/* Quick Access to Core System Pages in Visual Editor */}
+            <div className="bg-gradient-to-r from-blue-50/80 via-indigo-50/50 to-slate-50 border border-blue-100 rounded-xl p-4 shadow-sm">
+                <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                        <Wand2 className="h-4 w-4 text-blue-600" />
+                        <h2 className="text-sm font-semibold text-slate-900">
+                            Trang hệ thống chính — Chỉnh sửa giao diện trực quan (Visual Editor)
+                        </h2>
+                    </div>
+                    <span className="text-xs text-slate-500 hidden sm:inline">
+                        Hỗ trợ chỉnh sửa song ngữ VI / EN trực tiếp trên trang
+                    </span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                    {CORE_SYSTEM_PAGES.map((sysPage) => {
+                        const isSavedInDb = pages.some((p) => p.slug === sysPage.slug);
+                        return (
+                            <Link
+                                key={sysPage.slug}
+                                to={`/pages/visual-edit/${sysPage.slug}`}
+                                className="group bg-white hover:bg-blue-50/40 border border-slate-200/80 hover:border-blue-300 rounded-lg p-3 transition-all flex flex-col justify-between shadow-sm hover:shadow"
+                            >
+                                <div>
+                                    <div className="flex items-center justify-between gap-2 mb-1">
+                                        <span className="text-xs font-mono text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">
+                                            {sysPage.path}
+                                        </span>
+                                        <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
+                                            isSavedInDb
+                                                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                                                : 'bg-slate-100 text-slate-600'
+                                        }`}>
+                                            {isSavedInDb ? 'Đã tùy chỉnh' : 'Mặc định'}
+                                        </span>
+                                    </div>
+                                    <h3 className="font-semibold text-sm text-slate-800 group-hover:text-blue-700 transition-colors">
+                                        {sysPage.label}
+                                    </h3>
+                                    <p className="text-xs text-slate-500 mt-1 line-clamp-2">
+                                        {sysPage.desc}
+                                    </p>
+                                </div>
+                                <div className="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-xs font-medium text-blue-600">
+                                    <span>Mở Visual Editor</span>
+                                    <Wand2 className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />
+                                </div>
+                            </Link>
+                        );
+                    })}
                 </div>
             </div>
 
@@ -320,33 +380,56 @@ export default function PagesPage() {
                                         />
                                     </TableCell>
                                     <TableCell className="text-right">
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            asChild
-                                            title="Chỉnh sửa trực quan"
-                                        >
-                                            <Link to={`/pages/visual-edit/${page.slug}`}>
-                                                <Wand2 className="h-4 w-4 text-blue-500" />
-                                            </Link>
-                                        </Button>
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            onClick={() => handleOpenDialog(page)}
-                                            title="Sửa thông tin cơ bản"
-                                        >
-                                            <Pencil className="h-4 w-4" />
-                                        </Button>
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            className="text-destructive hover:text-destructive"
-                                            onClick={() => handleDelete(page.id)}
-                                            title="Xóa trang"
-                                        >
-                                            <Trash2 className="h-4 w-4" />
-                                        </Button>
+                                        {deleteConfirmId === page.id ? (
+                                            <div className="inline-flex items-center gap-1.5">
+                                                <Button
+                                                    variant="destructive"
+                                                    size="sm"
+                                                    className="h-7 px-2 text-xs"
+                                                    onClick={() => handleDelete(page.id)}
+                                                >
+                                                    Xác nhận xóa
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="h-7 px-2 text-xs"
+                                                    onClick={() => setDeleteConfirmId(null)}
+                                                >
+                                                    Hủy
+                                                </Button>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    asChild
+                                                    title="Chỉnh sửa trực quan"
+                                                >
+                                                    <Link to={`/pages/visual-edit/${page.slug}`}>
+                                                        <Wand2 className="h-4 w-4 text-blue-500" />
+                                                    </Link>
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() => handleOpenDialog(page)}
+                                                    title="Sửa thông tin cơ bản"
+                                                >
+                                                    <Pencil className="h-4 w-4" />
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="text-destructive hover:text-destructive"
+                                                    onClick={() => setDeleteConfirmId(page.id)}
+                                                    title="Xóa trang"
+                                                >
+                                                    <Trash2 className="h-4 w-4" />
+                                                </Button>
+                                            </>
+                                        )}
                                     </TableCell>
                                 </TableRow>
                             ))

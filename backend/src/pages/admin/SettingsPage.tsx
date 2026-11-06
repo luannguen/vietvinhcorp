@@ -384,7 +384,7 @@ const SettingsPage: React.FC = () => {
                                         </div>
                                         <div className="flex flex-col justify-end">
                                             <Link
-                                                to="/admin/navigation"
+                                                to="/menu"
                                                 className="inline-flex items-center justify-center px-3 py-2 border border-blue-200 text-xs font-medium rounded-md text-blue-700 bg-blue-50 hover:bg-blue-100 transition-colors h-[38px]"
                                             >
                                                 <Navigation className="h-3.5 w-3.5 mr-1.5" />

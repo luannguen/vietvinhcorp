@@ -692,6 +692,57 @@ export const BLOCK_LIBRARY = [
         icon: '📧',
         category: 'General',
         fields: []
+    },
+    {
+        type: 'project_hero',
+        name: 'Dự án: Hero Banner',
+        icon: '🏗️',
+        category: 'Corporate',
+        fields: [
+            { id: 'badge', label: 'Nhãn phụ (Badge)', type: 'text' },
+            { id: 'title', label: 'Tiêu đề chính', type: 'text' },
+            { id: 'description', label: 'Mô tả chi tiết', type: 'textarea' },
+            { id: 'primaryButtonLabel', label: 'Chữ trên Nút 1 (Chính)', type: 'text' },
+            { id: 'primaryButtonLink', label: 'Liên kết Nút 1', type: 'text' },
+            { id: 'secondaryButtonLabel', label: 'Chữ trên Nút 2 (Phụ)', type: 'text' },
+            { id: 'secondaryButtonLink', label: 'Liên kết Nút 2', type: 'text' }
+        ]
+    },
+    {
+        type: 'project_overview',
+        name: 'Dự án: Năng lực & KN',
+        icon: '🏆',
+        category: 'Corporate',
+        fields: [
+            { id: 'title', label: 'Tiêu đề', type: 'text' },
+            { id: 'description', label: 'Mô tả', type: 'textarea' },
+            { id: 'stat1', label: 'Điểm nhấn 1', type: 'text' },
+            { id: 'stat2', label: 'Điểm nhấn 2', type: 'text' },
+            { id: 'stat3', label: 'Điểm nhấn 3', type: 'text' },
+            { id: 'stat4', label: 'Điểm nhấn 4', type: 'text' },
+            { id: 'image', label: 'Hình ảnh minh họa', type: 'image' }
+        ]
+    },
+    {
+        type: 'project_showcase',
+        name: 'Dự án: Danh mục & Lưới',
+        icon: '🏢',
+        category: 'Corporate',
+        fields: [
+            { id: 'catTitle', label: 'Tiêu đề Danh mục', type: 'text' },
+            { id: 'catDescription', label: 'Mô tả Danh mục', type: 'textarea' },
+            { id: 'listTitle', label: 'Tiêu đề Danh sách Dự án', type: 'text' },
+            {
+                id: 'mgmt_projects_info',
+                label: 'Quản lý Dự án',
+                type: 'info',
+                description: 'Danh sách công trình và danh mục lĩnh vực được đồng bộ trực tiếp từ Quản lý Dự án.',
+                action: {
+                    label: 'Đi tới Quản lý Dự án',
+                    url: '/projects'
+                }
+            }
+        ]
     }
 ];
 

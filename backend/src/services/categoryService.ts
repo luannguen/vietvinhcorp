@@ -24,7 +24,7 @@ export const categoryService = {
         return data || [];
     },
 
-    async createCategory(category: Omit<Category, 'id' | 'created_at'>): Promise<Category> {
+    async createCategory(category: Omit<Category, 'id' | 'created_at' | 'updated_at'>): Promise<Category> {
         const newCategory = {
             ...category,
             id: uuidv4(),
